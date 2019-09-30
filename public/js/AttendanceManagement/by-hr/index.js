@@ -158,6 +158,8 @@
                 ]},
             {field: "IN_TIME", title: "Check In", template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME # </span>"},
             {field: "OUT_TIME", title: "Check Out", template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME # </span>"},
+            {field: "IN_REMARKS", title: "In Remarks"},
+            {field: "OUT_REMARKS", title: "Out Remarks"},
 //            {field: "SYSTEM_OVERTIME", title: "OT", template: "<span>#: (SYSTEM_OVERTIME == null) ? '-' : SYSTEM_OVERTIME # </span>"},
 //            {field: "MANUAL_OVERTIME", title: "MOT", template: "<span>#: (MANUAL_OVERTIME == null) ? '-' : MANUAL_OVERTIME # </span>"},
             {field: "STATUS", title: "Status", template: "<span>#: (STATUS == null) ? '-' : STATUS # </span>"},
