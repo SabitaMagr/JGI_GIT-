@@ -135,16 +135,6 @@
                 }
             }});
         
-        function grid_dataBound(e) {
-            $('.row-checkbox2').each(function (idx, item) {
-                let checkStatus = $(this).prop("checked");
-                if (checkStatus == true) {
-                    let row = $(this).closest("tr");
-                    row.addClass("k-state-selected");
-                }
-            });
-        }
-
         $('#header-chb2').change(function (ev) {
             var checked = ev.target.checked;
             $('.row-checkbox2').each(function (idx, item) {
@@ -201,99 +191,8 @@
             monthChangeAction();
         });
 
-        var exportMap = {
-            "EMPLOYEE_ID": "Employee Id",
-            "EMPLOYEE_CODE": "Employee Code",
-            "EMPLOYEE_NAME": "Employee",
-            "BRANCH_NAME": "Branch",
-            "POSITION_NAME": "Position",
-            "ID_ACCOUNT_NO": "Account No"
-        };
-        var employeeIdColumn = {
-            field: "EMPLOYEE_ID",
-            title: "Id",
-            width: 50
-        };
-        var employeeCodeColumn = {
-            field: "EMPLOYEE_CODE",
-            title: "Code",
-            width: 80
-        };
-        var employeeBranchColumn = {
-            field: "BRANCH_NAME",
-            title: "Branch",
-            width: 100
-        };
-        var employeePositionColumn = {
-            field: "POSITION_NAME",
-            title: "Position",
-            width: 100
-        };
-        var employeeAccountColumn = {
-            field: "ID_ACCOUNT_NO",
-            title: "Acc",
-            width: 70
-        };
-        var employeeNameColumn = {
-            field: "EMPLOYEE_NAME",
-            title: "Employee",
-            width: 150
-        };
-        var actionColumn = {
-            field: ["EMPLOYEE_ID", "SHEET_NO"],
-            title: "Action",
-            width: 50,
-            template: `<a class="btn-edit hris-regenerate-salarysheet" title="Regenerate" sheet-no="#: SHEET_NO #" employee-id="#: EMPLOYEE_ID #" style="height:17px;"> <i class="fa fa-recycle"></i></a>`
-        };
-        if (data.ruleList.length > 0) {
-            employeeNameColumn.locked = true;
-            actionColumn.locked = true;
-            employeeIdColumn.locked = true;
-            employeeCodeColumn.locked = true;
-            employeeBranchColumn.locked = true;
-            employeePositionColumn.locked = true;
-            employeeAccountColumn.locked = true;
-        }
-        var columns = [
-            employeeIdColumn,
-            employeeCodeColumn,
-            employeeNameColumn,
-            employeeBranchColumn,
-            employeePositionColumn,
-            employeeAccountColumn,
-            actionColumn
-        ];
-
-        $.each(data.ruleList, function (key, value) {
-            var signFn = function ($type) {
-                var sign = "";
-                switch ($type) {
-                    case "A":
-                        sign = "+";
-                        break;
-                    case "D":
-                        sign = "-";
-                        break;
-                    case "V":
-                        sign = ".";
-                        break;
-                }
-                return sign;
-            };
-            columns.push({field: "P_" + value['PAY_ID'], title: value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")", width: 150});
-            exportMap["P_" + value['PAY_ID']] = value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")";
-        });
-        //app.initializeKendoGrid($table, columns);
-
         $viewBtn.on('click', function () {
             groupChangeFn();
-        });
-
-        $('#excelExport').on('click', function () {
-            app.excelExport($table, exportMap, 'Salary Sheet');
-        });
-        $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, exportMap, 'Salary Sheet');
         });
 
         function getSelectedSheets(){

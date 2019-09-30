@@ -41,7 +41,7 @@ class JobHistoryRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-        $this->tableGateway->delete([JobHistory::JOB_HISTORY_ID => $id]);
+        $this->tableGateway->update([JobHistory::STATUS => 'D'], [JobHistory::JOB_HISTORY_ID => $id]);
     }
 
     public function fetchAll() {
@@ -87,6 +87,8 @@ class JobHistoryRepository implements RepositoryInterface {
                 ->join(['D2' => 'HRIS_DESIGNATIONS'], 'D2.DESIGNATION_ID=H.TO_DESIGNATION_ID', ['TO_DESIGNATION_TITLE' => new Expression("(D2.DESIGNATION_TITLE)")], "left")
                 ->join(['DES2' => 'HRIS_DEPARTMENTS'], 'DES2.DEPARTMENT_ID=H.TO_DEPARTMENT_ID', ['TO_DEPARTMENT_NAME' => new Expression("(DES2.DEPARTMENT_NAME)")], "left")
                 ->join(['B2' => 'HRIS_BRANCHES'], 'B2.BRANCH_ID=H.TO_BRANCH_ID', ['TO_BRANCH_NAME' => new Expression("(B2.BRANCH_NAME)")], "left");
+
+        $select->where("H.STATUS = 'E'");
 
         if ($fromDate != null) {
             $select->where([
