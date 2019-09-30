@@ -190,7 +190,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <div class="col-sm-2">
                 <?php print $this->formLabel($presentStatus); ?>
                 <?php print $this->formElement($presentStatus); ?>
-            </div> 
+            </div>
+            <div class="col-sm-2">
+                <label>Filter by</label>
+                <select id="presentType">
+                    <option value="A">All</option>
+                    <option value="P">Present now</option>
+                </select>
+            </div>
         </div>
         <div class="row margin-top-10">
             <div class="col-sm-4">

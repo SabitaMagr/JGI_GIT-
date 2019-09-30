@@ -13,14 +13,10 @@
                 'url': document.viewLink
             },
             update: {
-                'ALLOW_UPDATE': document.acl.ALLOW_UPDATE,
-                'params': ["EMPLOYEE_ID"],
-                'url': document.editLink
+                
             },
             delete: {
-                'ALLOW_DELETE': document.acl.ALLOW_DELETE,
-                'params': ["EMPLOYEE_ID"],
-                'url': document.deleteLink
+                
             }
         };
         app.initializeKendoGrid($employeeTable, [
@@ -44,7 +40,7 @@
             {field: "LOCATION_EDESC", title: "Location", width: 150},
             {field: "FUNCTIONAL_TYPE_EDESC", title: "Functional Type", width: 150},
             {field: "FUNCTIONAL_LEVEL_EDESC", title: "Functional Level", width: 150},
-            {field: "EMPLOYEE_ID", title: "Action", width: 120, locked: true, template: app.genKendoActionTemplate(actiontemplateConfig)}
+            {field: "EMPLOYEE_ID", title: "Action", width: 60, locked: true, template: app.genKendoActionTemplate(actiontemplateConfig)}
         ]);
         app.searchTable('employeeTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], false);
   
@@ -146,9 +142,8 @@
 
         $search.on('click', function () {
             var data = document.searchManager.getSearchValues();
-            app.serverRequest(document.pullEmployeeListForEmployeeTableLink, data).then(function (response) {
+            app.serverRequest(document.pullResignedOrRetiredListLink, data).then(function (response) {
                 if (response.success) {
-                    console.log(response);
                     app.renderKendoGrid($employeeTable, response.data);
                 } else {
                     app.showMessage(response.error, 'error');
@@ -158,5 +153,10 @@
             }); 
         });
         
+//        $("#reset").on('click', function () {
+//            $(".form-control").val("");
+//            $("#exparamsId").val("");
+//            document.searchManager.reset();
+//        });
     }); 
 })(window.jQuery, window.app);

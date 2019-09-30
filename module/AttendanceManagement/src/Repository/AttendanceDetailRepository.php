@@ -57,12 +57,13 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filterRecord($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate = null, $toDate = null, $status = null, $presentStatus = null, $min = null, $max = null) {
+    public function filterRecord($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate = null, $toDate = null, $status = null, $presentStatus = null, $min = null, $max = null, $presentType = null) {
         $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId,null, $functionalTypeId);
         $fromDateCondition = "";
         $toDateCondition = "";
         $statusCondition = '';
         $presentStatusCondition = '';
+        $presentTypeCondition = "";
         $rowNums = '';
         if ($fromDate != null) {
             $fromDateCondition = " AND A.ATTENDANCE_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
@@ -122,6 +123,10 @@ class AttendanceDetailRepository implements RepositoryInterface {
         if ($min != null && $max != null) {
             $rowNums = "WHERE (Q.R BETWEEN {$min} AND {$max})"; 
         }
+
+        if($presentType == "P"){
+            $presentTypeCondition = " AND A.IN_TIME IS NOT NULL AND A.OUT_TIME IS NULL ";
+        }
           $orderByString=EntityHelper::getOrderBy('A.ATTENDANCE_DT DESC ,A.IN_TIME ASC','A.ATTENDANCE_DT DESC ,A.IN_TIME ASC','E.SENIORITY_LEVEL','P.LEVEL_NO','E.JOIN_DATE','DES.ORDER_NO','E.FULL_NAME');
         $sql = "
                SELECT ROWNUM AS SN,Q.* FROM (SELECT 
@@ -144,6 +149,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                   A.DAYOFF_FLAG                                    AS DAYOFF_FLAG,
                   A.LATE_STATUS                                    AS LATE_STATUS,
                   COM.COMPANY_NAME                                 AS COMPANY_NAME,
+                  BR.BRANCH_NAME                                   AS BRANCH_NAME, 
                   DEP.DEPARTMENT_NAME                              AS DEPARTMENT_NAME,
                   INITCAP(E.FULL_NAME)                             AS EMPLOYEE_NAME,
                   H.HOLIDAY_ENAME                                  AS HOLIDAY_ENAME,
@@ -223,6 +229,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 ON E.COMPANY_ID=COM.COMPANY_ID
                 LEFT JOIN HRIS_DEPARTMENTS DEP
                 ON E.DEPARTMENT_ID = DEP.DEPARTMENT_ID
+                LEFT JOIN HRIS_BRANCHES BR
+                ON E.BRANCH_ID = BR.BRANCH_ID
                 LEFT JOIN HRIS_POSITIONS P
                 ON E.POSITION_ID=P.POSITION_ID
                 LEFT JOIN HRIS_DESIGNATIONS DES
@@ -243,7 +251,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 ON A.SHIFT_ID=S.SHIFT_ID
                 LEFT JOIN  HRIS_OVERTIME_MANUAL OM
                 ON (OM.ATTENDANCE_DATE=A.ATTENDANCE_DT AND OM.EMPLOYEE_ID=A.EMPLOYEE_ID)
-                WHERE 1=1
+                WHERE 1=1 {$presentTypeCondition} 
                 {$searchConditon}
                 {$fromDateCondition}
                 {$toDateCondition}
@@ -253,8 +261,10 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 ) Q
                 {$rowNums}
                 ";
+
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
+
 
     public function filterRecordCount($employeeId = null, $branchId = null, $departmentId = null, $positionId = null, $designationId = null, $serviceTypeId = null, $serviceEventTypeId = null, $fromDate = null, $toDate = null, $status = null, $companyId = null, $employeeTypeId = null, $widOvertime = false, $missPunchOnly = false) {
         $fromDateCondition = "";

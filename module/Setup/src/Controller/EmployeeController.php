@@ -45,6 +45,17 @@ use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\JsonModel;
+use Zend\Db\Sql\Expression;
+use Setup\Model\Branch;
+use Setup\Model\Company;
+use Setup\Model\Department;
+use Setup\Model\Designation;
+use Setup\Model\FunctionalTypes;
+use Setup\Model\Gender;
+use Setup\Model\Location;
+use Setup\Model\Position;
+use Setup\Model\ServiceEventType;
+use Setup\Model\ServiceType;
 
 class EmployeeController extends HrisController {
 
@@ -1171,6 +1182,71 @@ class EmployeeController extends HrisController {
         }
     }
     
+    public function resignedOrRetiredAction(){
+        return $this->stickFlashMessagesTo([
+                'searchValues' => $this->getSearchDataforResignedOrRetired(),
+                'acl' => $this->acl,
+                'employeeDetail' => $this->storageData['employee_detail'],
+        ]);
+    }
     
+    public function pullResignedOrResignedAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $list = $this->repository->fetchResignedOrRetired($data);
+            return new JsonModel(['success' => true, 'data' => $list, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+    
+    public function getSearchDataforResignedOrRetired(){
+        $employeeWhere = ["RETIRED_FLAG = 'Y' OR RESIGNED_FLAG = 'Y'"];
+        $companyList = ApplicationHelper::getTableList($this->adapter, Company::TABLE_NAME, [Company::COMPANY_ID, Company::COMPANY_NAME], [Company::STATUS => "E"]);
+        $branchList = ApplicationHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID], [Branch::STATUS => "E"],"","BRANCH_NAME ASC");
+        $departmentList = ApplicationHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"],"","DEPARTMENT_NAME ASC");
+        $designationList = ApplicationHelper::getTableList($this->adapter, Designation::TABLE_NAME, [Designation::DESIGNATION_ID, Designation::DESIGNATION_TITLE, Designation::COMPANY_ID], [Designation::STATUS => 'E'],"","DESIGNATION_TITLE ASC");
+        $positionList = ApplicationHelper::getTableList($this->adapter, Position::TABLE_NAME, [Position::POSITION_ID, Position::POSITION_NAME, Position::COMPANY_ID], [Position::STATUS => "E"],"","POSITION_NAME ASC");
+        $serviceTypeList = ApplicationHelper::getTableList($this->adapter, ServiceType::TABLE_NAME, [ServiceType::SERVICE_TYPE_ID, ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => "E"],"","SERVICE_TYPE_NAME ASC");
+        $serviceEventTypeList = ApplicationHelper::getTableList($this->adapter, ServiceEventType::TABLE_NAME, [ServiceEventType::SERVICE_EVENT_TYPE_ID, ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => "E"],"","SERVICE_EVENT_TYPE_NAME ASC");
+        $genderList = ApplicationHelper::getTableList($this->adapter, Gender::TABLE_NAME, [Gender::GENDER_ID, Gender::GENDER_NAME], [Gender::STATUS => "E"]);
+        $locationList = ApplicationHelper::getTableList($this->adapter, Location::TABLE_NAME, [Location::LOCATION_ID, Location::LOCATION_EDESC], [Location::STATUS => "E"]);
+        $functionalTypeList = ApplicationHelper::getTableList($this->adapter, FunctionalTypes::TABLE_NAME, [FunctionalTypes::FUNCTIONAL_TYPE_ID, FunctionalTypes::FUNCTIONAL_TYPE_EDESC], [FunctionalTypes::STATUS=> "E"],"","FUNCTIONAL_TYPE_EDESC ASC");
+        $employeeList = ApplicationHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [
+                    new Expression(HrEmployees::EMPLOYEE_ID." AS ".HrEmployees::EMPLOYEE_ID),
+                    new Expression(HrEmployees::EMPLOYEE_CODE." AS ".HrEmployees::EMPLOYEE_CODE),
+                    new Expression("EMPLOYEE_CODE||'-'||FULL_NAME AS FULL_NAME"),
+                    new Expression(HrEmployees::FULL_NAME." AS FULL_NAME_SCIENTIFIC"),
+                    new Expression(HrEmployees::COMPANY_ID." AS ".HrEmployees::COMPANY_ID),
+                    new Expression(HrEmployees::BRANCH_ID." AS ".HrEmployees::BRANCH_ID),
+                    new Expression(HrEmployees::DEPARTMENT_ID." AS ".HrEmployees::DEPARTMENT_ID),
+                    new Expression(HrEmployees::DESIGNATION_ID." AS ".HrEmployees::DESIGNATION_ID),
+                    new Expression(HrEmployees::POSITION_ID." AS ".HrEmployees::POSITION_ID),
+                    new Expression(HrEmployees::SERVICE_TYPE_ID." AS ".HrEmployees::SERVICE_TYPE_ID),
+                    new Expression(HrEmployees::SERVICE_EVENT_TYPE_ID." AS ".HrEmployees::SERVICE_EVENT_TYPE_ID),
+                    new Expression(HrEmployees::GENDER_ID." AS ".HrEmployees::GENDER_ID),
+                    new Expression(HrEmployees::EMPLOYEE_TYPE." AS ".HrEmployees::EMPLOYEE_TYPE),
+                    new Expression(HrEmployees::GROUP_ID." AS ".HrEmployees::GROUP_ID),
+                    new Expression(HrEmployees::FUNCTIONAL_TYPE_ID." AS ".HrEmployees::FUNCTIONAL_TYPE_ID),
+                        ], $employeeWhere,"","FULL_NAME_SCIENTIFIC ASC");
+
+        $searchValues = [
+            'company' => $companyList,
+            'branch' => $branchList,
+            'department' => $departmentList,
+            'designation' => $designationList,
+            'position' => $positionList,
+            'serviceType' => $serviceTypeList,
+            'serviceEventType' => $serviceEventTypeList,
+            'gender' => $genderList,
+            'employeeType' => [['EMPLOYEE_TYPE_KEY' => 'R', 'EMPLOYEE_TYPE_VALUE' => 'Employee'], ['EMPLOYEE_TYPE_KEY' => 'C', 'EMPLOYEE_TYPE_VALUE' => 'Worker']],
+            'employee' => $employeeList,
+            'location' => $locationList,
+            'functionalType' => $functionalTypeList,
+        ];
+        return $searchValues;
+    }
     
 }

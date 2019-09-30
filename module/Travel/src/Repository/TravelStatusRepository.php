@@ -191,4 +191,17 @@ class TravelStatusRepository extends HrisRepository {
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID) ORDER BY TR.REQUESTED_DATE DESC";
         return $this->rawQuery($sql);
     }
+    
+    public function getSameDateApprovedStatus($employeeId, $fromDate, $toDate) {
+        $sql = "SELECT COUNT(*) as TRAVEL_COUNT
+  FROM HRIS_EMPLOYEE_TRAVEL_REQUEST
+  WHERE (('{$fromDate}' BETWEEN FROM_DATE AND TO_DATE)
+  OR ('{$toDate}' BETWEEN FROM_DATE AND TO_DATE))
+  AND STATUS  IN ('AP','CP','CR')
+  AND EMPLOYEE_ID = $employeeId
+                ";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
+    }
 }

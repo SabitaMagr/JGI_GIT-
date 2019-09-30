@@ -7,6 +7,7 @@
         var $status = $('#statusId');
         var $table = $('#table');
         var $search = $('#search');
+        var $presentType = $("#presentType");
 
         $('select').select2();
         $('#inTime').combodate({
@@ -157,6 +158,8 @@
                 ]},
             {field: "IN_TIME", title: "Check In", template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME # </span>"},
             {field: "OUT_TIME", title: "Check Out", template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME # </span>"},
+            {field: "IN_REMARKS", title: "In Remarks"},
+            {field: "OUT_REMARKS", title: "Out Remarks"},
 //            {field: "SYSTEM_OVERTIME", title: "OT", template: "<span>#: (SYSTEM_OVERTIME == null) ? '-' : SYSTEM_OVERTIME # </span>"},
 //            {field: "MANUAL_OVERTIME", title: "MOT", template: "<span>#: (MANUAL_OVERTIME == null) ? '-' : MANUAL_OVERTIME # </span>"},
             {field: "STATUS", title: "Status", template: "<span>#: (STATUS == null) ? '-' : STATUS # </span>"},
@@ -167,12 +170,14 @@
                 ]}
         ], detailInit, null, null, 'Attendance Report.xlsx');
 
-        $search.on('click', function () {
+        $search.on("click", function () {
+
             var q = document.searchManager.getSearchValues();
             q['fromDate'] = $fromDate.val();
             q['toDate'] = $toDate.val();
             q['status'] = $status.val();
             q['presentStatus'] = $presentStatusId.val();
+            q.presentType = $presentType.val();
             app.serverRequest(document.pullAttendanceWS, q).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($table, response.data);
@@ -192,6 +197,7 @@
         app.searchTable($table, ['EMPLOYEE_NAME', 'EMPLOYEE_CODE']);
         var exportMap = {
             'COMPANY_NAME': ' Company',
+            'BRANCH_NAME': 'Branch',
             'DEPARTMENT_NAME': ' Department',
             'EMPLOYEE_CODE': 'Code',
             'EMPLOYEE_NAME': ' Name',

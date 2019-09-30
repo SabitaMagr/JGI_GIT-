@@ -1248,7 +1248,7 @@ window.app = (function ($, toastr, App) {
                 title: 'Select All',
                 headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
                 template: template,
-                width: 80,
+                width: 40,
                 sortable: false,
                 filterable: false
             };
@@ -1857,6 +1857,51 @@ window.app = (function ($, toastr, App) {
 //        $('.reset-field').change();
         
     };
+    
+    var setLeaveMonth = function ($year, $month, fn, l) {
+        var link = l;
+        if (typeof link === 'undefined') {
+            if (typeof document.getLeaveYearMonthLink === 'undefined') {
+                throw "No link to pull Fiscal years and Months is defined.";
+            } else {
+                link = document.getLeaveYearMonthLink;
+            }
+        }
+
+        var yearList = null;
+        var monthList = null;
+        var currentMonth = null;
+        var selectedYearMonthList = null;
+        serverRequest(link, {}).then(function (response) {
+            if (response.success) {
+                yearList = response.data.years;
+                monthList = response.data.months;
+                currentMonth = response.data.currentMonth;
+                if (typeof fn !== 'undefined') {
+                    fn(yearList, monthList, currentMonth);
+                }
+                populateSelect($year, yearList, 'LEAVE_YEAR_ID', 'LEAVE_YEAR_NAME', 'Leave Years', null, currentMonth['LEAVE_YEAR_ID']);
+                yearOnChange(currentMonth['LEAVE_YEAR_ID']);
+            }
+        }, function (error) {
+
+        });
+
+        $year.on('change', function () {
+            var value = $(this).val();
+            yearOnChange(value);
+        });
+
+        var yearOnChange = function (leaveYearId) {
+            selectedYearMonthList = monthList.filter(function (item) {
+                return item['LEAVE_YEAR_ID'] == leaveYearId;
+            });
+            var currentMonths = selectedYearMonthList.filter(function (item) {
+                return item['MONTH_ID'] == currentMonth['MONTH_ID'];
+            });
+            populateSelect($month, selectedYearMonthList, 'MONTH_ID', 'MONTH_EDESC', 'Months', null, currentMonths.length > 0 ? currentMonth['MONTH_ID'] : null);
+        };
+    };
 
 
 
@@ -1905,6 +1950,7 @@ window.app = (function ($, toastr, App) {
         prependPrefColumns: prependPrefColumns,
         prependPrefExportMap: prependPrefExportMap,
         findOneBy: findOneBy,
-        resetField: resetField
+        resetField: resetField,
+        setLeaveMonth: setLeaveMonth
     };
 })(window.jQuery, window.toastr, window.App);

@@ -245,6 +245,14 @@ END
 AS LEAVE_ENAME,
                   L.LEAVE_CODE,
                   LA.NO_OF_DAYS,
+                  case when L.ALLOW_HALFDAY = 'Y'
+                  then LA.NO_OF_DAYS/2
+                  else LA.NO_OF_DAYS
+                  END as ACTUAL_DAYS,
+                  (CASE WHEN (LA.HALF_DAY IS NULL OR LA.HALF_DAY = 'N') 
+                  THEN 'Full Day' 
+                  WHEN (LA.HALF_DAY = 'F') THEN 'First Half' 
+                  ELSE 'Second Half' END) AS HALF_DAY_DETAIL,
                   INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))     AS START_DATE_AD,
                   BS_DATE(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))     AS START_DATE_BS,
                   INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY'))       AS END_DATE_AD,
@@ -256,7 +264,7 @@ AS LEAVE_ENAME,
                   LA.EMPLOYEE_ID                                     AS EMPLOYEE_ID,
                   INITCAP(TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY')) AS RECOMMENDED_DT,
                   INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY'))    AS APPROVED_DT,
-                  E.EMPLOYEE_CODE AS EMPLOYEE_CODE,                  
+                  E.EMPLOYEE_CODE                                    AS EMPLOYEE_CODE,                  
                   INITCAP(E.FULL_NAME)                               AS FULL_NAME,
                   INITCAP(E1.FULL_NAME)                              AS RECOMMENDED_BY_NAME,
                   INITCAP(E2.FULL_NAME)                              AS APPROVED_BY_NAME,
@@ -309,8 +317,6 @@ JOIN Hris_Employee_Work_Holiday WH ON (LA.WOH_ID=WH.ID)
 LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID)) SLR ON (SLR.ID=LA.SUB_REF_ID)
 LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT
     ON E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID                
-
-
                 WHERE L.STATUS ='E'
                 AND E.STATUS   ='E'
                 {$searchCondition} {$statusCondition} {$leaveCondition} {$fromDateCondition} {$toDateCondition}

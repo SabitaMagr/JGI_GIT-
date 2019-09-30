@@ -45,10 +45,11 @@
                         title: "BS",
                         template: "<span>#: (END_DATE_BS == null) ? '-' : END_DATE_BS #</span>"}]},
             {field: "NO_OF_DAYS", title: "Duration"},
+            {field: "HALF_DAY_DETAIL", title: "Type"},
             {field: "STATUS", title: "Status"},
             {field: "ID", title: "Action", template: `
             <span>                                  
-                <a class="btn  btn-icon-only btn-success" href="${document.viewLink}/#: ID #" style="height:17px;" title="view">
+                <a class="btn  btn-icon-only btn-success" href="${document.viewLink}/#: ID #" style="height:17px; width:13px" title="view">
                 <i class="fa fa-search-plus"></i>
                 </a>
             </span>`}
@@ -128,10 +129,6 @@
             });
         });
         
-//        $("#reset").on("click", function () {
-//            $(".form-control").val("");
-//            document.searchManager.reset();
-//        });
 
     });
 })(window.jQuery, window.app);
