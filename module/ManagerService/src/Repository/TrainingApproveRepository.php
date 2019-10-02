@@ -467,8 +467,9 @@ class TrainingApproveRepository extends HrisRepository {
         $serviceTypeId = $search['serviceTypeId'];
         $serviceEventTypeId = $search['serviceEventTypeId'];
         $status = $search['status'];
+        $functionalTypeId = $search['functionalTypeId'];
         $employeeTypeId = $search['employeeTypeId'];
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, null, null, $functionalTypeId);
         
         $condition = "";
         if (isset($search['fromDate']) && $search['fromDate'] != null) {

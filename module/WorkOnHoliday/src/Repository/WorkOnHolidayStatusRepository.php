@@ -126,13 +126,14 @@ class WorkOnHolidayStatusRepository extends HrisRepository {
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
+        $functionalTypeId = $data['functionalTypeId'];
         $employeeTypeId = $data['employeeTypeId'];
         $holidayId = $data['holidayId'];
         $requestStatusId = $data['requestStatusId'];
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
 
-        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, null, null, $functionalTypeId);
         $statusCondition = '';
         $holidayCondition = '';
         $fromDateCondition = '';
