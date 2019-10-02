@@ -209,7 +209,7 @@ class RecommendApproveRepository implements RepositoryInterface {
 
     public function getFilteredList($search) {
         $condition = "";
-        $condition .= EntityHelper::getSearchConditon($search['companyId'], $search['branchId'], $search['departmentId'], $search['positionId'], $search['designationId'], $search['serviceTypeId'], $search['serviceEventTypeId'], $search['employeeTypeId'], $search['employeeId']);
+        $condition .= EntityHelper::getSearchConditon($search['companyId'], $search['branchId'], $search['departmentId'], $search['positionId'], $search['designationId'], $search['serviceTypeId'], $search['serviceEventTypeId'], $search['employeeTypeId'], $search['employeeId'], null, null, $search['functionalTypeId']);
         if (isset($search['recommenderId']) && $search['recommenderId'] != null && $search['recommenderId'] != -1) {
             if (gettype($search['recommenderId']) === 'array') {
                 $csv = "";
