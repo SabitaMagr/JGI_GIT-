@@ -13,7 +13,7 @@ class TravelStatusRepository extends HrisRepository {
 
     public function getFilteredRecord($search):array {
         $condition = "";
-        $condition = EntityHelper::getSearchConditon($search['companyId'], $search['branchId'], $search['departmentId'], $search['positionId'], $search['designationId'], $search['serviceTypeId'], $search['serviceEventTypeId'], $search['employeeTypeId'], $search['employeeId']);
+        $condition = EntityHelper::getSearchConditon($search['companyId'], $search['branchId'], $search['departmentId'], $search['positionId'], $search['designationId'], $search['serviceTypeId'], $search['serviceEventTypeId'], $search['employeeTypeId'], $search['employeeId'], null, null, $search['functionalTypeId']);
         if (isset($search['fromDate']) && $search['fromDate'] != null) {
             $condition .= " AND TR.FROM_DATE>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";
         }

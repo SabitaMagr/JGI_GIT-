@@ -33,6 +33,39 @@
 
         app.populateSelect($salaryTypeId, data['salaryType'], 'SALARY_TYPE_ID', 'SALARY_TYPE_NAME', null, null, 1);
         
+        var loading_screen = null;
+        var loadingMessage = "Payroll generation started.";
+        var loadingHtml = '<div class="sk-spinner sk-spinner-wandering-cubes"><div class="sk-cube1"></div><div class="sk-cube2"></div></div>';
+        var $pleaseWaitOptions = $('#please-wait-options');
+        var $cancelBtn = $('#cancelBtn');
+        var $pauseBtn = $('#pauseBtn');
+        var updateLoadingHtml = function () {
+            loading_screen.updateOptions({
+                loadingHtml: "<p class='loading-message'>" + loadingMessage + "</p>" + loadingHtml
+            });
+        };
+        $pleaseWaitOptions.hide();
+        $cancelBtn.on('click', function () {
+            loading_screen.finish();
+            $pleaseWaitOptions.hide();
+        });
+        $pauseBtn.on('click', function () {
+            var $this = $(this);
+            var action = $this.attr('action');
+            switch (action) {
+                case 'pause':
+                    payrollProcess.pause();
+                    $this.attr('action', "play");
+                    $this.html("Play");
+                    break;
+                case 'play':
+                    payrollProcess.play();
+                    $this.attr('action', "pause");
+                    $this.html("Pause");
+                    break;
+            }
+        });
+        
         (function ($companyId, link) {
             var onDataLoad = function (data) {
                 companyList = data['company'];
@@ -132,6 +165,11 @@
             {field: "MONTH_EDESC", title: "Month", width: 130},
             {field: "SALARY_TYPE_NAME", title: "Salary Type", width: 130},
             {field: "GROUP_NAME", title: "Group", width: 130},
+            {field: ["SHEET_NO"],
+            title: "Action",
+            width: 50,
+            template: `<a class="btn-edit hris-regenerate-salarysheet-sheetWise" title="Regenerate" sheet-no="#: SHEET_NO #"  style="height:17px;"> <i class="fa fa-recycle"></i></a>`
+            }
         ], null, {id: "SHEET_NO", atLast: false, fn: function (selected) {
                 if (selected) {
                     $bulkActionDiv.show();
@@ -319,6 +357,98 @@
 
             });
         });
+        
+        
+        $('#sheetTable').on('click', '.hris-regenerate-salarysheet-sheetWise', function () {
+            var $this = $(this);
+//            var employeeId = $this.attr('employee-id');
+            var sheetNo = $this.attr('sheet-no');
+//            console.log(sheetNo);
+            app.pullDataById(document.getEmployeeSheetWise, {
+                sheetNo: sheetNo,
+            }).then(function (response) {
+                console.log(response);
+//                $viewBtn.trigger('click');
+
+
+//$.each(response.data, function( index, value ) {
+////console.log(index,value);
+//
+//app.pullDataById(regenEmpSalSheLink, {
+//                employeeId: value.EMPLOYEE_ID,
+//                monthId: value.MONTH_ID,
+//                sheetNo: value.SHEET_NO,
+////                sheetNo: value.,
+//            }).then(function (response) {
+////                $viewBtn.trigger('click');
+//            }, function (error) {
+//
+//            });
+//
+//
+//});
+
+
+ payrollProcess = (function (dataList) {
+                    var play = true;
+                    var counter = 0;
+                    var length = dataList.length;
+                    var recursionFn = function (data) {
+                        app.pullDataById(regenEmpSalSheLink, {
+                            employeeId: data.EMPLOYEE_ID,
+                            monthId: data.MONTH_ID,
+                            sheetNo: data.SHEET_NO,
+                        }).then(function (response) {
+                            var empCount = counter + 1;
+                            loadingMessage = `Generating ${empCount} of ${length}`;
+                            updateLoadingHtml();
+                            counter++;
+                            if (!response.success) {
+                                console.log('sdfdsf');
+//                                stage2Error(data, response.error);
+                            }
+                            if (counter >= length) {
+                                loading_screen.finish();
+                                $pleaseWaitOptions.hide();
+//                                stage3();
+                                groupChangeFn();
+                                return;
+                            }
+                            if (play) {
+                                recursionFn(dataList[counter]);
+                            }
+                        }, function (error) {
+                            stage2Error(data, error);
+                        });
+                    };
+                    loading_screen = pleaseWait({
+                        logo: loadingLogoLink,
+                        backgroundColor: '#f46d3b',
+                        loadingHtml: "<p class='loading-message'>" + loadingMessage + "</p>" + loadingHtml
+                    });
+                    $pleaseWaitOptions.show();
+                    recursionFn(dataList[counter]);
+                    return {
+                        pause: function () {
+                            play = false;
+                        },
+                        play: function () {
+                            play = true;
+                            recursionFn(dataList[counter]);
+                        }
+                    }
+                })(response.data);
+
+
+
+
+
+            }, function (error) {
+
+            });
+        });
+        
+        
     });
 })(window.jQuery, window.app);
 

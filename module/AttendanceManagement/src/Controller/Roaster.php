@@ -83,9 +83,13 @@ class Roaster extends HrisController {
         $data['pvmReadLink'] = $this->url()->fromRoute('roaster', ['action' => 'weeklyRoster']);
         $data['pvmUpdateLink'] = $this->url()->fromRoute('roaster', ['action' => 'assignWeeklyRoster']);
         
+        $shfitList=EntityHelper::getTableList($this->adapter, ShiftSetup::TABLE_NAME, [ShiftSetup::SHIFT_ID, ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => EntityHelper::STATUS_ENABLED]);
+        
+        array_unshift($shfitList,array('SHIFT_ID' => -1,'SHIFT_ENAME' => 'selectShift'));
+        
         return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'shifts' => EntityHelper::getTableList($this->adapter, ShiftSetup::TABLE_NAME, [ShiftSetup::SHIFT_ID, ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => EntityHelper::STATUS_ENABLED]),
+                    'shifts' => $shfitList,
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail'],
                     'data' => json_encode($data)

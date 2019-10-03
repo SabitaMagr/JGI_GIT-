@@ -66,7 +66,7 @@ class JobHistoryRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId = null, $companyId = null, $branchId = null, $departmentId = null, $designationId = null, $positionId = null, $serviceTypeId = null, $employeeTypeId = null) {
+    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId = null, $companyId = null, $branchId = null, $departmentId = null, $designationId = null, $positionId = null, $serviceTypeId = null, $employeeTypeId = null, $functionalTypeId = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -86,7 +86,8 @@ class JobHistoryRepository implements RepositoryInterface {
                 ->join(['P2' => 'HRIS_POSITIONS'], 'P2.POSITION_ID=H.TO_POSITION_ID', ['TO_POSITION_NAME' => new Expression("(P2.POSITION_NAME)")], "left")
                 ->join(['D2' => 'HRIS_DESIGNATIONS'], 'D2.DESIGNATION_ID=H.TO_DESIGNATION_ID', ['TO_DESIGNATION_TITLE' => new Expression("(D2.DESIGNATION_TITLE)")], "left")
                 ->join(['DES2' => 'HRIS_DEPARTMENTS'], 'DES2.DEPARTMENT_ID=H.TO_DEPARTMENT_ID', ['TO_DEPARTMENT_NAME' => new Expression("(DES2.DEPARTMENT_NAME)")], "left")
-                ->join(['B2' => 'HRIS_BRANCHES'], 'B2.BRANCH_ID=H.TO_BRANCH_ID', ['TO_BRANCH_NAME' => new Expression("(B2.BRANCH_NAME)")], "left");
+                ->join(['B2' => 'HRIS_BRANCHES'], 'B2.BRANCH_ID=H.TO_BRANCH_ID', ['TO_BRANCH_NAME' => new Expression("(B2.BRANCH_NAME)")], "left")
+                ->join(['F2' => 'hris_functional_types'], 'F2.functional_type_id=E.functional_type_id', ['functional_type_edesc' => new Expression("(F2.functional_type_edesc)")], "left");
 
         $select->where("H.STATUS = 'E'");
 
@@ -158,6 +159,11 @@ class JobHistoryRepository implements RepositoryInterface {
         if ($serviceTypeId != null && $serviceTypeId != -1) {
             $select->where([
                 EntityHelper::conditionBuilder($serviceTypeId, "E.SERVICE_TYPE_ID", "")
+            ]);
+        }
+        if ($functionalTypeId != null && $functionalTypeId != -1) {
+            $select->where([
+                EntityHelper::conditionBuilder($functionalTypeId, "E.functional_type_id", "")
             ]);
         }
         $select->order("E.FIRST_NAME,H.START_DATE ASC");
