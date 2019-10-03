@@ -177,7 +177,7 @@
             {field: "MONTH_EDESC", title: "Month", width: 130},
             {field: "SALARY_TYPE_NAME", title: "Salary Type", width: 130},
             {field: "GROUP_NAME", title: "Group", width: 130},
-            {field: ["SHEET_NO"], title: "Action", width: 100,template: app.genKendoActionTemplate(actiontemplateConfigSheet)}
+//            {field: ["SHEET_NO"], title: "Action", width: 100,template: app.genKendoActionTemplate(actiontemplateConfigSheet)}
         ]);
         
         
