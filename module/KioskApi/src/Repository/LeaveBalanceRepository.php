@@ -5,7 +5,7 @@ namespace KioskApi\Repository;
 use Zend\Db\Adapter\AdapterInterface;
 use Application\Helper\Helper;
 
-cLAss LeaveBaLAnceRepository {
+class LeaveBalanceRepository {
 
     private $adapter;
 

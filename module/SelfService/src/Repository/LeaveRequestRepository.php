@@ -144,14 +144,19 @@ class LeaveRequestRepository implements RepositoryInterface {
     }
 
     //to get the leave list based on assigned employee id for select option
-    public function getLeaveList($employeeId) {
+    public function getLeaveList($employeeId, $fromSelf='Y') {
+        $hrOnlyCondition = "1=1";
+        if($fromSelf == 'Y'){
+            $hrOnlyCondition = "L.HR_ONLY = 'N'";
+        }
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['LA' => LeaveAssign::TABLE_NAME])
                 ->join(['L' => 'HRIS_LEAVE_MASTER_SETUP'], "L.LEAVE_ID=LA.LEAVE_ID", ['LEAVE_CODE', 'LEAVE_ENAME' => new Expression("INITCAP(L.LEAVE_ENAME)")]);
         $select->where([
             "L.STATUS='E'",
-            "LA.EMPLOYEE_ID=" . $employeeId
+            "LA.EMPLOYEE_ID=" . $employeeId,
+            $hrOnlyCondition
         ]);
 
         $statement = $sql->prepareStatementForSqlObject($select);

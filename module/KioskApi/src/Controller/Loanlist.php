@@ -19,7 +19,7 @@ class Loanlist extends AbstractActionController {
     }
 
     public function indexAction() {
-        
+
     }
 
     public function statusAction() {
@@ -44,7 +44,7 @@ class Loanlist extends AbstractActionController {
                 default:
                     throw new Exception('the request is unknown');
             }
-            return new JsonModel(['success' => true, 'data' => $responseData, 'message' => $requestType ]);
+            return new JsonModel(['success' => true, 'data' => $responseData, 'message' => $requestType]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => $responseData, 'message' => $e->getMessage()]);
         }
