@@ -232,7 +232,7 @@ class FlatValue extends HrisController {
                             $data['flatId'] = $importDetails['E'];
                             $data['flatValue'] = $importDetails['F'];
 
-                            if ($data['flatValue']) {
+                            if ($data['employeeId']) {
                                 $detailRepo->postFlatValuesDetail($data);
                             }
                         }
