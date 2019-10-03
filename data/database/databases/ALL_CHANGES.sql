@@ -1525,14 +1525,15 @@ CREATE TABLE HRIS_BEST_CASE_EMP_MAP
 );
 -- FOR BESTCASE SHIFT SETUP END
 
+alter table hris_employee_shifts add case_id number CONSTRAINT fk_case_emp REFERENCES hris_best_case_setup(case_id);
 
-ALTER TABLE HRIS_ROLES 
+
+ALTER TABLE HRIS_ROLES
 ADD HR_APPROVE CHAR(1 BYTE) DEFAULT 'N';
 
-ALTER TABLE HRIS_ROLES 
+ALTER TABLE HRIS_ROLES
 ADD HR_CANCEL CHAR(1 BYTE) DEFAULT 'N';
 
-alter table hris_employee_shifts add case_id number CONSTRAINT fk_case_emp REFERENCES hris_best_case_setup(case_id);
 
 ------START SOALTEE KIOSK API------
 CREATE TABLE HRIS_KIOSK_PRINT_STAT
