@@ -4,13 +4,13 @@ create or replace FUNCTION HRIS_BEST_CASE_SHIFT(
   RETURN NUMBER
 AS
   V_SHIFT_ID HRIS_SHIFTS.SHIFT_ID%TYPE;
-  V_IN_TIME           TIMESTAMP;
-  V_SHIFT_IN_TIME     TIMESTAMP;
+  V_IN_TIME           DATE;
+  V_SHIFT_IN_TIME     DATE;
   V_IN_TIME_DIFF      NUMBER;
   V_IN_TIME_DIFF_MIN  NUMBER;
   V_MIN_IN_TIME       NUMBER;
-  V_OUT_TIME          TIMESTAMP;
-  V_SHIFT_OUT_TIME    TIMESTAMP;
+  V_OUT_TIME          DATE;
+  V_SHIFT_OUT_TIME    DATE;
   V_OUT_TIME_DIFF     NUMBER;
   V_OUT_TIME_DIFF_MIN NUMBER;
   V_MIN_IN_OUT_TIME   NUMBER;
@@ -30,8 +30,8 @@ V_IN_TIME_MIN,
 V_OUT_TIME_MAX
   FROM DUAL;
 
-  SELECT MIN(ATTENDANCE_TIME) AS IN_TIME,
-    MAX(ATTENDANCE_TIME)      AS OUT_TIME
+  SELECT MIN(TO_DATE(TO_CHAR(ATTENDANCE_TIME,'HH:MI AM'),'HH:MI AM')) AS IN_TIME,
+    MAX(TO_DATE(TO_CHAR(ATTENDANCE_TIME,'HH:MI AM'),'HH:MI AM'))      AS OUT_TIME
   INTO V_IN_TIME,
     V_OUT_TIME
   FROM HRIS_ATTENDANCE
@@ -43,7 +43,7 @@ V_OUT_TIME_MAX
   -- TO CHECK IN OUT ACCOURDING TO IN DEVICE AND OUT DEVICE START
 
   select 
-  MIN(ATTENDANCE_TIME)
+  MIN(TO_DATE(TO_CHAR(A.ATTENDANCE_TIME,'HH:MI AM'),'HH:MI AM'))
   INTO V_IN_TIME_IN
   FROM HRIS_ATTENDANCE a
 left join HRIS_ATTD_DEVICE_MASTER adm on (adm.device_ip=a.ip_address) 
@@ -52,18 +52,17 @@ left join HRIS_ATTD_DEVICE_MASTER adm on (adm.device_ip=a.ip_address)
   AND ATTENDANCE_DT = P_ATTENDANCE_DT;
 
   IF V_IN_TIME_MIN IS NOT NULL THEN
-   V_IN_TIME:=V_IN_TIME_IN;
 
   select 
 EXTRACT (HOUR FROM (V_IN_TIME_IN-V_IN_TIME_MIN))*60+
 EXTRACT (MINUTE FROM (V_IN_TIME_IN-V_IN_TIME_MIN)) 
 INTO V_IN_TIME_CHECK
   FROM DUAL;
-
-    if V_IN_TIME_CHECK > 0
+  
+  if V_IN_TIME_CHECK > 0
   then
 select 
-  MAX(ATTENDANCE_TIME)
+  MAX(TO_DATE(TO_CHAR(A.ATTENDANCE_TIME,'HH:MI AM'),'HH:MI AM'))
   INTO V_OUT_TIME_OUT
   FROM HRIS_ATTENDANCE a
 left join HRIS_ATTD_DEVICE_MASTER adm on (adm.device_ip=a.ip_address) 
@@ -71,30 +70,13 @@ left join HRIS_ATTD_DEVICE_MASTER adm on (adm.device_ip=a.ip_address)
   and adm.PURPOSE='OUT'
   AND A.ATTENDANCE_TIME > V_IN_TIME_MIN
   and A.ATTENDANCE_TIME < V_OUT_TIME_MAX;
-
-  else
-  select 
-  MAX(ATTENDANCE_TIME)
-  INTO V_OUT_TIME_OUT
-  FROM HRIS_ATTENDANCE a
-left join HRIS_ATTD_DEVICE_MASTER adm on (adm.device_ip=a.ip_address) 
-  WHERE EMPLOYEE_ID =P_EMPLOYEE_ID
-  and adm.PURPOSE='OUT'
-  AND A.ATTENDANCE_TIME > V_IN_TIME_IN
-  AND A.ATTENDANCE_TIME < trunc(P_ATTENDANCE_DT+1);
-
-
+   
+  
   end if;
-
-  if V_OUT_TIME_OUT is not null
-  then
-   V_OUT_TIME:=V_OUT_TIME_OUT;
-
-  end if;
-
-  --  V_IN_TIME:=V_IN_TIME_IN;
-  --  V_OUT_TIME:=V_OUT_TIME_OUT;
-
+  
+    V_IN_TIME:=V_IN_TIME_IN;
+    V_OUT_TIME:=V_OUT_TIME_OUT;
+ 
 
 
   END IF;
@@ -117,9 +99,10 @@ left join HRIS_ATTD_DEVICE_MASTER adm on (adm.device_ip=a.ip_address)
   AND S.STATUS ='E'
   )
   LOOP
-  V_SHIFT_IN_TIME := TO_timestamp(TO_CHAR(P_ATTENDANCE_DT,'DD-MON-YYYY')||TO_CHAR(shift.START_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM');
-    V_IN_TIME_DIFF     :=ABS(cast(V_SHIFT_IN_TIME as date)-cast(V_IN_TIME as date));
-    V_IN_TIME_DIFF_MIN :=V_IN_TIME_DIFF*24*60;
+    V_SHIFT_IN_TIME    := shift.START_TIME+(.000694*NVL(shift.LATE_IN,0));
+    V_SHIFT_IN_TIME    :=TO_DATE(TO_CHAR(V_SHIFT_IN_TIME,'HH:MI AM'),'HH:MI AM');
+    V_IN_TIME_DIFF     :=ABS(V_SHIFT_IN_TIME-V_IN_TIME);
+    V_IN_TIME_DIFF_MIN :=V_IN_TIME_DIFF     *24*60;
     --
     IF(V_IN_TIME          = V_OUT_TIME) THEN
       IF V_MIN_IN_TIME   IS NULL THEN
@@ -132,17 +115,10 @@ left join HRIS_ATTD_DEVICE_MASTER adm on (adm.device_ip=a.ip_address)
       CONTINUE;
     END IF;
     --
-
-    if(V_IN_TIME_CHECK > 0)
-    then
-     V_SHIFT_OUT_TIME                       := TO_timestamp(TO_CHAR(P_ATTENDANCE_DT+1,'DD-MON-YYYY')||TO_CHAR(shift.END_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM');
-    else
-     V_SHIFT_OUT_TIME                       := TO_timestamp(TO_CHAR(P_ATTENDANCE_DT,'DD-MON-YYYY')||TO_CHAR(shift.END_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM');
-    end if;
-
-
-    V_OUT_TIME_DIFF     :=ABS(cast(V_SHIFT_OUT_TIME as date)-cast(V_OUT_TIME as date));
-    V_OUT_TIME_DIFF_MIN                    := V_OUT_TIME_DIFF*24*60;
+    V_SHIFT_OUT_TIME                       := shift.END_TIME-(.000694*NVL(shift.EARLY_OUT,0));
+    V_SHIFT_OUT_TIME                       :=TO_DATE(TO_CHAR(V_SHIFT_OUT_TIME,'HH:MI AM'),'HH:MI AM');
+    V_OUT_TIME_DIFF                        :=ABS(V_SHIFT_OUT_TIME-V_OUT_TIME);
+    V_OUT_TIME_DIFF_MIN                    := V_OUT_TIME_DIFF    *24*60;
     IF(V_MIN_IN_OUT_TIME                   IS NULL ) THEN
       V_MIN_IN_OUT_TIME                    :=V_IN_TIME_DIFF+V_OUT_TIME_DIFF;
       V_SHIFT_ID                           :=shift.SHIFT_ID;

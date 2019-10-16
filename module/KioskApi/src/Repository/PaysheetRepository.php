@@ -15,12 +15,29 @@ class PaysheetRepository {
 
     public function fetchPaysheet($employeeId) {
         $sql = "
-           select * from HRIS_SALARY_SHEET_EMP_DETAIL
-           where employee_id = {$employeeId}
-               and end_date = (select max(end_date) from HRIS_SALARY_SHEET_EMP_DETAIL
-                                    where employee_id={$employeeId}) AND ROWNUM = 1
+           SELECT TS.*,
+P.PAY_TYPE_FLAG,
+P.PAY_EDESC
+FROM HRIS_SALARY_SHEET_DETAIL TS
+LEFT JOIN HRIS_PAY_SETUP P
+ON (TS.PAY_ID =P.PAY_ID)
+WHERE P.INCLUDE_IN_SALARY='Y' AND TS.VAL >0
+AND TS.SHEET_NO IN
+(SELECT SHEET_NO FROM HRIS_SALARY_SHEET WHERE MONTH_ID =13
+AND SALARY_TYPE_ID=1
+)
+AND EMPLOYEE_ID ={$employeeId} ORDER BY P.PRIORITY_INDEX
             ";
-            
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function fetchEmployeeDetail($employeeId) {
+        $sql = "
+            select * from HRIS_SALARY_SHEET_EMP_DETAIL where EMPLOYEE_ID = {$employeeId} and MONTH_ID = 13
+            ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);

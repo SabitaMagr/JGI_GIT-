@@ -233,11 +233,8 @@ class TravelStatus extends HrisController {
     private function makeDecision($id, $approve, $remarks = null, $enableFlashNotification = false) {
 
         $detail = $this->travelApproveRepository->fetchById($id);
+
         if ($detail['STATUS'] == 'RQ' || $detail['STATUS'] == 'RC') {
-            $checkSameDateApproved = $this->travelStatusRepository->getSameDateApprovedStatus($detail['EMPLOYEE_ID'], $detail['START_DATE'], $detail['END_DATE']);
-            if ($checkSameDateApproved['LEAVE_COUNT'] > 0 && $approve) {
-                throw new Exception('Travel Overlap Detected');
-            }
             $model = new TravelRequest();
             $model->travelId = $id;
             $model->recommendedDate = Helper::getcurrentExpressionDate();
