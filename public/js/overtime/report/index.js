@@ -47,7 +47,7 @@
             app.serverRequest('', q).then(function (response) {
                 var columnList = response.data;
                 columns = [
-                    {field: 'EMPLOYEE_CODE', title: 'Code', width: 150, locked: true},
+                    {field: 'EMPLOYEE_CODE', title: 'Code', width: 70, locked: true},
                     {field: 'FULL_NAME', title: 'Employee', width: 150, locked: true}
                 ];
                 exportMap = [{'EMPLOYEE_CODE': "Code"}, {'FULL_NAME': "Employee"}];
@@ -60,6 +60,11 @@
                     fields[v['MONTH_DAY_FIELD']] = {type: "number"};
                     exportMap[v['MONTH_DAY_FIELD']] = v['MONTH_DAY_TITLE'];
                 });
+
+                columns.push({field: 'ADDITION', title: 'Addition', width: 90});
+                columns.push({field: 'DEDUCTION', title: 'Deduction', width: 90});
+                exportMap.push({'ADDITION':'Addition'},
+                    {'DEDUCTION': 'Deduction'});
 
                 fn(getkendoConfig(columns, fields));
 

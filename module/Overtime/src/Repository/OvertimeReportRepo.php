@@ -88,7 +88,7 @@ class OvertimeReportRepo extends HrisRepository {
         $searchConditon = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId']);
 
         if ($calenderType == 'E') {
-            $sql = "SELECT *
+            $sql = "Select SS.*,AD.ADDITION, AD.DEDUCTION from (SELECT *
                 FROM
                   (SELECT AD.EMPLOYEE_ID, E.EMPLOYEE_CODE AS EMPLOYEE_CODE,
                     E.FULL_NAME,
@@ -110,9 +110,10 @@ class OvertimeReportRepo extends HrisRepository {
                   ON (AD.EMPLOYEE_ID                         =E.EMPLOYEE_ID)
                   WHERE 1=1 
                   {$searchConditon}
-                  ) PIVOT (MAX(OVERTIME_HOUR) FOR MONTH_DAY IN ({$pivotIn}))";
+                  ) PIVOT (MAX(OVERTIME_HOUR) FOR MONTH_DAY IN ({$pivotIn}))) SS left join HRIS_OVERTIME_A_D AD
+ on SS.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = {$monthId}";
         } else {
-            $sql = "SELECT *
+            $sql = "Select SS.*,AD.ADDITION, AD.DEDUCTION from (SELECT *
                 FROM
                   (SELECT AD.EMPLOYEE_ID, E.EMPLOYEE_CODE AS EMPLOYEE_CODE,
                     E.FULL_NAME,
@@ -134,20 +135,69 @@ class OvertimeReportRepo extends HrisRepository {
                   ON (AD.EMPLOYEE_ID                         =E.EMPLOYEE_ID)
                   WHERE 1=1 
                   {$searchConditon}
-                  ) PIVOT (MAX(OVERTIME_HOUR) FOR MONTH_DAY IN ({$pivotIn}))";
+                  ) PIVOT (MAX(OVERTIME_HOUR) FOR MONTH_DAY IN ({$pivotIn}))) SS left join HRIS_OVERTIME_A_D AD
+ on SS.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = {$monthId}";
         }
+
         return $this->rawQuery($sql);
     }
 
-    public function bulkEdit($data) {
+    public function bulkEdit($data,$addDed) {
         foreach ($data as $value) {
             $this->createOrUpdate($value['MONTH_ID'], $value['MONTH_DAY'], $value['EMPLOYEE_ID'], $value['OVERTIME_HOUR']);
+        }
+
+        foreach ($addDed as $value){
+            $this->addAndDeduct($value['EMPLOYEE_ID'],$value['MONTH_ID'],$value['ADDITION'],$value['DEDUCTION']);
         }
     }
 
     private function createOrUpdate($m, $d, $e, $h) {
         $hour = $h == null ? 'NULL' : $h;
         $sql = "BEGIN HRIS_OT_MANUAL_CR_OR_UP({$m},{$d},{$e},{$hour}); END;";
+        $this->executeStatement($sql);
+    }
+
+    private function addAndDeduct($e,$m,$a,$d){
+
+        $aCondition = $a==null?'null':$a;
+        $dCondition = $d==null?'null':$d;
+        $sql = "DECLARE
+            P_MONTH_ID NUMBER := {$m};
+            P_EMPLOYEE_ID NUMBER := {$e};
+            P_ADDITION HRIS_OVERTIME_A_D.ADDITION%type:= {$aCondition};
+            P_DEDUCTION HRIS_OVERTIME_A_D.DEDUCTION%type:= {$dCondition};
+            V_ROW_COUNT NUMBER;
+        BEGIN
+          SELECT COUNT(*)
+          INTO V_ROW_COUNT
+          FROM HRIS_OVERTIME_A_D
+          WHERE MONTH_ID = P_MONTH_ID
+          AND EMPLOYEE_ID       = P_EMPLOYEE_ID;
+          IF (V_ROW_COUNT       >0 ) THEN
+            UPDATE HRIS_OVERTIME_A_D
+            SET ADDITION     = P_ADDITION, DEDUCTION = P_DEDUCTION
+            WHERE MONTH_ID = P_MONTH_ID 
+            AND EMPLOYEE_ID       = P_EMPLOYEE_ID ;
+          ELSE
+            INSERT
+            INTO HRIS_OVERTIME_A_D
+              (
+                EMPLOYEE_ID,
+                MONTH_ID,
+                ADDITION,
+                DEDUCTION
+              )
+              VALUES
+              (
+                P_EMPLOYEE_ID,
+                P_MONTH_ID,
+                P_ADDITION,
+                P_DEDUCTION
+              );
+          END IF;
+        END;";
+
         $this->executeStatement($sql);
     }
 

@@ -59,11 +59,14 @@ class OvertimeReport extends HrisController {
         $data = json_decode($postData->models);
 
         $dataToUpdate = [];
+        $addDedData = [];
         foreach ($data as $value) {
             $item = (array) $value;
-            $common = ['EMPLOYEE_ID' => $item['EMPLOYEE_ID'], 'MONTH_ID' => $monthId];
+            $common = ['EMPLOYEE_ID' => $item['EMPLOYEE_ID'], 'MONTH_ID' => $monthId,'ADDITION' => $item['ADDITION'], 'DEDUCTION' => $item['DEDUCTION']];
+            array_push($addDedData,$common);
+
             foreach ($item as $k => $v) {
-                if (!in_array($k, ['EMPLOYEE_CODE', 'EMPLOYEE_ID', 'FULL_NAME', 'MONTH_ID'])) {
+                if (!in_array($k, ['EMPLOYEE_CODE', 'EMPLOYEE_ID', 'FULL_NAME', 'MONTH_ID','ADDITION','DEDUCTION'])) {
 //                    if ($v != null) {
                     $monthDay = str_replace('D_', '', $k);
                     $dataUnit = array_merge($common, []);
@@ -74,7 +77,7 @@ class OvertimeReport extends HrisController {
                 }
             }
         }
-        $this->repository->bulkEdit($dataToUpdate);
+        $this->repository->bulkEdit($dataToUpdate,$addDedData);
         return new JsonModel($data);
     }
 

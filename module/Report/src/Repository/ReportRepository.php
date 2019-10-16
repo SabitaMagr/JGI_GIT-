@@ -774,7 +774,7 @@ EOT;
             $otToCondition = "AND OVERTIME_DATE <= {$toDate->getExpression()} ";
         }
 
-
+        $monthId = $data['monthId'];
 
         $sql = <<<EOT
             SELECT C.COMPANY_NAME,
@@ -793,7 +793,9 @@ EOT;
               A.TRAVEL,
               A.TRAINING,
               A.WORK_ON_HOLIDAY,
-              A.WORK_ON_DAYOFF
+              A.WORK_ON_DAYOFF,
+              AD.ADDITION,
+              AD.DEDUCTION
             FROM
               (SELECT A.EMPLOYEE_ID,
                 SUM(
@@ -923,6 +925,8 @@ GROUP BY
             ON(E.COMPANY_ID= C.COMPANY_ID)
             LEFT JOIN HRIS_DEPARTMENTS D
             ON (E.DEPARTMENT_ID= D.DEPARTMENT_ID)
+            LEFT JOIN HRIS_OVERTIME_A_D AD
+            ON (A.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = {$monthId})
             WHERE 1            =1 {$condition}
             ORDER BY C.COMPANY_NAME,
               D.DEPARTMENT_NAME,
@@ -1778,7 +1782,7 @@ FROM
             $otToCondition = "AND OVERTIME_DATE <= {$toDate->getExpression()} ";
         }
 
-
+        $monthId = $data['monthId'];
 
         $sql = <<<EOT
             SELECT C.COMPANY_NAME,
@@ -1800,7 +1804,9 @@ FROM
               A.WORK_ON_DAYOFF,
               A.NIGHT_SHIFT_6,
               A.NIGHT_SHIFT_8,
-              A.C_SHIFT
+              A.C_SHIFT,
+              AD.ADDITION,
+              AD.DEDUCTION
             FROM
               (SELECT A.EMPLOYEE_ID,
                 SUM(
@@ -1948,6 +1954,8 @@ GROUP BY
             ON(E.COMPANY_ID= C.COMPANY_ID)
             LEFT JOIN HRIS_DEPARTMENTS D
             ON (E.DEPARTMENT_ID= D.DEPARTMENT_ID)
+            LEFT JOIN HRIS_OVERTIME_A_D AD
+            ON (A.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = {$monthId})
             WHERE 1 = 1 {$condition}
             ORDER BY C.COMPANY_NAME,
               D.DEPARTMENT_NAME,
