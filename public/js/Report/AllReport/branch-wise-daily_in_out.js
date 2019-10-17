@@ -160,7 +160,7 @@
 
                             } else {
                                 data = JSON.parse(data);
-                                if (data.IS_PRESENT == 1) {
+                                if (data.IS_PRESENT == 1 || data.IN_TIME != null) {
                                     $group.html(((data.IN_TIME == null) ? '-' : data.IN_TIME) + '</br>' + ((data.OUT_TIME == null) ? '-' : data.OUT_TIME) + '</br>' + ((data.TOTAL_HOUR == null) ? '-' : data.TOTAL_HOUR));
                                     $group.parent().addClass('bg-success text-center');
                                 } else {

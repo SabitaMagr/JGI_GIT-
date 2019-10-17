@@ -35,6 +35,7 @@ AS
   V_HALF_INTERVAL      DATE;
   v_NEXT_HALF_INTERVAL DATE;
   v_training_id          number;
+  v_roaster_shift_id number;
 BEGIN
   IF P_TO_ATTENDANCE_DT IS NOT NULL THEN
     V_TO_ATTENDANCE_DT  :=P_TO_ATTENDANCE_DT;
@@ -88,13 +89,26 @@ BEGIN
       V_TWO_DAY_SHIFT  := employee.TWO_DAY_SHIFT;
       V_IGNORE_TIME    :=employee.IGNORE_TIME;
       V_SHIFT_ID       := employee.SHIFT_ID;
+      v_roaster_shift_id := null;
+      
+      begin
+      select CASE when  shift_id > 0 then shift_id else null end into v_roaster_shift_id
+      from HRIS_EMPLOYEE_SHIFT_ROASTER where employee_id=employee.EMPLOYEE_ID and FOR_DATE=employee.ATTENDANCE_DT;
+      EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+          null;
+        END;
+      
       --
       DELETE
       FROM HRIS_ATTENDANCE_DETAIL
       WHERE ATTENDANCE_DT= TRUNC(employee.ATTENDANCE_DT)
       AND EMPLOYEE_ID    = employee.EMPLOYEE_ID ;
       --
+      if(v_roaster_shift_id is null)then
       V_SHIFT_ID    :=HRIS_BEST_CASE_SHIFT(employee.EMPLOYEE_ID,TRUNC(employee.ATTENDANCE_DT));
+      end if;
+      
       IF(V_SHIFT_ID IS NULL)THEN
         V_SHIFT_ID  :=employee.SHIFT_ID;
       ELSE

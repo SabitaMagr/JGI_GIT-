@@ -85,7 +85,7 @@ class Roaster extends HrisController {
         
         $shfitList=EntityHelper::getTableList($this->adapter, ShiftSetup::TABLE_NAME, [ShiftSetup::SHIFT_ID, ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => EntityHelper::STATUS_ENABLED]);
         
-        array_unshift($shfitList,array('SHIFT_ID' => -1,'SHIFT_ENAME' => 'selectShift'));
+        array_unshift($shfitList,array('SHIFT_ID' => -1,'SHIFT_ENAME' => 'select shift'));
         
         return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
