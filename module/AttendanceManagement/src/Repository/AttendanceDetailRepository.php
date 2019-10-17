@@ -149,7 +149,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
                   A.DAYOFF_FLAG                                    AS DAYOFF_FLAG,
                   A.LATE_STATUS                                    AS LATE_STATUS,
                   COM.COMPANY_NAME                                 AS COMPANY_NAME,
-                  BR.BRANCH_NAME                                   AS BRANCH_NAME, 
+                  HRIS_GET_BRANCH_JH(A.EMPLOYEE_ID,A.ATTENDANCE_DT,BR.BRANCH_ID)
+                   AS BRANCH_NAME, 
                   DEP.DEPARTMENT_NAME                              AS DEPARTMENT_NAME,
                   INITCAP(E.FULL_NAME)                             AS EMPLOYEE_NAME,
                   H.HOLIDAY_ENAME                                  AS HOLIDAY_ENAME,
