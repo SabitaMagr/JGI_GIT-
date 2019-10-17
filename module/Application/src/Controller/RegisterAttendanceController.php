@@ -262,7 +262,7 @@ class RegisterAttendanceController extends AbstractActionController {
 
         $this->getSessionStorage()->forgetMe();
         $this->getAuthService()->clearIdentity();
-        $msg = $attendanceType == 'IN' ? 'Attendance Registered Successfully!!!' : 'Thankyou for checkout!!!' ;
+        $msg = 'Attendance Registered Successfully!!!';
         $this->flashmessenger()->addMessage($msg);
         return $this->redirect()->toRoute('login');
     }

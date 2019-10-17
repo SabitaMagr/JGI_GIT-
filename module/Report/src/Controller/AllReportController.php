@@ -243,7 +243,7 @@ class AllReportController extends HrisController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
-                $data = $request->getPost();
+//                $data = $request->getPost();
                 $postedData = $request->getPost();
                 $employeeId = $postedData['employeeId'];
                 $fiscalYearId = $postedData['fiscalYearId'];

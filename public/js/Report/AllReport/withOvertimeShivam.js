@@ -3,7 +3,7 @@
     $(document).ready(function () {
         $("select").select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, false);
-        app.searchTable('withOTReport', ['COMPANY_NAME', 'DEPARTMENT_NAME', 'FULL_NAME'], true);
+        app.searchTable('withOTReport', ['COMPANY_NAME', 'DEPARTMENT_NAME', 'FULL_NAME', 'EMPLOYEE_CODE'], false);
         app.pdfExport(
                 'withOTReport',
                 {
@@ -20,6 +20,8 @@
                     'PAID_LEAVE': 'Paid Leave',
                     'UNPAID_LEAVE': 'Unpaid Leave',
                     'OVERTIME_HOUR': 'Overtime Hour',
+                    'ADDITION' : 'Overtime Addition',
+                    'DEDUCTION': 'Overtime Deduction',
                     'TRAVEL': 'Travel',
                     'TRAINING': 'Training',
                     'WORK_ON_HOLIDAY': 'Work on Holiday',
@@ -32,13 +34,14 @@
         var months = null;
         var $year = $('#fiscalYearId');
         var $month = $('#monthId');
+        let selectedMonthId;
+
         app.setFiscalMonth($year, $month, function (yearList, monthList, currentMonth) {
             months = monthList;
             $fromDate.val(currentMonth['FROM_DATE_AD']);
             $toDate.val(currentMonth['TO_DATE_AD']);
             $nepaliFromDate.val(currentMonth['FROM_DATE_BS']);
             $nepaliToDate.val(currentMonth['TO_DATE_BS']);
-
         });
         var monthChange = function ($this) {
             var value = $this.val();
@@ -55,6 +58,7 @@
             $toDate.val(selectedMonthList[0]['TO_DATE']);
             $nepaliFromDate.val(nepaliDatePickerExt.fromEnglishToNepali(selectedMonthList[0]['FROM_DATE']));
             $nepaliToDate.val(nepaliDatePickerExt.fromEnglishToNepali(selectedMonthList[0]['TO_DATE']));
+            selectedMonthId = selectedMonthList[0]['MONTH_ID'];
         };
         $month.on('change', function () {
             monthChange($(this));
@@ -83,15 +87,18 @@
             {field: "NIGHT_SHIFT_8", title: "Night Shift 8-8", width: 150},
             {field: "C_SHIFT", title: "C-Shift", width: 150},
             {field: "OVERTIME_HOUR", title: "Overtime Hour", width: 150},
+            {field: "ADDITION", title: "Overtime Addition", width: 150},
+            {field: "DEDUCTION", title: "Overtime Deduction", width: 150},
             {field: "TRAVEL", title: "Travel", width: 150},
             {field: "TRAINING", title: "Training", width: 150},
             {field: "WORK_ON_HOLIDAY", title: "Work on Holiday", width: 150},
             {field: "WORK_ON_DAYOFF", title: "Work on Dayoff", width: 150},
-        ]);
+        ], null, null, null, 'Report with Overtime');
         $search.on('click', function () {
             var data = document.searchManager.getSearchValues();
             data['fromDate'] = $fromDate.val();
             data['toDate'] = $toDate.val();
+            data['monthId'] = selectedMonthId;
             app.serverRequest(document.withOvertimeShivamWs, data).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($withOTReport, response.data);
@@ -150,9 +157,5 @@
             }, function (error) {});
         });
         
-//        $("#reset").on("click", function () {
-//            $(".form-control").val("");
-//        });
-
     });
 })(window.jQuery, window.app);

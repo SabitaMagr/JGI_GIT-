@@ -35,7 +35,7 @@ class Authentication extends AbstractActionController {
                 case Request::METHOD_GET:
                     $responseData = $this->getStatus($this->thumbId);
                     if ($responseData == NULL) {
-                        return new JsonModel(['success' => false, 'data' => $responseData, 'message' => 'No record found']);
+                        return new JsonModel(['success' => true, 'data' => $responseData, 'message' => 'No record found']);
                     }
                     break;
                 default :
@@ -46,9 +46,9 @@ class Authentication extends AbstractActionController {
             return new JsonModel(['success' => false, 'data' => $responseData, 'message' => $e->getMessage()]);
         }
     }
-    
-    public function alternateAuthenticationAction(){
-        try{
+
+    public function alternateAuthenticationAction() {
+        try {
             $request = $this->getRequest();
 
             $this->userName = $request->getHeader('UserName')->getFieldValue();
@@ -62,7 +62,7 @@ class Authentication extends AbstractActionController {
                 case Request::METHOD_GET:
                     $responseData = $this->getAlternateStatus($this->userName, $this->password);
                     if ($responseData == NULL) {
-                        return new JsonModel(['success' => false, 'data' => $responseData, 'message' => 'No record found']);
+                        return new JsonModel(['success' => true, 'data' => $responseData, 'message' => 'No record found']);
                     }
                     break;
                 default :
@@ -70,7 +70,7 @@ class Authentication extends AbstractActionController {
             }
             return new JsonModel(['success' => true, 'data' => $responseData, 'message' => $requestType]);
         } catch (Exception $ex) {
-
+            return new JsonModel(['success' => false, 'data' => $responseData, 'message' => $e->getMessage()]);
         }
     }
 
@@ -79,10 +79,10 @@ class Authentication extends AbstractActionController {
 
         return $statusRepo->fetchEmployeeData($thumbId);
     }
-    
-    private function getAlternateStatus($userName, $password){
+
+    private function getAlternateStatus($userName, $password) {
         $statusRepo = new AuthenticationRepository($this->adapter);
-        
+
         return $statusRepo->fetchWithAuthenticate($userName, $password);
     }
 
