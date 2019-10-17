@@ -44,6 +44,7 @@ class TravelApproveController extends HrisController {
     public function viewAction() {
         $id = (int) $this->params()->fromRoute('id');
         $role = $this->params()->fromRoute('role');
+
         if ($id === 0 || $role === 0) {
             return $this->redirect()->toRoute("travelApprove");
         }

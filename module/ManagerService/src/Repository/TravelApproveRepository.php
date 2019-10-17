@@ -283,8 +283,14 @@ class TravelApproveRepository implements RepositoryInterface {
                   RAR.FULL_NAME                                                   AS RECOMMENDER_NAME,
                   RAA.EMPLOYEE_ID                                                 AS APPROVER_ID,
                   RAA.FULL_NAME                                                   AS APPROVER_NAME,
-                  REC_APP_ROLE(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
-                  REC_APP_ROLE_NAME(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
+                  REC_APP_ROLE(U.EMPLOYEE_ID,
+                  CASE WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
+                  CASE WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
+                  )      AS ROLE,
+                  REC_APP_ROLE_NAME(U.EMPLOYEE_ID,
+                  CASE WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
+                  CASE WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
+                  ) AS YOUR_ROLE
                 FROM HRIS_EMPLOYEE_TRAVEL_REQUEST TR
                 LEFT JOIN HRIS_TRAVEL_SUBSTITUTE TS
                 ON TR.TRAVEL_ID = TS.TRAVEL_ID
