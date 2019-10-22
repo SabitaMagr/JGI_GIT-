@@ -6,6 +6,8 @@
     $(document).ready(function () {
         $('select').select2();
         var $overtimeDate = $("#overtimeDate");
+        var $employeeId = $('#employeeId');
+
         if (!($overtimeDate.is('[readonly]'))) {
             app.datePickerWithNepali("overtimeDate", "nepaliDate");
             app.getServerDate().then(function (response) {
@@ -17,7 +19,27 @@
             app.datePickerWithNepali("overtimeDate", "nepaliDate");
         }
 
-        var $employeeId = $('#employeeId');
+        function validateAttendance(employeeId, date){
+            app.serverRequest(document.validateAttendanceLink, {
+                employeeId: employeeId,
+                date: date
+            }).then(function(response){
+                if(response.validation === 'F' || response.validation === null){
+                    app.showMessage("Overtime not more than 2 hours", "error");
+                    $("#submit").attr('disabled', 'disabled'); 
+                }
+                else{ $("#submit").removeAttr('disabled'); }
+            });
+        }
+
+        $('#employeeId, #overtimeDate, #nepaliDate').on('change input select', function(){
+            let employeeId = $employeeId.val();
+            let date = $overtimeDate.val();
+            if(date != null || date != ''){
+                validateAttendance(employeeId, date);
+            }
+        });
+        
         app.floatingProfile.setDataFromRemote($employeeId.val());
 
         $employeeId.on("change", function (e) {
