@@ -392,4 +392,15 @@ GROUP BY
         return $resultList[0]['AMT'];
     }
     
+    
+    public function getPayEmpType($employeeId){
+           $sql = "SELECT PAY_EMP_TYPE FROM HRIS_EMPLOYEES WHERE  EMPLOYEE_ID={$employeeId}";
+        $resultList = $this->rawQuery($sql);
+        if (!(sizeof($resultList) == 1)) {
+            throw new Exception('No Report Found.');
+        }
+        return $resultList[0]['PAY_EMP_TYPE'];
+        
+    }
+    
 }
