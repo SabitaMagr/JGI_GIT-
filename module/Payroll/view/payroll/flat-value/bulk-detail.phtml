@@ -6,7 +6,6 @@ $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/search.js'))
-        ->appendFile($this->basePath('js/setup/recommend-approve/comBranchDeptDesignSearch.js'))
         ->appendFile($this->basePath('js/Payroll/FlatValue/bulk-detail.js'));
 ?>
 
@@ -100,10 +99,12 @@ $this->headScript()
                     </div>
                     <div class="row margin-top-10">
                         <div class="col-sm-2">
+                            <label>Fiscal year</label>
                             <select class="form-control reset-field" id="fiscalYearId" >
                             </select>
                         </div>
                         <div class="col-sm-2">
+                            <label>Pay Heads</label>
                             <select class="form-control reset-field" id="flatValueId" multiple="multiple">
                             </select>
                         </div>
@@ -121,24 +122,18 @@ $this->headScript()
                 </div>
             </div>
         </div>
-            <div class="portlet light bg-inverse">
-                <div class="portlet-title">
-                    
-                </div>
-                    
-            </div>
-
-          
-<div id="flatValueDetailTable">
-</div>
-
-    <div class="portlet-body">
+        <div class="portlet-body">
         <div class="row margin-top-20">
             <div class="col-sm-12">
                 <button id="assignFlatValueBtn" class="btn pull-right" >Assign Flat Value</button>
             </div>
         </div>
     </div>
+          
+<div id="flatValueDetailTable">
+</div>
+
+    
 
     <form enctype="multipart/form-data" action="<?= $this->url("flatValue", ["action" => "uploadFlatValueEmpWise"]); ?>" method="post" >  
 
