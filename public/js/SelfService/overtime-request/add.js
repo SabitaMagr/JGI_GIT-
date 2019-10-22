@@ -19,6 +19,22 @@
             app.datePickerWithNepali("overtimeDate", "nepaliDate");
         }
 
+        var $nepaliDate = $("#nepaliDate");
+        var $englishDate = $("#overtimeDate");
+        $("#nepaliDate").nepaliDatePicker({
+            onChange: function(){
+                var temp = nepaliDatePickerExt.fromNepaliToEnglish($nepaliDate.val());
+                var englishStartDate = $englishDate.datepicker('getStartDate');
+                var englishEndDate = $englishDate.datepicker('getEndDate');
+                $englishDate.val(temp);
+                let employeeId = $employeeId.val();
+                let date = $overtimeDate.val();
+                if(date != null || date != ''){
+                    validateAttendance(employeeId, date);
+                }
+            }
+        });
+
         function validateAttendance(employeeId, date){
             app.serverRequest(document.validateAttendanceLink, {
                 employeeId: employeeId,
@@ -32,14 +48,14 @@
             });
         }
 
-        $('#employeeId, #overtimeDate, #nepaliDate').on('change input select', function(){
+        $('#employeeId, #overtimeDate').on('change input select', function(){
             let employeeId = $employeeId.val();
             let date = $overtimeDate.val();
             if(date != null || date != ''){
                 validateAttendance(employeeId, date);
             }
         });
-        
+
         app.floatingProfile.setDataFromRemote($employeeId.val());
 
         $employeeId.on("change", function (e) {
