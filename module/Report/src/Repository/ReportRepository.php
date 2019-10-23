@@ -2076,8 +2076,6 @@ EOT;
                  
 EOT;
 
-//         echo $sql;
-//         die();
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return ['monthDetail' => $monthDetail, 'data' => Helper::extractDbData($result)];
