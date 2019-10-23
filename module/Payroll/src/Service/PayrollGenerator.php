@@ -50,7 +50,8 @@ class PayrollGenerator {
         "MONTH",
         "BRANCH_ID",
         "CAFE_MEAL_PREVIOUS",
-        "CAFE_MEAL_CURRENT"
+        "CAFE_MEAL_CURRENT",
+        "PAYROLL_EMPLOYEE_TYPE"
     ];
     const SYSTEM_RULE = [
         "TOTAL_ANNUAL_AMOUNT",

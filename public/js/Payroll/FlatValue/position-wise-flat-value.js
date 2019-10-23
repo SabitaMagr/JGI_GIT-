@@ -3,15 +3,17 @@
     $(document).ready(function () {
         $("select").select2();
 
-        var $flatValueId = $("#flatValueId");
-        var $fiscalYearId = $("#fiscalYearId");
         var $searchEmployeesBtn = $('#searchEmployeesBtn');
+        var $fiscalYearId = $("#fiscalYearId");
         var $assignFlatValueBtn = $('#assignFlatValueBtn');
+        var $positionId = $("#positionId");
+        var $flatValueId = $("#flatValueId");
 
         var $table = $('#flatValueDetailTable');
-        
+
         var changedValues = [];
 
+        app.populateSelect($positionId, document.positions, "POSITION_ID", "POSITION_NAME", "Select position");
         app.populateSelect($flatValueId, document.flatValues, "FLAT_ID", "FLAT_EDESC", "Select Flat Value");
         app.populateSelect($fiscalYearId, document.fiscalYears, "FISCAL_YEAR_ID", "FISCAL_YEAR_NAME", "Select Fiscal Year");
 
@@ -21,10 +23,18 @@
 
         $searchEmployeesBtn.on('click', function () {
             var flatIdOptions = $("#flatValueId option");
-            var flatId = [];
+            var positionIdOptions = $("#positionId option");
+            var flatId = []; var positionId = [];
+
             flatId = $flatValueId.val();
             if(flatId == null || flatId.length == 0){
                 flatId = $.map(flatIdOptions ,function(option) {
+                    return option.value;
+                });
+            }
+            positionId = $positionId.val();
+            if(positionId == null || positionId.length == 0){
+                positionId = $.map(positionIdOptions ,function(option) {
                     return option.value;
                 });
             }
@@ -35,18 +45,17 @@
             }
             
             $table.empty();
-            app.serverRequest(document.getFlatValueDetailWS, {
+            app.serverRequest(document.getPositionFlatLink, {
                 flatId: flatId,
-                fiscalYearId: $fiscalYearId.val(),
-                employeeFilter: document.searchManager.getSearchValues()}).then(function (response) {
+                positionId: positionId,
+                fiscalYearId: $fiscalYearId.val()}).then(function (response) {
                 var columns = []; 
-                columns.push({field: "EMPLOYEE_ID", title: "ID", width: 80, hidden: true, locked: true});
-                columns.push({field: "EMPLOYEE_CODE", title: "Code", width: 80, locked: true});
-                columns.push({field: "FULL_NAME", title: "Name", width: 90, locked: true});
+                columns.push({field: "LEVEL_NO", title: "Level", width: 80, locked: true});
+                columns.push({field: "POSITION_NAME", title: "Position", width: 80, locked: true});
                 let counter = 1;
                 for(let i in response.data[0]){
-                    if(counter > 3){
-                        columns.push({field: i, title: response.columns[counter-4].FLAT_EDESC, width: 160,
+                    if(counter > 2){
+                        columns.push({field: i, title: response.columns[counter-3].FLAT_EDESC, width: 160,
                 template: '<input type="number" class="'+i+'" value="#: '+i+'||""#" style="height:17px;">'});
                     }
                     counter++; 
@@ -69,10 +78,10 @@
             dataItem[key] = this.value;
             //var index = changedValues.findIndex(x => x.EMPLOYEE_ID==dataItem.EMPLOYEE_ID);
             var index = changedValues.findIndex(function(x){
-                return x.employeeId == dataItem.EMPLOYEE_ID && x.flatValue == key;
+                return x.positionId == dataItem.POSITION_ID && x.flatValue == key;
             });
             if(index == -1){ 
-                changedValues.push({employeeId: dataItem.EMPLOYEE_ID, flatValue: key, flatId: key.substring(2)}); 
+                changedValues.push({positionId: dataItem.POSITION_ID, flatValue: key, flatId: key.substring(2)}); 
             }
         });
 
@@ -81,16 +90,17 @@
             var currentData = grid.dataSource._data;
             for(let x = 0; x < changedValues.length; x++){
                 var data = currentData.filter(function(item, i) { 
-                    return item.EMPLOYEE_ID == changedValues[x].employeeId;
+                    return item.POSITION_ID == changedValues[x].positionId;
                 });
                 changedValues[x].value = data[0][changedValues[x].flatValue];
             }
             var fiscalYearId = $fiscalYearId.val();
-            app.serverRequest(document.getFlatValueUpdateWS, {data : changedValues, fiscalYearId: fiscalYearId}).then(function(){
+            app.serverRequest(document.setPositionFlatValueLink, {data : changedValues, fiscalYearId: fiscalYearId}).then(function(){
                 app.showMessage('Operation successfull', 'success');
             }, function (error) {
                 console.log(error);
             });
         });
+
     });
 })(window.jQuery, window.app);

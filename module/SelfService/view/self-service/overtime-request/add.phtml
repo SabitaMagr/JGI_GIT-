@@ -27,7 +27,7 @@ $totalHour = $form->get('allTotalHour');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
-
+$submit->setAttribute('id', 'submit');
 $form->setAttribute('action', $this->url('overtimeRequest', ['action' => 'add']));
 
 
@@ -45,6 +45,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     print '</div>';
 }
 ?>
+<script>
+    document.validateAttendanceLink = '<?= $this->url("overtimeRequest", ["action" => "validateAttendance"]) ?>';
+</script>
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>

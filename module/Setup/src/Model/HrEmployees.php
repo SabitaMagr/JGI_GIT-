@@ -107,6 +107,7 @@ class HrEmployees extends Model {
     public $abroadAddress;
     public $addrPermProvinceId;
     public $addrTempProvinceId;
+    public $payEmpType;
     
     const TABLE_NAME = "HRIS_EMPLOYEES";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
@@ -211,6 +212,7 @@ class HrEmployees extends Model {
     const ABROAD_ADDRESS = "ABROAD_ADDRESS";
     const ADDR_PERM_PROVINCE_ID = "ADDR_PERM_PROVINCE_ID";
     const ADDR_TEMP_PROVINCE_ID = "ADDR_TEMP_PROVINCE_ID";
+    const PAY_EMP_TYPE = "PAY_EMP_TYPE";
     
     public $mappings = [
         'employeeId' => self::EMPLOYEE_ID,
@@ -315,6 +317,7 @@ class HrEmployees extends Model {
         'abroadAddress' => self::ABROAD_ADDRESS,
         'addrPermProvinceId' =>self::ADDR_PERM_PROVINCE_ID,
         'addrTempProvinceId' =>self::ADDR_TEMP_PROVINCE_ID,
+        'payEmpType' =>self::PAY_EMP_TYPE,
     ];
 
 }
