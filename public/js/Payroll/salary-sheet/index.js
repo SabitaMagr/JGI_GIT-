@@ -32,8 +32,12 @@
         var $groupId = $('#groupId');
         var $salaryTypeId = $('#salaryTypeId');
         var $allSheetId = $('#allSheetId');
+        var $allPayHeads = $('#allPayHeads');
+
+console.log(data['ruleList']);
 
         app.populateSelect($salaryTypeId, data['salaryType'], 'SALARY_TYPE_ID', 'SALARY_TYPE_NAME', null, null, 1);
+        app.populateSelect($allPayHeads, data['ruleList'], 'PAY_ID', 'PAY_EDESC');
 //        
         var loading_screen = null;
         var loadingMessage = "Payroll generation started.";
@@ -102,6 +106,7 @@
         $companyId.select2();
         $groupId.select2();
         $salaryTypeId.select2();
+        $allPayHeads.select2();
 
 //        $viewBtn.hide();
 
@@ -159,7 +164,51 @@
         
         // salary sheet details start
          var $sheetTable = $('#sheetTable');
-//         app.searchTable($sheetTable, ['SHEET_NO']);
+         
+         
+         var searchTable2 = function (kendoId, searchFields, isHidden) {
+        var $kendoId = null;
+        if (kendoId instanceof jQuery) {
+            $kendoId = kendoId;
+        } else {
+            $kendoId = $("#" + kendoId);
+        }
+        var $searchHtml = $(`
+            <div class='row search margin-bottom-5 margin-top-10' id='searchFieldDiv2'>
+                <div class='col-xs-12 col-sm-6 col-md-4 col-lg-3'>
+                    <input class='form-control' placeholder='search here' type='text' id='kendoSearchField2' />
+                </div>
+            </div>`);
+
+
+        $searchHtml.insertBefore($kendoId);
+
+        if (typeof isHidden !== "undefined" && isHidden) {
+            $("#searchFieldDiv2").hide();
+        }
+        $("#kendoSearchField2").keyup(function () {
+            var val = $(this).val();
+            var filters = [];
+            for (var i = 0; i < searchFields.length; i++) {
+                filters.push({
+                    field: searchFields[i],
+                    operator: "contains",
+                    value: val
+                });
+            }
+
+            $kendoId.data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: filters
+            });
+        });
+
+
+    }
+         
+         
+         searchTable2($table, ['EMPLOYEE_ID','EMPLOYEE_CODE','BRANCH_NAME','POSITION_NAME','ID_ACCOUNT_NO','EMPLOYEE_NAME']);
+         
          var actiontemplateConfigSheet = {
              update: {
                 'ALLOW_UPDATE': 'N',
@@ -299,18 +348,11 @@
             monthChangeAction();
         });
 
-        var exportMap = {
-            "EMPLOYEE_ID": "Employee Id",
-            "EMPLOYEE_CODE": "Employee Code",
-            "EMPLOYEE_NAME": "Employee",
-            "BRANCH_NAME": "Branch",
-            "POSITION_NAME": "Position",
-            "ID_ACCOUNT_NO": "Account No"
-        };
+        
         var employeeIdColumn = {
             field: "EMPLOYEE_ID",
             title: "Id",
-            width: 50
+            width: 70
         };
         var employeeCodeColumn = {
             field: "EMPLOYEE_CODE",
@@ -320,22 +362,22 @@
         var employeeBranchColumn = {
             field: "BRANCH_NAME",
             title: "Branch",
-            width: 100
+            width: 80
         };
         var employeePositionColumn = {
             field: "POSITION_NAME",
             title: "Position",
-            width: 100
+            width: 80
         };
         var employeeAccountColumn = {
             field: "ID_ACCOUNT_NO",
             title: "Acc",
-            width: 70
+            width: 100
         };
         var employeeNameColumn = {
             field: "EMPLOYEE_NAME",
             title: "Employee",
-            width: 150
+            width: 100
         };
         var actionColumn = {
             field: ["EMPLOYEE_ID", "SHEET_NO"],
@@ -350,9 +392,23 @@
             employeeCodeColumn.locked = true;
             employeeBranchColumn.locked = true;
             employeePositionColumn.locked = true;
-            employeeAccountColumn.locked = true;
+//            employeeAccountColumn.locked = true;
         }
-        var columns = [
+        
+        var exportMap ;
+        
+        var generateCols =function(){
+            
+            exportMap = {
+            "EMPLOYEE_ID": "Employee Id",
+            "EMPLOYEE_CODE": "Employee Code",
+            "EMPLOYEE_NAME": "Employee",
+            "BRANCH_NAME": "Branch",
+            "POSITION_NAME": "Position",
+            "ID_ACCOUNT_NO": "Account No"
+        };
+        
+          var columns = [
             employeeIdColumn,
             employeeCodeColumn,
             employeeNameColumn,
@@ -361,29 +417,45 @@
             employeeAccountColumn,
             actionColumn
         ];
+        
+            let selectedPayheads = $allPayHeads.val();
 
-        $.each(data.ruleList, function (key, value) {
-            var signFn = function ($type) {
-                var sign = "";
-                switch ($type) {
-                    case "A":
-                        sign = "+";
-                        break;
-                    case "D":
-                        sign = "-";
-                        break;
-                    case "V":
-                        sign = ".";
-                        break;
+            $.each(data.ruleList, function (key, value) {
+                var signFn = function ($type) {
+                    var sign = "";
+                    switch ($type) {
+                        case "A":
+                            sign = "+";
+                            break;
+                        case "D":
+                            sign = "-";
+                            break;
+                        case "V":
+                            sign = ".";
+                            break;
+                    }
+                    return sign;
+                };
+
+                if (selectedPayheads == null) {
+                    columns.push({field: "P_" + value['PAY_ID'], title: value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")", width: 150});
+                    exportMap["P_" + value['PAY_ID']] = value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")";
+                } else {
+                    if ($.inArray(value['PAY_ID'], selectedPayheads) >= 0) {
+                        columns.push({field: "P_" + value['PAY_ID'], title: value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")", width: 150});
+                        exportMap["P_" + value['PAY_ID']] = value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")";
+                    }
                 }
-                return sign;
-            };
-            columns.push({field: "P_" + value['PAY_ID'], title: value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")", width: 150});
-            exportMap["P_" + value['PAY_ID']] = value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")";
-        });
-        app.initializeKendoGrid($table, columns);
+            });
+            app.initializeKendoGrid($table, columns);
+        }
+        
+            generateCols();
+//        app.initializeKendoGrid($table, columns);
 
         $viewBtn.on('click', function () {
+            $table.empty();
+            generateCols();
 //            var sheetNoList = [];
 //            for (var i in selectedSalarySheetList) {
 //                sheetNoList.push(selectedSalarySheetList[i]['SHEET_NO']);
