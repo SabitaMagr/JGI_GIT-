@@ -91,7 +91,7 @@ class OvertimeReportRepo extends HrisRepository {
             $sql = "Select SS.*,AD.ADDITION, AD.DEDUCTION from (SELECT *
                 FROM
                   (SELECT AD.EMPLOYEE_ID, E.EMPLOYEE_CODE AS EMPLOYEE_CODE,
-                    E.FULL_NAME,
+                    E.FULL_NAME, D.DEPARTMENT_NAME,
                     'D_'
                     ||to_number(to_char(AD.ATTENDANCE_DATE,'DD')) AS MONTH_DAY,
                     OM.OVERTIME_HOUR
@@ -108,6 +108,8 @@ class OvertimeReportRepo extends HrisRepository {
                   AND AD.ATTENDANCE_DATE=OM.ATTENDANCE_DATE)
                   JOIN HRIS_EMPLOYEES E
                   ON (AD.EMPLOYEE_ID                         =E.EMPLOYEE_ID)
+                  LEFT JOIN HRIS_DEPARTMENTS D
+                  ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
                   WHERE 1=1 
                   {$searchConditon}
                   ) PIVOT (MAX(OVERTIME_HOUR) FOR MONTH_DAY IN ({$pivotIn}))) SS left join HRIS_OVERTIME_A_D AD
@@ -116,7 +118,7 @@ class OvertimeReportRepo extends HrisRepository {
             $sql = "Select SS.*,AD.ADDITION, AD.DEDUCTION from (SELECT *
                 FROM
                   (SELECT AD.EMPLOYEE_ID, E.EMPLOYEE_CODE AS EMPLOYEE_CODE,
-                    E.FULL_NAME,
+                    E.FULL_NAME, D.DEPARTMENT_NAME,
                     'D_'
                     ||TO_NUMBER(regexp_substr(BS_DATE(TRUNC(AD.ATTENDANCE_DATE)),'[^-]+', 1, 3)) AS MONTH_DAY,
                     OM.OVERTIME_HOUR
@@ -133,6 +135,8 @@ class OvertimeReportRepo extends HrisRepository {
                   AND AD.ATTENDANCE_DATE=OM.ATTENDANCE_DATE)
                   JOIN HRIS_EMPLOYEES E
                   ON (AD.EMPLOYEE_ID                         =E.EMPLOYEE_ID)
+                  LEFT JOIN HRIS_DEPARTMENTS D
+                  ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
                   WHERE 1=1 
                   {$searchConditon}
                   ) PIVOT (MAX(OVERTIME_HOUR) FOR MONTH_DAY IN ({$pivotIn}))) SS left join HRIS_OVERTIME_A_D AD
