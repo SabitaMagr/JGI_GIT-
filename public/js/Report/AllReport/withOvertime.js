@@ -93,7 +93,7 @@
             var data = document.searchManager.getSearchValues();
             data['fromDate'] = $fromDate.val();
             data['toDate'] = $toDate.val();
-            data['monthId'] = selectedMonthId.val();
+            data['monthId'] = selectedMonthId;
             app.serverRequest(document.withOvertimeWs, data).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($withOTReport, response.data);
@@ -152,9 +152,6 @@
             }, function (error) {});
         });
         
-//        $("#reset").on("click", function () {
-//            $(".form-control").val("");
-//        });
 
     });
 })(window.jQuery, window.app);
