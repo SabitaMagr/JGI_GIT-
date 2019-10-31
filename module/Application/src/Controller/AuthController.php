@@ -159,7 +159,7 @@ class AuthController extends AbstractActionController {
                         $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
                         $inTime = $todayAttendance['IN_TIME'];
                         $attendanceType = ($inTime) ? "OUT" : "IN";
-                        $allowRegisterAttendance = ($todayAttendance['TRAVEL_ID'] == null && $todayAttendance['LEAVE_ID'] == null && $todayAttendance['TRAINING_ID'] == null && $todayAttendance['HOLIDAY_ID'] == null) ? true : false;
+                        $allowRegisterAttendance = ($todayAttendance['TRAVEL_ID'] == null && $todayAttendance['LEAVE_ID'] == null) ? true : false;
                     }
 
                     $employeeRepo = new EmployeeRepository($this->adapter);

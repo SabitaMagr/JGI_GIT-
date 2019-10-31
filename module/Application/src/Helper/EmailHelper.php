@@ -13,14 +13,14 @@ class EmailHelper {
     public static function getSmtpTransport(): Smtp {
         $transport = new Smtp();
         $options = new SmtpOptions([
-            'host' => 'smtp.ionos.com',
+            'host' => 'smtp.ionosss.com',
             'port' => 465,
             'connection_class' => 'login',
             'connection_config' => [
 // 'username' => 'ukesh.gaiju@itnepal.com',
 // 'password' => 'ukesh@123',
                 'username' => 'prabin.maharjan@itnepal.com',
-                'password' => 'prabin@123',
+                'password' => 'prabin@123456',
                 'ssl' => 'ssl',
             ],
         ]);

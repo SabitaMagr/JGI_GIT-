@@ -300,9 +300,12 @@ class FlatValue extends HrisController {
             $fiscalYearId = $postedData['fiscalYearId'];
             $detailRepo = new FlatValueDetailRepo($this->adapter);
             foreach($data as $d){
+                if($d['employeeId'] == null || $d['employeeId'] == ''){
+                    continue;
+                }
                 $detailRepo->postBulkFlatValuesDetail($d, $fiscalYearId);
             }
-            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+            return new JsonModel(['success' => true, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
@@ -339,7 +342,7 @@ class FlatValue extends HrisController {
             $columns = $detailRepo->getColumns($flatId);
             return new JsonModel(['success' => true, 'data' => Helper::extractDbData($result), 'error' => '', 'columns' => Helper::extractDbData($columns)]);
         } catch (Exception $e) {
-            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'error' => $e->getMessage()]);
         }
     }
 
@@ -354,11 +357,14 @@ class FlatValue extends HrisController {
             $fiscalYearId = $postedData['fiscalYearId'];
             $detailRepo = new FlatValueDetailRepo($this->adapter);
             foreach($data as $d){
+                if($d['positionId'] == null || $d['positionId'] == ''){
+                    continue;
+                }
                 $detailRepo->setPositionWiseFlatValue($d, $fiscalYearId);
-            }
-            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+            } 
+            return new JsonModel(['success' => true, 'error' => '']);
         } catch (Exception $e) {
-            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'error' => $e->getMessage()]);
         }
     }
 }
