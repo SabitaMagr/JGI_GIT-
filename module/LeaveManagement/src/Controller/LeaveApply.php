@@ -154,7 +154,7 @@ class LeaveApply extends HrisController {
 
                 $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
                 $employeeId = $postedData['employeeId'];
-                $leaveList = $leaveRequestRepository->getLeaveList($employeeId, 'N');
+                $leaveList = $leaveRequestRepository->getLeaveList($employeeId);
 
                 $leaveRow = [];
                 foreach ($leaveList as $key => $value) {

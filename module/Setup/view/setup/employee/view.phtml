@@ -1353,8 +1353,8 @@ if ($this->messages) {
                                         <td><label>Name</label></td>
                                         <td><label>Relation</label></td>
                                         <td><label>DOB</label></td>
-                                        <td><label>Nominee</label></td>
                                         <td><label>Dependent</label></td>
+                                        <td><label>Nominee</label></td>
                                     </tr>
 
                                     <?php
@@ -1371,10 +1371,10 @@ if ($this->messages) {
                                                 <?php print $relation['DOB']; ?>
                                             </td>
                                             <td>
-                                                <?php print ($relation['IS_NOMINEE'] == 'Y') ? 'Yes' : 'No';  ?>
+                                                <?php print ($relation['IS_DEPENDENT'] == 'Y') ? 'Yes' : 'No';  ?>
                                             </td>
                                             <td>
-                                                <?php print ($relation['IS_DEPENDENT'] == 'Y') ? 'Yes' : 'No';  ?>
+                                                <?php print ($relation['IS_NOMINEE'] == 'Y') ? 'Yes' : 'No';  ?>
                                             </td>
                                         </tr>
                                     <?php } ?>

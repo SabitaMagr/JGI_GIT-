@@ -114,7 +114,7 @@ class leaveAssign extends HrisController {
                 
                 ($leaveDetails['IS_MONTHLY']=='N')?
                 $leaveAssignRepo->add($leaveAssign)
-                :$leaveAssignRepo->editMonthlyLeave($leaveAssign->employeeId,$leaveDetails,$data['month'],$leaveAssign->totalDays);
+                :$leaveAssignRepo->editMonthlyLeave($leaveAssign->employeeId,$leaveDetails,$data['month'],$leaveAssign->totalDays,$leaveAssign->previousYearBalance);
             } else {
                 $leaveAssign->modifiedDt = Helper::getcurrentExpressionDate();
                 $leaveAssign->modifiedBy = $this->employeeId;
@@ -122,7 +122,7 @@ class leaveAssign extends HrisController {
                 unset($leaveAssign->leaveId);
                 ($leaveDetails['IS_MONTHLY']=='N')?
                 $leaveAssignRepo->edit($leaveAssign, [$data['leaveId'], $data['employeeId']])
-                :$leaveAssignRepo->editMonthlyLeave($data['employeeId'],$leaveDetails,$data['month'],$leaveAssign->totalDays);
+                :$leaveAssignRepo->editMonthlyLeave($data['employeeId'],$leaveDetails,$data['month'],$leaveAssign->totalDays,$leaveAssign->previousYearBalance);
                 
             }
 

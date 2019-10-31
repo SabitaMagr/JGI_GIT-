@@ -1807,6 +1807,8 @@ FROM
               A.C_SHIFT,
               AD.ADDITION,
               AD.DEDUCTION
+              ,ABDH
+              ,LBDH
             FROM
               (SELECT A.EMPLOYEE_ID,
                 SUM(
@@ -1928,7 +1930,18 @@ FROM
                     THEN OT.TOTAL_HOUR
                     ELSE OTM.OVERTIME_HOUR*60
                   END ) AS TOTAL_MIN
+                ,sum(
+                  case when A.OVERALL_STATUS in('DO','HD') and APY.OVERALL_STATUS='AB' and APT.OVERALL_STATUS='AB'
+                  then 1 
+                  end 
+                  )as ABDH
+                 ,sum(
+                 case when A.OVERALL_STATUS in('DO','HD') and APY.OVERALL_STATUS='LV' and APT.OVERALL_STATUS='LV'
+                 then 1 end
+                 ) as LBDH
               FROM HRIS_ATTENDANCE_PAYROLL A
+              LEFT JOIN HRIS_ATTENDANCE_PAYROLL APY on (A.ATTENDANCE_DT=APY.ATTENDANCE_DT-1 and A.employee_id=APY.EMPLOYEE_ID)
+              LEFT JOIN HRIS_ATTENDANCE_PAYROLL APT on (A.ATTENDANCE_DT=APT.ATTENDANCE_DT+1 and A.employee_id=APT.EMPLOYEE_ID)
               LEFT JOIN (SELECT
     employee_id,
     overtime_date,
@@ -2076,8 +2089,6 @@ EOT;
                  
 EOT;
 
-//         echo $sql;
-//         die();
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return ['monthDetail' => $monthDetail, 'data' => Helper::extractDbData($result)];
