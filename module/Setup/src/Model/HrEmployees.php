@@ -108,6 +108,8 @@ class HrEmployees extends Model {
     public $addrPermProvinceId;
     public $addrTempProvinceId;
     public $payEmpType;
+    public $wohFlag;
+    public $overtimeEligible;
     
     const TABLE_NAME = "HRIS_EMPLOYEES";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
@@ -213,6 +215,9 @@ class HrEmployees extends Model {
     const ADDR_PERM_PROVINCE_ID = "ADDR_PERM_PROVINCE_ID";
     const ADDR_TEMP_PROVINCE_ID = "ADDR_TEMP_PROVINCE_ID";
     const PAY_EMP_TYPE = "PAY_EMP_TYPE";
+    const WOH_FLAG = "WOH_FLAG";
+    const OVERTIME_ELIGIBLE = "OVERTIME_ELIGIBLE";
+
     
     public $mappings = [
         'employeeId' => self::EMPLOYEE_ID,
@@ -318,6 +323,9 @@ class HrEmployees extends Model {
         'addrPermProvinceId' =>self::ADDR_PERM_PROVINCE_ID,
         'addrTempProvinceId' =>self::ADDR_TEMP_PROVINCE_ID,
         'payEmpType' =>self::PAY_EMP_TYPE,
+        'wohFlag' =>self::WOH_FLAG,
+        'overtimeEligible' =>self::OVERTIME_ELIGIBLE,
+
     ];
 
 }
