@@ -114,7 +114,7 @@ class LeaveAssignRepository extends HrisRepository {
     
     
     public function editMonthlyLeave($employeeId,$leaveDetails,$monthId,$totalDays=null,$previousBalance=null){
-        $monthlyDays=($totalDays !=null && $totalDays !=0)?$totalDays:$leaveDetails['DEFAULT_DAYS'];
+        $monthlyDays=($totalDays !=null )?$totalDays:$leaveDetails['DEFAULT_DAYS'];
         $sql="DECLARE
             V_DEFAULT_LEAVE_DAYS NUMBER:={$monthlyDays};
             V_LEAVE_ID NUMBER:={$leaveDetails['LEAVE_ID']};
