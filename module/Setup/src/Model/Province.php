@@ -4,7 +4,7 @@ namespace Setup\Model;
 
 use Application\Model\Model;
 
-class Branch extends Model {
+class Province extends Model {
 
     const TABLE_NAME = "HRIS_PROVINCES";
     const PROVINCE_ID = "PROVINCE_ID";

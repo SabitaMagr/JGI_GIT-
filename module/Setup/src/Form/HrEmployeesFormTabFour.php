@@ -136,7 +136,25 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Attributes({ "id":"payEmpType","class":"form-control"})
      */
     public $payEmpType;
-    
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Work On Holiday Rule","value_options":{"L":"Substitute Leave","O":"OverTime"}})
+     * @Annotation\Attributes({ "id":"wohFlag","class":"form-control"})
+     */
+    public $wohFlag;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Overtime Eligible","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"overtimeEligible","value":"N"})
+     */
+    public $overtimeEligible;
+
     public $mappings = [
         'joinDate' => 'JOIN_DATE',
         'salary' => 'SALARY',
@@ -154,6 +172,8 @@ class HrEmployeesFormTabFour extends Model {
         'functionalTypeId' => 'FUNCTIONAL_TYPE_ID',
         'functionalLevelId' => 'FUNCTIONAL_LEVEL_ID',
         'payEmpType' => 'PAY_EMP_TYPE',
+        'wohFlag' => 'WOH_FLAG',
+        'overtimeEligible' => 'OVERTIME_ELIGIBLE',
     ];
 
 }
