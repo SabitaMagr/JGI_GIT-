@@ -52,14 +52,18 @@
                 var columns = []; 
                 columns.push({field: "LEVEL_NO", title: "Level", width: 80, locked: true});
                 columns.push({field: "POSITION_NAME", title: "Position", width: 80, locked: true});
+                let totalRow = {};
+                totalRow = {...totalRow, ...response.data[0]};
                 let counter = 1;
                 for(let i in response.data[0]){
+                    totalRow[i] = '';
                     if(counter > 2){
                         columns.push({field: i, title: response.columns[counter-3].FLAT_EDESC, width: 160,
                 template: '<input type="number" class="'+i+'" value="#: '+i+'||""#" style="height:17px;">'});
                     }
                     counter++; 
                 }
+                response.data.push(totalRow);
                 app.initializeKendoGrid($table, columns);
                 app.renderKendoGrid($table, response.data);
                 $("#searchFieldDiv").show();
@@ -73,9 +77,27 @@
             var grid = $table.data("kendoGrid");
             var row = $(e.target).closest("tr");
             var dataItem = grid.dataItem(row);
+            var updatedValue = this.value;
             //var data = $table.data("kendoGrid").dataItem($(e.target).closest("tr"));
             var key = this.className;
-            dataItem[key] = this.value;
+            dataItem[key] = updatedValue;
+
+            if(row.is(":last-child")){
+                $("."+key).val(updatedValue);
+                var dataSource = grid.dataSource;
+                $.each(grid.items(), function(index, item) {
+                    var uid = $(item).data("uid");
+                    var dataItem = dataSource.getByUid(uid);
+                    dataItem[key] = updatedValue;
+                    var index = changedValues.findIndex(function(x){
+                        return x.positionId == dataItem.POSITION_ID && x.flatValue == key;
+                    });
+                    if(index == -1){ 
+                        changedValues.push({positionId: dataItem.POSITION_ID, flatValue: key, flatId: key.substring(2)}); 
+                    }
+                });
+                return;
+            }
             //var index = changedValues.findIndex(x => x.EMPLOYEE_ID==dataItem.EMPLOYEE_ID);
             var index = changedValues.findIndex(function(x){
                 return x.positionId == dataItem.POSITION_ID && x.flatValue == key;
