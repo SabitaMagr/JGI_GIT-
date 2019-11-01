@@ -620,6 +620,29 @@ if ($this->messages) {
                         </div>
                     </div>
                 </div>
+                
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="row bottomgap">
+
+                        <div class="form-group <?= empty($famMotherName->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
+                                <?php print $this->formLabel($famMotherName); ?></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_MOTHER_NAME]; ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="row bottomgap">
+                        <div class="form-group <?= empty($famMotherOccupation->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
+                                <?php print $this->formLabel($famMotherOccupation); ?></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_MOTHER_OCCUPATION]; ?></div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="col-xs-12 col-sm-4 col-md-4">
                     <div class="row bottomgap">
@@ -631,6 +654,19 @@ if ($this->messages) {
                         </div>
                     </div>
                 </div>
+                
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="row bottomgap">
+
+                        <div class="form-group <?= empty($famGrandMotherName->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
+                                <?php print $this->formLabel($famGrandMotherName); ?></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_GRAND_MOTHER_NAME]; ?></div>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="col-xs-12 col-sm-4 col-md-4">
                     <div class="row bottomgap">
 
@@ -672,39 +708,8 @@ if ($this->messages) {
 
                 </div>
 
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-
-                        <div class="form-group <?= empty($famMotherName->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
-                                <?php print $this->formLabel($famMotherName); ?></div>
-                            <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_MOTHER_NAME]; ?></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-                        <div class="form-group <?= empty($famMotherOccupation->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
-                                <?php print $this->formLabel($famMotherOccupation); ?></div>
-                            <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_MOTHER_OCCUPATION]; ?></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-
-                        <div class="form-group <?= empty($famGrandMotherName->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
-                                <?php print $this->formLabel($famGrandMotherName); ?></div>
-                            <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_GRAND_MOTHER_NAME]; ?></div>
-                        </div>
-                    </div>
-                </div>
+                
+                
 
                 <div class="col-xs-12 col-sm-4 col-md-4">
                     <div class="row bottomgap">
