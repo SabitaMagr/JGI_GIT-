@@ -153,7 +153,8 @@ class LeaveStatus extends HrisController {
                     'gp' => $detail['GRACE_PERIOD'],
                     'acl' => $this->acl,
                     'files' => $fileDetails,
-                    'actualDays' => $actualDays
+                    'actualDays' => $actualDays,
+                    'subLeaveName' => $detail['LEAVE_ENAME']
         ]);
     }
 

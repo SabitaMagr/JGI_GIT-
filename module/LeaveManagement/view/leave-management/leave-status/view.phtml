@@ -186,6 +186,18 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <input type="hidden" id="availableDays" value="<?php echo $availableDays; ?>"/>
                                         </td>
                                     </tr>
+                                    
+                                    <?php if($subLeaveName){ ?>
+                                    <tr height="30">
+                                        <td>
+                                            Sub Info
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $subLeaveName; ?>
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
 
                                 </table>
                             </div>
