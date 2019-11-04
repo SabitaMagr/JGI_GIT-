@@ -1,6 +1,41 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+
+
+        if (!Object.assign) {
+          Object.defineProperty(Object, 'assign', {
+            enumerable: false,
+            configurable: true,
+            writable: true,
+            value: function(target) {
+              if (target === undefined || target === null) {
+                throw new TypeError('Cannot convert first argument to object');
+              }
+
+              var to = Object(target);
+              for (var i = 1; i < arguments.length; i++) {
+                var nextSource = arguments[i];
+                if (nextSource === undefined || nextSource === null) {
+                  continue;
+                }
+                nextSource = Object(nextSource);
+
+                var keysArray = Object.keys(nextSource);
+                for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+                  var nextKey = keysArray[nextIndex];
+                  var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
+                  if (desc !== undefined && desc.enumerable) {
+                    to[nextKey] = nextSource[nextKey];
+                  }
+                }
+              }
+              return to;
+            }
+          });
+        }
+
+
         $("select").select2();
 
         var $flatValueId = $("#flatValueId");
@@ -43,14 +78,18 @@
                 columns.push({field: "EMPLOYEE_ID", title: "ID", width: 80, hidden: true, locked: true});
                 columns.push({field: "EMPLOYEE_CODE", title: "Code", width: 80, locked: true});
                 columns.push({field: "FULL_NAME", title: "Name", width: 90, locked: true});
+                let totalRow = {};
+                totalRow = {...totalRow, ...response.data[0]};
                 let counter = 1;
                 for(let i in response.data[0]){
+                    totalRow[i] = '';
                     if(counter > 3){
                         columns.push({field: i, title: response.columns[counter-4].FLAT_EDESC, width: 160,
                 template: '<input type="number" class="'+i+'" value="#: '+i+'||""#" style="height:17px;">'});
                     }
                     counter++; 
                 }
+                response.data.push(totalRow);
                 app.initializeKendoGrid($table, columns);
                 app.renderKendoGrid($table, response.data);
                 $("#searchFieldDiv").show();
@@ -60,13 +99,43 @@
             });
         });
 
+        // kendo.data.DataSource.prototype.dataFiltered = function () {
+        //     var filters = this.filter();
+        //     var allData = this.data();
+        //     var query = new kendo.data.Query(allData);
+        //     return query.filter(filters).data;
+        // }
+
         $table.on('input', 'input', function(e){
             var grid = $table.data("kendoGrid");
             var row = $(e.target).closest("tr");
             var dataItem = grid.dataItem(row);
+            var updatedValue = this.value;
             //var data = $table.data("kendoGrid").dataItem($(e.target).closest("tr"));
             var key = this.className;
-            dataItem[key] = this.value;
+            dataItem[key] = updatedValue;
+            //var dataSource = grid.dataSource.dataFiltered();
+            
+            if(row.is(":last-child")){
+                //var elms = document.getElementsByClassName(key);
+                //for (var i = 0; i < elms.length; i++) {
+                   //elms[i].setAttribute("value", updatedValue);
+                //}
+                $("."+key).val(updatedValue);
+                var dataSource = grid.dataSource;
+                $.each(grid.items(), function(index, item) {
+                    var uid = $(item).data("uid");
+                    var dataItem = dataSource.getByUid(uid);
+                    dataItem[key] = updatedValue;
+                    var index = changedValues.findIndex(function(x){
+                        return x.employeeId == dataItem.EMPLOYEE_ID && x.flatValue == key;
+                    });
+                    if(index == -1){ 
+                        changedValues.push({employeeId: dataItem.EMPLOYEE_ID, flatValue: key, flatId: key.substring(2)}); 
+                    }
+                });
+                return;
+            }
             //var index = changedValues.findIndex(x => x.EMPLOYEE_ID==dataItem.EMPLOYEE_ID);
             var index = changedValues.findIndex(function(x){
                 return x.employeeId == dataItem.EMPLOYEE_ID && x.flatValue == key;

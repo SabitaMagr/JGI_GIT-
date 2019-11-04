@@ -92,7 +92,16 @@ $positionId = $formFour->get('positionId');
 $designationId = $formFour->get('designationId');
 $departmentId = $formFour->get('departmentId');
 $branchId = $formFour->get('branchId');
-
+$overtimeEligibility = $formFour->get('overtimeEligible');
+$overtimeEligibilityValue = [
+        'Y' => 'Yes',
+        'N' => 'No'
+];
+$wohFlag = $formFour->get('wohFlag');
+$wohFlagValue = [
+        'L' => 'Substitute Leave',
+        'O' => 'Overtime'
+];
 $employeeType = $formFour->get('employeeType');
 $employeeTypeValue = [
     'R' => 'Regular',
@@ -1051,6 +1060,29 @@ if ($this->messages) {
 
 
                 </div>
+
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="row bottomgap">
+                        <div class="form-group<?= empty($overtimeEligibility->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                <?php print $this->formLabel($overtimeEligibility); ?></div>
+                            <div class="col-xs-6 col-sm-6 cgap-4">
+                                <?php print $overtimeEligibilityValue[$employeeData[\Setup\Model\HrEmployees::OVERTIME_ELIGIBLE]] ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="row bottomgap">
+                        <div class="form-group<?= empty($wohFlag->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                <?php print $this->formLabel($wohFlag); ?></div>
+                            <div class="col-xs-6 col-sm-6 cgap-4">
+                                <?php print $wohFlagValue[$employeeData[\Setup\Model\HrEmployees::WOH_FLAG]]; ?></div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>

@@ -435,13 +435,13 @@ class EmployeeController extends HrisController {
         $filePath = empty($filePathArray) ? $this->config->getApplicationConfig()['default-profile-picture'] : $filePathArray[0];
 
         $perVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID]);
-        $perDistrictDtl = $this->repository->getDistrictDtl($perVdcMunicipalityDtl['DISTRICT_ID']);
-        $perZoneDtl = $this->repository->getZoneDtl($perDistrictDtl['ZONE_ID']);
+        $perDistrictDtl = $this->repository->getDistrictDtl($employeeData[HrEmployees::ADDR_PERM_DISTRICT_ID]);
+        $perZoneDtl = $this->repository->getZoneDtl($employeeData[HrEmployees::ADDR_PERM_ZONE_ID]);
         $perProvinceDtl = $this->repository->getProvinceDtl($id)['PERM_PROVINCE'];
 
         $tempVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID]);
-        $tempDistrictDtl = $this->repository->getDistrictDtl($tempVdcMunicipalityDtl['DISTRICT_ID']);
-        $tempZoneDtl = $this->repository->getZoneDtl($tempDistrictDtl['ZONE_ID']);
+        $tempDistrictDtl = $this->repository->getDistrictDtl($employeeData[HrEmployees::ADDR_TEMP_DISTRICT_ID]);
+        $tempZoneDtl = $this->repository->getZoneDtl($employeeData[HrEmployees::ADDR_TEMP_ZONE_ID]);
         $tempProvinceDtl = $this->repository->getProvinceDtl($id)['TEMP_PROVINCE'];
         
         $empQualificationDtl = $empQualificationRepo->getByEmpId($id);
