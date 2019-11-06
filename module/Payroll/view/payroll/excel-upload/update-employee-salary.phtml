@@ -6,7 +6,7 @@ $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('assets/global/plugins/js-xlsx-master/dist/xlsx.full.min.js'))
-        ->appendFile($this->basePath('js/Payroll/excel-upload/index.js'));
+        ->appendFile($this->basePath('js/Payroll/excel-upload/update-employee-salary.js'));
 ?>
 
 <?php if ($this->messages) { ?>
@@ -16,12 +16,7 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.updateFlatValuesLink = '<?php echo $this->url("excelUpload", ["action" => "updateFlatValues"]); ?>';
-    document.updateMonthlyValuesLink = '<?php echo $this->url("excelUpload", ["action" => "updateMonthlyValues"]); ?>';
-    document.flatValues =<?php echo json_encode($flatValues); ?>;
-    document.monthlyValues =<?php echo json_encode($monthlyValues); ?>;
-    document.fiscalYears =<?php echo json_encode($fiscalYears); ?>;
-    document.months =<?php echo json_encode($months); ?>;
+    document.updateSalaryLink = '<?php echo $this->url("excelUpload", ["action" => "updateEmployeeSalary"]); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
 </script>
 
@@ -45,30 +40,7 @@ $this->headScript()
                             <input type="file" name="excelImport" id="excelImport">
                             </label>
                         </div>
-                        <div class="col-sm-2">
-                            <label style="width: 100%">Effect On
-                            <select id="payHeads" class="form-control" multiple="multiple" name="payHeads"></select>
-                            </label>
-                        </div>
-                        <div class="col-sm-2">
-                            <label style="width: 100%">Fiscal Year
-                            <select id="fiscalYearId" class="form-control" name="fiscalYearId"></select>
-                            </label>
-                        </div>
-                        
-                        <div class="col-sm-2">
-                            <div class="row">
-                                <span>Value Type:</span>
-                                <div class="col-sm-12">
-                                    <label>Flat Value</label>
-                                    <input type="radio" name="valueType" checked="checked" id="flatValue">
-                                </div>
-                                <div class="col-sm-12">
-                                    <label>Monthly Value</label>
-                                    <input type="radio" name="valueType" id="monthlyValue">
-                                </div>
-                            </div>
-                        </div>
+                        <div class="col-sm-2"></div>
                         <div class="col-sm-2">
                             <div class="row">
                                 <span>Based On:</span>
@@ -81,11 +53,6 @@ $this->headScript()
                                     <input type="radio" name="basedOn" id="employeeCodeBased">
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-2 months">
-                            <label style="width: 100%">Months
-                            <select id="monthId" class="form-control" name="monthId"></select>
-                            </label>
                         </div>
                     </div>
                     <div class="row">
