@@ -1257,7 +1257,7 @@ INTO HRIS_MENUS
     NULL,
     'fa fa-list-alt',
     'overtimeReport',
-    select max(menu_index)+1  from hris_menus where lower(ROUTE) like '%overtime-report%',
+    (select max(menu_index)+1  from hris_menus where lower(ROUTE) like '%overtime-report%'),
     NULL,
     NULL,
     'Y'
@@ -1586,3 +1586,40 @@ null,
             NULL,
             'Y'
           );
+
+INSERT INTO HRIS_MENUS
+(
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+)
+VALUES
+(
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Leave Cancel',
+    6,
+    NULL,
+    'leaverequest',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-times',
+    'cancel',
+    (select max(menu_index)+1 from hris_menus where parent_menu=6),
+    NULL,
+    NULL,
+    'Y'
+);

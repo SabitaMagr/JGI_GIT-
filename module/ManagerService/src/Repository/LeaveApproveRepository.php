@@ -184,10 +184,10 @@ class LeaveApproveRepository implements RepositoryInterface {
                   INITCAP(APRV.FULL_NAME)                             AS APPROVER_NAME,
                   ELA.TOTAL_DAYS                                      AS TOTAL_DAYS,
                   ELA.BALANCE                                         AS BALANCE,
-                  case when L.ALLOW_HALFDAY = 'Y'
-                  then LA.NO_OF_DAYS/2
-                  else LA.NO_OF_DAYS
-                  END as ACTUAL_DAYS,
+                  (CASE WHEN (LA.HALF_DAY IS NULL OR LA.HALF_DAY = 'N')
+                  then LA.NO_OF_DAYS
+                  else LA.NO_OF_DAYS/2
+                  END) AS ACTUAL_DAYS,
                   (CASE WHEN (LA.HALF_DAY IS NULL OR LA.HALF_DAY = 'N') 
                   THEN 'Full Day' 
                   WHEN (LA.HALF_DAY = 'F') THEN 'First Half' 

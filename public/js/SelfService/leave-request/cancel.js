@@ -18,6 +18,11 @@
                 <a class="btn btn-icon-only green" href="${document.viewLink}/#:ID#" style="height:17px;" title="View Detail">
                     <i class="fa fa-search"></i>
                 </a>
+                #if(ALLOW_DELETE=='Y'){#
+                <a  class="btn btn-icon-only red confirmation" href="${document.deleteLink}/#:ID#" style="height:17px;" title="Cancel">
+                    <i class="fa fa-times"></i>
+                </a>
+                #}#
             </div>
         `;
         app.initializeKendoGrid($table, [
@@ -52,7 +57,7 @@
             {field: "NO_OF_DAYS", title: "Duration"},
             {field: "HALF_DAY_DETAIL", title: "Type"},
             {field: "STATUS_DETAIL", title: "Status"},
-            {field: ["ID"], title: "Action", template: action}
+            {field: ["ID", "ALLOW_DELETE"], title: "Action", template: action}
         ]);
 
 

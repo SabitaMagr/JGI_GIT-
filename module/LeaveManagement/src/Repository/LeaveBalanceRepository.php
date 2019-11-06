@@ -193,7 +193,7 @@ FROM (SELECT *
                     HA.TOTAL_DAYS AS TOTAL,
                     HA.BALANCE,
                     HS.ENCASH_DAYS as ENCASHED,
-                    ( ha.total_days + ha.previous_year_bal - ha.balance - (case when
+                    ( ha.total_days - ha.balance - (case when
                     HS.ENCASH_DAYS is null then 0 else HS.ENCASH_DAYS end)) AS taken
               FROM 
               HRIS_EMPLOYEE_LEAVE_ASSIGN HA
