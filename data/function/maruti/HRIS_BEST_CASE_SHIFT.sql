@@ -20,6 +20,8 @@ AS
   V_OUT_TIME_OUT DATE :=NULL;
   V_IN_TIME_CHECK NUMBER;
   V_YESTERDAY_OUT_TIME TIMESTAMP;
+  V_BETN_TWOPM CHAR(4 BYTE);
+  V_BETN_TWOPM_OUT TIMESTAMP;
 BEGIN
 
 begin
@@ -102,6 +104,55 @@ left join HRIS_ATTD_DEVICE_MASTER adm on (adm.device_ip=a.ip_address)
 
 
   end if;
+  
+  
+  -- check to overide out time if punch time is   between 1:30 to 2:30 start
+
+
+select 
+case when 
+V_IN_TIME_MIN
+between 
+TO_DATE(TO_CHAR(P_ATTENDANCE_DT,'DD-MON-YYYY')||'01:45 PM','DD-MON-YYYY HH:MI AM')
+and
+TO_DATE(TO_CHAR(P_ATTENDANCE_DT,'DD-MON-YYYY')||'02:30 PM','DD-MON-YYYY HH:MI AM')
+then
+'TRUE'
+else
+'FALSE'
+end  into V_BETN_TWOPM
+from dual;
+
+
+IF(V_BETN_TWOPM = 'TRUE')
+THEN
+
+
+  select 
+  MAX(ATTENDANCE_TIME)
+  INTO V_BETN_TWOPM_OUT
+  FROM HRIS_ATTENDANCE a
+left join HRIS_ATTD_DEVICE_MASTER adm on (adm.device_ip=a.ip_address) 
+  WHERE EMPLOYEE_ID =P_EMPLOYEE_ID
+  and adm.PURPOSE='OUT'
+  AND A.ATTENDANCE_TIME > V_IN_TIME_IN
+  AND (A.ATTENDANCE_TIME BETWEEN
+  TO_DATE(TO_CHAR(P_ATTENDANCE_DT+1,'DD-MON-YYYY')||'2:30 PM','DD-MON-YYYY HH:MI AM') 
+  AND
+  TO_DATE(TO_CHAR(P_ATTENDANCE_DT+1,'DD-MON-YYYY')||'6:30 PM','DD-MON-YYYY HH:MI AM'));
+  
+  IF(V_BETN_TWOPM_OUT IS NOT NULL )
+  THEN
+  V_OUT_TIME_OUT:=V_BETN_TWOPM_OUT;
+  END IF;
+
+
+END IF;
+
+
+
+-- check to overide out time if punch time is   between 1:30 to 2:30 end
+  
 
   if V_OUT_TIME_OUT is not null
   then
