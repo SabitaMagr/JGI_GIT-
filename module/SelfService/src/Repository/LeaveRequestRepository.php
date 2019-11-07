@@ -112,6 +112,7 @@ class LeaveRequestRepository implements RepositoryInterface {
                   END AS IS_SUBSTITUTE_MANDATORY,
                   L.ENABLE_SUBSTITUTE       AS ENABLE_SUBSTITUTE
                   ,L.IS_SUBSTITUTE
+                  ,L.APPLY_LIMIT
                 FROM HRIS_EMPLOYEE_LEAVE_ASSIGN LA
                 INNER JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON L.LEAVE_ID                =LA.LEAVE_ID

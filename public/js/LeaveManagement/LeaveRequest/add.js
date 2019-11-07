@@ -27,7 +27,8 @@
         var rowCount = "";
         var requireDocument = "";
         var leaveName = "";
-
+        
+        var applyLimit;
         var substituteEmp = {
             list: [],
             disable: function (employeeIds) {
@@ -72,13 +73,17 @@
 
                 $noOfDays.val(dateDiff);
                 var balanceDiff = dateDiff / (halfDay === 'N' ? 1 : 2);
-
+                
                 if (balanceDiff > availableDays) {
                     $errorMsg.html("* Applied days can't be more than available days.");
                     $request.prop("disabled", true);
                 } else if (balanceDiff === 0) {
                     $errorMsg.html("* Applied days can't be 0 day.");
                     $request.prop("disabled", true);
+                } else if (applyLimit!=null  && applyLimit < balanceDiff) {
+                    $errorMsg.html("* Cant be Applied More than ".applyLimit);
+                    $request.prop("disabled", true);
+                    app.showMessage(" Cant be Applied More than "+applyLimit+" days" , "warning");
                 } else {
                     $errorMsg.html("");
                     $request.prop("disabled", false);
@@ -206,6 +211,7 @@
             }).then(function (success) {
                 App.unblockUI("#hris-page-content");
                 var leaveDetail = success.data;
+                applyLimit = leaveDetail.APPLY_LIMIT;
                 substituteDetails = success.subtituteDetails;
 //                app.populateSelect($leave, substituteDetails, 'id', 'name', 'Select a Leave', null, null, false);
                 app.populateSelect($subRefId, substituteDetails, 'ID', 'SUB_NAME', 'Select Substitute Date ', ' ', $subRefId.val(), false);
