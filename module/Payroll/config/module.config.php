@@ -18,7 +18,7 @@ return [
             'excelUpload' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/payroll/excelUpload[/:action[/:id]]',
+                    'route' => '/excelUpload[/:action[/:id]]',
                     'defaults' => [
                         'controller' => ExcelUploadController::class,
                         'action' => 'index'

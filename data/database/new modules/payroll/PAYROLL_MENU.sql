@@ -610,7 +610,8 @@ INSERT INTO hris_menus (
     NULL,
     (SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
     'Employee Wise Bulk Assign',
-    35,
+    (select menu_id from hris_menus where lower(menu_name) like 'flat value' and parent_menu in (
+select menu_id from hris_menus where lower(menu_name) like 'payroll')),
     NULL,
     'flatValue',
     'E',
@@ -644,7 +645,8 @@ INSERT INTO hris_menus (
     NULL,
     (SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
     'Position Wise Bulk Assign',
-    35,
+    (select menu_id from hris_menus where lower(menu_name) like 'flat value' and parent_menu in (
+select menu_id from hris_menus where lower(menu_name) like 'payroll')),
     NULL,
     'flatValue',
     'E',
@@ -678,7 +680,8 @@ INSERT INTO hris_menus (
     NULL,
     (SELECT MAX(MENU_ID)+1 FROM hris_menus),
     'Excel Upload',
-    8,
+    (select menu_id from hris_menus where lower(menu_name) like 'payroll' and parent_menu in (
+select menu_id from hris_menus where lower(menu_name) like 'hr' or lower(menu_name) like 'admin')),
     NULL,
     'excelUpload',
     'E',
