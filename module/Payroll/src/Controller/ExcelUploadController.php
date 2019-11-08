@@ -15,6 +15,7 @@ use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\View\Model\JsonModel;
+use Payroll\Repository\ExcelUploadRepository;
 
 class ExcelUploadController extends HrisController {
 
@@ -23,6 +24,7 @@ class ExcelUploadController extends HrisController {
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         parent::__construct($adapter, $storage);
         $this->adapter = $adapter;
+        $this->initializeRepository(ExcelUploadRepository::class);
     }
 
     public function indexAction() {
@@ -44,10 +46,12 @@ class ExcelUploadController extends HrisController {
         $excelData = $_POST['data'];
         $fiscalYearId = $_POST['fiscalYearId'];
         $flatId = $_POST['flatValueId'];
-        //$basedOn = $_POST['basedOn'];
+        $basedOn = $_POST['basedOn'];
         $detailRepo = new FlatValueDetailRepo($this->adapter);
         foreach($flatId as $fid){
             foreach ($excelData as $data) {
+                if($basedOn == 2){ $data['ID'] = EntityHelper::getEmployeeIdFromCode($this->adapter, $data['ID']); }
+                if($data['ID'] == null || $data['ID'] == ''){ continue; }
                 $item['employeeId'] = $data['ID'];
                 $item['value'] = $data['AMOUNT'];
                 $item['flatId'] = $fid;
@@ -62,10 +66,12 @@ class ExcelUploadController extends HrisController {
         $monthId = $_POST['monthId'];
         $fiscalYearId = $_POST['fiscalYearId'];
         $monthlyValueId = $_POST['monthlyValueId'];
-        //$basedOn = $_POST['basedOn'];
+        $basedOn = $_POST['basedOn'];
         $detailRepo = new MonthlyValueDetailRepo($this->adapter);
         foreach($monthlyValueId as $mid){
             foreach ($excelData as $data) {
+                if($basedOn == 2){ $data['ID'] = EntityHelper::getEmployeeIdFromCode($this->adapter, $data['ID']); }
+                if($data['ID'] == null || $data['ID'] == ''){ continue; }
                 $item['employeeId'] = $data['ID'];
                 $item['mthValue'] = $data['AMOUNT'];
                 $item['mthId'] = $mid;
@@ -75,5 +81,23 @@ class ExcelUploadController extends HrisController {
             }
         }
         return new JsonModel(['success' => true, 'error' => '']);
+    }
+
+    public function updateEmployeeSalaryAction(){
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $excelData = $_POST['data'];
+            $basedOn = $_POST['basedOn'];
+            foreach ($excelData as $data) {
+                if($basedOn == 2){ $data['ID'] = EntityHelper::getEmployeeIdFromCode($this->adapter, $data['ID']); }
+                if($data['ID'] == null || $data['ID'] == ''){ continue; }
+                $this->repository->updateEmployeeSalary($data['ID'], $data['AMOUNT']);
+            }
+            return new JsonModel(['success' => true, 'error' => '']);
+        }
+        return $this->stickFlashMessagesTo([
+            'searchValues' => EntityHelper::getSearchData($this->adapter),
+            'acl' => $this->acl
+        ]);
     }
 }

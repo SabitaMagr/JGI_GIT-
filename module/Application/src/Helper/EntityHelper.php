@@ -573,4 +573,10 @@ class EntityHelper {
         }
         return $where;
     }
+
+    public function getEmployeeIdFromCode($adapter, $code){
+        $sql = "SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_CODE = '{$code}'";
+        $result = self::rawQueryResult($adapter, $sql);
+        return Helper::extractDbData($result)[0]['EMPLOYEE_ID'];
+    }
 }

@@ -1460,7 +1460,7 @@ null,
         NULL,
         (select max(menu_id)+1 from hris_menus),
         'Group Shift Assign',
-        301,
+        (select menu_id from hris_menus where lower(menu_name) like 'assign' and parent_menu is null),
         NULL,
         'groupshiftassign',
         'E',
@@ -1620,6 +1620,42 @@ VALUES
     'cancel',
     (select max(menu_index)+1 from hris_menus where parent_menu=6),
     NULL,
+    NULL,
+    'Y'
+);
+
+
+
+INSERT INTO hris_menus (
+    menu_code,
+    menu_id,
+    menu_name,
+    parent_menu,
+    menu_description,
+    route,
+    status,
+    created_dt,
+    modified_dt,
+    icon_class,
+    action,
+    menu_index,
+    created_by,
+    modified_by,
+    is_visible
+) VALUES (
+    NULL,
+    (SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+    'Salary Update',
+    (select menu_id from hris_menus where lower(menu_name) like 'utility'),
+    NULL,
+    'excelUpload',
+    'E',
+    TO_DATE('07-NOV-19', 'DD-MON-RR'),
+    NULL,
+    'fa fa-edit',
+    'updateEmployeeSalary',
+    3,
+    1000445,
     NULL,
     'Y'
 );
