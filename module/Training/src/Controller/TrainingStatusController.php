@@ -86,6 +86,7 @@ class TrainingStatusController extends HrisController
             'form' => $this->form,
             'id' => $id,
             'detail' => $detail,
+            'acl' => $this->acl,
             'customRenderer' => Helper::renderCustomView()
         ]);
     }
