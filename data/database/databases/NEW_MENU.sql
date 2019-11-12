@@ -1659,3 +1659,41 @@ INSERT INTO hris_menus (
     NULL,
     'Y'
 );
+
+INSERT
+INTO HRIS_MENUS
+(
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+)
+VALUES
+(
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Overtime Bulk Update',
+    301,
+    NULL,
+    'overtime-bulk-setup',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-list-alt',
+    'index',
+    9,
+    NULL,
+    NULL,
+    'Y'
+);
