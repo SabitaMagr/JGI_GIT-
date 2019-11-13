@@ -148,7 +148,7 @@ from Hris_Attendance_Detail
 where Attendance_Dt=trunc(P_FROM_ATTENDANCE_TIME)-1 and employee_id=P_EMPLOYEE_ID;
 EXCEPTION
 WHEN no_data_found THEN
-raise_application_error(-20344,'no attendance in that date');
+NULL;
 END;
 
 if(V_YESTERDAY_OUT_TIME is null)
@@ -771,6 +771,68 @@ EXCEPTION
     WHEN no_data_found THEN
         NULL;
 END;/
+            create or replace PROCEDURE HRIS_CASE_EMP_MAP(
+    P_EMPLOYEE_ID          IN HRIS_EMPLOYEES.EMPLOYEE_ID%TYPE,
+    P_CASE_ID              IN hris_best_case_emp_map.case_id%TYPE,
+    P_CASE_ACTION          VARCHAR2
+    )
+AS
+v_exists varchar2(1) := 'F';
+begin
+IF P_CASE_ACTION = 'A' THEN
+BEGIN
+            select 'T'
+            into v_exists
+            from hris_best_case_emp_map
+            where EMPLOYEE_ID = P_EMPLOYEE_ID
+            and case_id = P_CASE_ID;
+        exception
+            when no_data_found then
+            null;
+        end;
+        if v_exists <> 'T' then
+
+        INSERT INTO hris_best_case_emp_map(CASE_ID, EMPLOYEE_ID)
+        VALUES(P_CASE_ID, P_EMPLOYEE_ID);
+
+        end if;
+
+        FOR SHIFT_LIST IN (SELECT SHIFT_ID FROM HRIS_BEST_CASE_SHIFT_MAP WHERE CASE_ID = P_CASE_ID) LOOP
+
+        begin
+        select 'T'
+            into v_exists
+            from HRIS_EMPLOYEE_SHIFTS
+            where EMPLOYEE_ID = P_EMPLOYEE_ID
+            and shift_id = SHIFT_LIST.SHIFT_ID;
+        exception
+            when no_data_found then
+            null;
+        end;
+
+        if v_exists <> 'T' then
+        INSERT INTO HRIS_EMPLOYEE_SHIFTS VALUES(
+        P_EMPLOYEE_ID,
+        SHIFT_LIST.SHIFT_ID,
+        (SELECT START_DATE FROM hris_best_case_setup WHERE CASE_ID = P_CASE_ID), 
+        (SELECT END_DATE FROM hris_best_case_setup WHERE CASE_ID = P_CASE_ID),
+        p_case_id
+        );
+        end if;
+        END LOOP;
+
+ELSE
+
+DELETE FROM hris_best_case_emp_map WHERE EMPLOYEE_ID = P_EMPLOYEE_ID AND CASE_ID = P_CASE_ID;
+
+DELETE FROM hris_employee_shifts WHERE EMPLOYEE_ID = P_EMPLOYEE_ID AND CASE_ID = P_CASE_ID;
+
+--FOR SHIFT_LIST IN (SELECT SHIFT_ID FROM HRIS_BEST_CASE_SHIFT_MAP WHERE CASE_ID = P_CASE_ID) LOOP
+--DELETE FROM HRIS_EMPLOYEE_SHIFTS WHERE SHIFT_ID = SHIFT_LIST.SHIFT_ID AND EMPLOYEE_ID = P_EMPLOYEE_ID;
+--END LOOP;
+
+END IF;
+end;/
             CREATE OR REPLACE PROCEDURE HRIS_COMPULSORY_OT_CANCEL(
     P_COMPULSORY_OT_ID HRIS_COMPULSORY_OVERTIME.COMPULSORY_OVERTIME_ID%TYPE)
 AS
@@ -1106,7 +1168,7 @@ BEGIN
   FROM DUAL;
   --SERVICE STATUS UPDATE
   FOR service IN
-  (SELECT * FROM HRIS_JOB_HISTORY WHERE EVENT_DATE =V_DATE
+  (SELECT * FROM HRIS_JOB_HISTORY WHERE EVENT_DATE =V_DATE AND STATUS = 'E'
   )
   LOOP
     HRIS_UPDATE_EMPLOYEE_SERVICE(service.JOB_HISTORY_ID);
@@ -4169,6 +4231,7 @@ AS
   V_HALF_INTERVAL      DATE;
   v_NEXT_HALF_INTERVAL DATE;
   v_training_id          number;
+  v_roaster_shift_id number;
 BEGIN
   IF P_TO_ATTENDANCE_DT IS NOT NULL THEN
     V_TO_ATTENDANCE_DT  :=P_TO_ATTENDANCE_DT;
@@ -4222,15 +4285,30 @@ BEGIN
       V_TWO_DAY_SHIFT  := employee.TWO_DAY_SHIFT;
       V_IGNORE_TIME    :=employee.IGNORE_TIME;
       V_SHIFT_ID       := employee.SHIFT_ID;
+      v_roaster_shift_id := null;
+      
+      begin
+      select CASE when  shift_id > 0 then shift_id else null end into v_roaster_shift_id
+      from HRIS_EMPLOYEE_SHIFT_ROASTER where employee_id=employee.EMPLOYEE_ID and FOR_DATE=employee.ATTENDANCE_DT;
+      EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+          null;
+        END;
+      
       --
       DELETE
       FROM HRIS_ATTENDANCE_DETAIL
       WHERE ATTENDANCE_DT= TRUNC(employee.ATTENDANCE_DT)
       AND EMPLOYEE_ID    = employee.EMPLOYEE_ID ;
       --
+      if(v_roaster_shift_id is null)then
       V_SHIFT_ID    :=HRIS_BEST_CASE_SHIFT(employee.EMPLOYEE_ID,TRUNC(employee.ATTENDANCE_DT));
+      end if;
+      
       IF(V_SHIFT_ID IS NULL)THEN
         V_SHIFT_ID  :=employee.SHIFT_ID;
+      ELSE
+      select two_day_shift into V_TWO_DAY_SHIFT from hris_shifts where shift_id=V_SHIFT_ID;
       END IF;
       HRIS_PRELOAD_ATTENDANCE(employee.ATTENDANCE_DT,employee.EMPLOYEE_ID,V_SHIFT_ID);
       --
@@ -4952,7 +5030,7 @@ END;/
     P_EMPLOYEE_ID HRIS_ATTENDANCE.EMPLOYEE_ID%TYPE  :=NULL,
     P_LEAVE_ID HRIS_LEAVE_MASTER_SETUP.LEAVE_ID%TYPE:=NULL)
 AS
-V_BALANCE                     NUMBER(3,1);
+V_BALANCE                     NUMBER;
 BEGIN
   UPDATE HRIS_EMPLOYEE_LEAVE_ASSIGN
   SET BALANCE     =TOTAL_DAYS
@@ -5091,14 +5169,7 @@ SELECT R.EMPLOYEE_ID,
               LEAVE_ID =leave.LEAVE_ID
           ORDER BY FISCAL_YEAR_MONTH_NO
         ) LOOP
-          IF
-            (leave.TOTAL_NO_OF_DAYS >= LEAVE_ASSIGN_DTL.TOTAL_DAYS)
-          THEN
-            V_BALANCE := 0;
-          ELSE
             V_BALANCE := LEAVE_ASSIGN_DTL.BALANCE-leave.TOTAL_NO_OF_DAYS;
-          END IF;
-
           UPDATE HRIS_EMPLOYEE_LEAVE_ASSIGN
             SET
               BALANCE = V_BALANCE
@@ -5371,13 +5442,13 @@ BEGIN
     SELECT *
     INTO JOB_HISTORY
     FROM HRIS_JOB_HISTORY
-    WHERE JOB_HISTORY_ID=P_JOB_HISTORY_ID;
+    WHERE JOB_HISTORY_ID=P_JOB_HISTORY_ID AND STATUS = 'E';
     SELECT COUNT(*)
     INTO IS_LATEST
     FROM
       (SELECT MAX(START_DATE) AS MAX_START_DATE
       FROM HRIS_JOB_HISTORY
-      WHERE EMPLOYEE_ID=JOB_HISTORY.EMPLOYEE_ID
+      WHERE EMPLOYEE_ID=JOB_HISTORY.EMPLOYEE_ID AND STATUS = 'E'
       GROUP BY EMPLOYEE_ID
       ) H
     WHERE H.MAX_START_DATE=JOB_HISTORY.START_DATE;
@@ -5412,7 +5483,7 @@ BEGIN
   FROM
     (SELECT *
     FROM HRIS_JOB_HISTORY
-    WHERE EMPLOYEE_ID = P_EMPLOYEE_ID
+    WHERE EMPLOYEE_ID = P_EMPLOYEE_ID AND STATUS = 'E'
     ORDER BY START_DATE DESC
     )
   WHERE ROWNUM=1;
@@ -6421,6 +6492,92 @@ BEGIN
     
     
 END;/
+            create or replace PROCEDURE hris_attd_insert_exe (
+    p_thumb_id          NUMBER,
+    p_attendance_dt     DATE,
+    p_ip_address        VARCHAR2,
+    p_attendance_from   VARCHAR2,
+    p_attendance_time   TIMESTAMP,
+    p_remarks           VARCHAR2 := NULL
+) AS
+    v_employee_id   NUMBER := NULL;
+    v_purpose       hris_attd_device_master.purpose%TYPE := 'I/0';
+BEGIN
+    BEGIN
+        SELECT
+            purpose
+        INTO
+            v_purpose
+        FROM
+            hris_attd_device_master
+        WHERE
+            device_ip = p_ip_address;
+
+    EXCEPTION
+        WHEN no_data_found THEN
+            NULL;
+    END;
+
+    BEGIN
+        SELECT
+            employee_id
+        INTO
+            v_employee_id
+        FROM
+            hris_employees
+        WHERE
+        status='E' and
+            id_thumb_id = to_char(p_thumb_id);
+
+    EXCEPTION
+        WHEN no_data_found THEN
+           NULL;
+
+        WHEN too_many_rows THEN
+            NULL;
+
+    END;
+
+
+
+
+    BEGIN
+        IF
+            v_employee_id IS NOT NULL
+        THEN
+
+    UPDATE hris_attendance 
+    SET
+    employee_id=v_employee_id,
+    CHECKED='Y'
+    WHERE 
+    ATTENDANCE_DT=p_attendance_dt
+    and ATTENDANCE_TIME=p_attendance_time
+    and THUMB_ID=p_thumb_id;
+
+
+           hris_attendance_after_insert(
+              v_employee_id,
+               p_attendance_dt,
+                p_attendance_time,
+                p_remarks
+           );
+        END IF;
+    END;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        dbms_output.put_line('THUMB_ID: '
+         || p_thumb_id
+         || 'ATTENDANCE_DT:'
+         || p_attendance_dt
+         || 'IP_ADDRESS: '
+         || p_ip_address
+         || 'P_ATTENDANCE_FROM: '
+         || p_attendance_from);
+END;
+ 
+ /
             CREATE OR REPLACE PROCEDURE hris_loan_payment_flag_change (
     p_employee_id   hris_attendance_detail.employee_id%TYPE,
     p_sheet_no      hris_salary_sheet.sheet_no%TYPE
@@ -6542,6 +6699,84 @@ SELECT MONTH_ID INTO V_MONTH_ID FROM Hris_Salary_Sheet where sheet_no=p_sheet_no
         
 
     END LOOP;
+END;/
+            CREATE OR REPLACE PROCEDURE hris_weekly_ros_assign (
+    p_employee_id   NUMBER,
+    p_sun           NUMBER,
+    p_mon           NUMBER,
+    p_tue           NUMBER,
+    p_wed           NUMBER,
+    p_thu           NUMBER,
+    p_fri           NUMBER,
+    p_sat           NUMBER
+) AS
+
+    v_update   NUMBER := 1;
+    v_sun      NUMBER;
+    v_mon      NUMBER;
+    v_tue      NUMBER;
+    v_wed      NUMBER;
+    v_thu      NUMBER;
+    v_fri      NUMBER;
+    v_sat      NUMBER;
+BEGIN
+    dbms_output.put_line('TEST');
+    BEGIN
+        SELECT
+            sun,
+            mon,
+            tue,
+            wed,
+            thu,
+            fri,
+            sat
+        INTO
+            v_sun,v_mon,v_tue,v_wed,v_thu,v_fri,v_sat
+        FROM
+            hris_weekly_roaster
+        WHERE
+            employee_id = p_employee_id;
+
+    EXCEPTION
+        WHEN no_data_found THEN
+            INSERT INTO hris_weekly_roaster VALUES (
+                p_employee_id,
+                p_sun,
+                p_mon,
+                p_tue,
+                p_wed,
+                p_thu,
+                p_fri,
+                p_sat,
+                'E',
+                trunc(SYSDATE),
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL
+            );
+
+            v_update := 0;
+    END;
+
+    IF
+        ( v_update = 1 )
+    THEN
+        UPDATE hris_weekly_roaster
+            SET
+                sun = p_sun,
+                mon = p_mon,
+                tue = p_tue,
+                wed = p_wed,
+                thu = p_thu,
+                fri = p_fri,
+                sat = p_sat
+        WHERE
+            employee_id = p_employee_id;
+
+    END IF;
+
 END;/
             create or replace TRIGGER HRIS_AFTER_EMPLOYEE_PENALTY AFTER
   INSERT OR
@@ -7353,6 +7588,24 @@ BEGIN
   END LOOP;
 RETURN V_SHIFT_ID;
 END;/
+            create or replace function HRIS_GET_BRANCH_JH
+(
+p_employee_id number,
+p_attendance_dt date,
+p_branch_id number
+)
+return Char
+is
+v_job_branch_name varchar2(200 byte):=null;
+begin
+
+select BRANCH_NAME into v_job_branch_name  from HRIS_BRANCHES where branch_id=p_branch_id;
+
+
+return v_job_branch_name;
+end;
+
+/
             CREATE OR REPLACE FUNCTION HRIS_GET_FULL_FORM(
     P_SHORT_FORM VARCHAR2,
     P_OF         VARCHAR2)
@@ -7391,7 +7644,7 @@ BEGIN
     FROM
       (SELECT H.JOB_HISTORY_ID
       FROM HRIS_JOB_HISTORY H
-      WHERE H.START_DATE  <=TRUNC(V_DATE_ON)
+      WHERE H.START_DATE  <=TRUNC(V_DATE_ON) AND H.STATUS = 'E'
       AND TRUNC(V_DATE_ON)<= (
         CASE
           WHEN H.END_DATE IS NOT NULL
@@ -7678,8 +7931,8 @@ BEGIN
   SELECT COUNT(*)
   INTO V_OVERLAPPING_LEAVE_NO
   FROM HRIS_EMPLOYEE_LEAVE_REQUEST
-  WHERE ((TRUNC(P_START_DATE) BETWEEN START_DATE AND END_DATE)
-  OR (TRUNC(P_END_DATE) BETWEEN START_DATE AND END_DATE))
+  WHERE (( START_DATE between P_START_DATE and P_END_DATE )
+  OR ( END_DATE between P_START_DATE and P_END_DATE ))
   AND STATUS IN  ('RQ','RC','AP','CP','CR')
   AND EMPLOYEE_ID = P_EMPLOYEE_ID ;
   --
@@ -7699,6 +7952,15 @@ BEGIN
   RETURN NULL;
 END;
 /
+            create or replace function hris_validate_overtime_attd(
+    p_employee_id HRIS_ATTENDANCE_DETAIL.EMPLOYEE_ID%TYPE,
+    p_attendance_dt HRIS_ATTENDANCE_DETAIL.ATTENDANCE_DT%TYPE
+) 
+return char
+as
+begin
+return 'T';
+end;/
             create or replace FUNCTION LATE_STATUS_DESC(
     P_STATUS HRIS_ATTENDANCE_DETAIL.LATE_STATUS%TYPE)
   RETURN VARCHAR2
