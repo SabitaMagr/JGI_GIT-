@@ -183,7 +183,8 @@ class SSPayValueModifiedRepo extends HrisRepository {
 
     public function getColumns($payHeadId){
       $payHeadId = implode(',', $payHeadId);
-      $sql = "select pay_id, pay_edesc from hris_pay_setup where pay_id in ($payHeadId)";
+      $sql = "select pay_id, pay_edesc, 'H_'||pay_id as title from hris_pay_setup where pay_id in ($payHeadId)
+      order by pay_id";
       $statement = $this->adapter->query($sql);
       return $statement->execute();
     }
@@ -212,7 +213,7 @@ class SSPayValueModifiedRepo extends HrisRepository {
                   (SELECT *
                   FROM
                     (SELECT MONTH_ID, PAY_ID, EMPLOYEE_ID AS E_ID,VAL FROM HRIS_SS_PAY_VALUE_MODIFIED WHERE MONTH_ID ={$monthId}
-                    ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$csv}))
+                    order by pay_id ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$csv}))
                   ) PV
                 ON (E.EMPLOYEE_ID=PV.E_ID)
                 WHERE E.STATUS   ='E' {$employeeCondition} ORDER BY C.COMPANY_NAME,SSG.GROUP_NAME,E.FULL_NAME";
