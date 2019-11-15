@@ -54,14 +54,13 @@
                 columns.push({field: "POSITION_NAME", title: "Position", width: 80, locked: true});
                 let totalRow = {};
                 totalRow = {...totalRow, ...response.data[0]};
-                let counter = 1;
                 for(let i in response.data[0]){
                     totalRow[i] = '';
-                    if(counter > 2){
-                        columns.push({field: i, title: response.columns[counter-3].FLAT_EDESC, width: 160,
+                    if(i.startsWith("F_")){
+                        let title = response.columns.filter((item) => item.TITLE == i);
+                        columns.push({field: i, title: title[0].FLAT_EDESC, width: 160,
                 template: '<input type="number" class="'+i+'" value="#: '+i+'||""#" style="height:17px;">'});
                     }
-                    counter++; 
                 }
                 response.data.push(totalRow);
                 app.initializeKendoGrid($table, columns);

@@ -2,40 +2,6 @@
     'use strict';
     $(document).ready(function () {
 
-
-        if (!Object.assign) {
-          Object.defineProperty(Object, 'assign', {
-            enumerable: false,
-            configurable: true,
-            writable: true,
-            value: function(target) {
-              if (target === undefined || target === null) {
-                throw new TypeError('Cannot convert first argument to object');
-              }
-
-              var to = Object(target);
-              for (var i = 1; i < arguments.length; i++) {
-                var nextSource = arguments[i];
-                if (nextSource === undefined || nextSource === null) {
-                  continue;
-                }
-                nextSource = Object(nextSource);
-
-                var keysArray = Object.keys(nextSource);
-                for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
-                  var nextKey = keysArray[nextIndex];
-                  var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
-                  if (desc !== undefined && desc.enumerable) {
-                    to[nextKey] = nextSource[nextKey];
-                  }
-                }
-              }
-              return to;
-            }
-          });
-        }
-
-
         $("select").select2();
 
         var $flatValueId = $("#flatValueId");
@@ -80,14 +46,13 @@
                 columns.push({field: "FULL_NAME", title: "Name", width: 90, locked: true});
                 let totalRow = {};
                 totalRow = {...totalRow, ...response.data[0]};
-                let counter = 1;
                 for(let i in response.data[0]){
                     totalRow[i] = '';
-                    if(counter > 3){
-                        columns.push({field: i, title: response.columns[counter-4].FLAT_EDESC, width: 160,
+                    if(i.startsWith("F_")){
+                        let title = response.columns.filter((item) => item.TITLE == i);
+                        columns.push({field: i, title: title[0].FLAT_EDESC, width: 160,
                 template: '<input type="number" class="'+i+'" value="#: '+i+'||""#" style="height:17px;">'});
                     }
-                    counter++; 
                 }
                 response.data.push(totalRow);
                 app.initializeKendoGrid($table, columns);

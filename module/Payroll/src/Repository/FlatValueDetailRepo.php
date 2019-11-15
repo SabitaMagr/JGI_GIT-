@@ -125,7 +125,7 @@ class FlatValueDetailRepo implements RepositoryInterface {
 
     public function getColumns($flat_id){
       $flat_id = implode(',', $flat_id);
-      $sql = "select flat_id, flat_edesc from hris_flat_value_setup where flat_id in ($flat_id)";
+      $sql = "select flat_id, flat_edesc, 'F_'||flat_id as title from hris_flat_value_setup where flat_id in ($flat_id)";
       $statement = $this->adapter->query($sql);
       return $statement->execute();
     }

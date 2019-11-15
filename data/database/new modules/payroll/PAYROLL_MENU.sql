@@ -694,3 +694,38 @@ select menu_id from hris_menus where lower(menu_name) like 'hr' or lower(menu_na
     NULL,
     'Y'
 );
+
+INSERT INTO hris_menus (
+    menu_code,
+    menu_id,
+    menu_name,
+    parent_menu,
+    menu_description,
+    route,
+    status,
+    created_dt,
+    modified_dt,
+    icon_class,
+    action,
+    menu_index,
+    created_by,
+    modified_by,
+    is_visible
+) VALUES (
+    NULL,
+    (SELECT MAX(MENU_ID)+1 FROM hris_menus),
+    'Pay Value Modified Modern',
+    (select menu_id from hris_menus where lower(menu_name) like 'salary' and parent_menu in (
+select menu_id from hris_menus where lower(menu_name) like 'payroll')),
+    NULL,
+    'salarySheet',
+    'E',
+    TO_DATE('22-OCT-19', 'DD-MON-RR'),
+    NULL,
+    'fa fa-star',
+    'payValueModifiedModern',
+    1,
+    NULL,
+    NULL,
+    'Y'
+);
