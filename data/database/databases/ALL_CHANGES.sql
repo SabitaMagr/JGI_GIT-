@@ -1581,3 +1581,12 @@ ADD OVERTIME_ELIGIBLE CHAR(1);
 
 ALTER TABLE HRIS_LEAVE_MASTER_SETUP
 ADD APPLY_LIMIT NUMBER(2);
+
+
+
+select 
+leave_id,leave_code,leave_ename
+,SUBSTR(leave_ename, 1, 3)
+,'update hris_leave_master_setup set leave_code='''||SUBSTR(leave_ename, 1, 3)||''' where leave_id='||leave_id||';'
+from 
+hris_leave_master_setup where status='E';

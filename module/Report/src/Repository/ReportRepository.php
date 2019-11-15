@@ -1129,6 +1129,8 @@ EOT;
             }
         }
 
+        $leaveDetails=$this->getLeaveList();
+        $leavePivotString = $this->getLeaveCodePivot($leaveDetails);
         $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId'], null, null, $searchQuery['functionalTypeId']);
 //        $sql = <<<EOT
 //             SELECT PL.*,
@@ -1176,7 +1178,7 @@ EOT;
 //EOT;
 
         $sql = <<<EOT
-                SELECT PL.*,
+                SELECT PL.*,MLD.*,
          CL.PRESENT,
          CL.ABSENT,
          CL.LEAVE,
@@ -1194,11 +1196,14 @@ EOT;
              CASE
                WHEN AD.OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
                THEN 'PR'
+               WHEN AD.OVERALL_STATUS = 'LV' AND AD.HALFDAY_FLAG='N' THEN 'L'||'-'||LMS.LEAVE_CODE
+               WHEN AD.OVERALL_STATUS = 'LV' AND AD.HALFDAY_FLAG!='N' THEN 'HL'||'-'||LMS.LEAVE_CODE
                ELSE AD.OVERALL_STATUS
              END AS OVERALL_STATUS,
              --AD.ATTENDANCE_DT,
              (AD.ATTENDANCE_DT-MC.FROM_DATE+1) AS DAY_COUNT
            FROM HRIS_ATTENDANCE_DETAIL AD
+           LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS ON (AD.LEAVE_ID=LMS.LEAVE_ID)
            LEFT JOIN HRIS_MONTH_CODE MC
            ON (AD.ATTENDANCE_DT BETWEEN MC.FROM_DATE AND MC.TO_DATE)
            JOIN HRIS_EMPLOYEES E
@@ -1249,14 +1254,40 @@ EOT;
          GROUP BY EMPLOYEE_ID
          )CL
        ON (PL.EMPLOYEE_ID=CL.EMPLOYEE_ID)
+          LEFT JOIN
+         (
+         select 
+ *
+ from
+ (select 
+AD.employee_id,
+AD.leave_id,
+ sum(
+ case AD.HALFDAY_FLAG
+ when 'N'  then 1
+ else 0.5 end
+ ) as LTBM
+from HRIS_ATTENDANCE_DETAIL AD
+ LEFT JOIN HRIS_MONTH_CODE MC  ON (AD.ATTENDANCE_DT BETWEEN MC.FROM_DATE AND MC.TO_DATE)  
+  WHERE 
+ leave_id  is not null and
+   MC.MONTH_ID = {$searchQuery['monthCodeId']}
+   group by AD.employee_id,AD.leave_id
+   )
+   PIVOT ( MAX (LTBM) FOR LEAVE_ID IN (
+   {$leavePivotString}
+   )
+   )
+         ) MLD
+       ON (PL.EMPLOYEE_ID=MLD.EMPLOYEE_ID)
                  
 EOT;
 
-//         echo $sql;
-//         die();
+//   echo $sql;
+//   die();
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        return ['monthDetail' => $monthDetail, 'data' => Helper::extractDbData($result)];
+        return ['leaveDetails'=>$leaveDetails,'monthDetail' => $monthDetail, 'data' => Helper::extractDbData($result)];
     }
 
     public function getMonthDetails($monthId) {
@@ -2207,11 +2238,11 @@ EOT;
         $result = $statement->execute();
         return Helper::extractDbData($result);
     }
-    
-    public function workingSummaryBetnDateReport($searchQuery){
+
+    public function workingSummaryBetnDateReport($searchQuery) {
         $fromDate = $searchQuery['fromDate'];
         $toDate = $searchQuery['toDate'];
-        
+
         $searchCondition = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
 
         $sql = "
@@ -2369,12 +2400,40 @@ between  '{$fromDate}' and '{$toDate}'
               D.DEPARTMENT_NAME,
               E.FULL_NAME 
             ";
-        
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        
-       
+
+
         return Helper::extractDbData($result);
+    }
+    
+    public function getLeaveList(){
+        $sql = "select 
+                leave_code,leave_id,leave_ename
+                ,'ML'||leave_id as  LEAVE_STRING
+                ,leave_id||' as '||'ML'||leave_id
+                as PIVOT_STRING
+                from 
+                hris_leave_master_setup where status='E'";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function getLeaveCodePivot($leave) {
+       $leave=$this->getLeaveList();
+       $resultSize = sizeof($leave);
+
+        $pivotString = '';
+        for ($i = 0; $i <= $resultSize; $i++) {
+            if (($i + 1) < $resultSize) {
+                $pivotString .= $leave[$i]['PIVOT_STRING'] . ', ';
+            } else {
+                $pivotString .= $leave[$i]['PIVOT_STRING'];
+            }
+        }
+        return $pivotString;
     }
 
 }
