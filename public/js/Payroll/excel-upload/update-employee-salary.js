@@ -20,6 +20,7 @@
     	app.initializeKendoGrid($table, columns);
 
     	$("#submit").on('click', function(){
+            if(prompt("Make sure all options are correctly selected. Type CONFIRM to proceed.") !== "CONFIRM"){ return; }
             var fileUploadedFlag = document.getElementById("excelImport").files.length;
             if(fileUploadedFlag == 0){
                 app.showMessage('No file selected.', 'warning');
