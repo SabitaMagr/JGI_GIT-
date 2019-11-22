@@ -4,8 +4,6 @@ namespace Payroll\Controller;
 
 use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
-use Application\Helper\Helper;
-use Exception;
 use Payroll\Model\FlatValue as FlatValueModel;
 use Application\Model\FiscalYear;
 use Payroll\Model\MonthlyValue as MonthlyValueModel;

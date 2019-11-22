@@ -43,6 +43,7 @@
     	app.initializeKendoGrid($table, columns);
 
     	$("#submit").on('click', function(){
+			if(prompt("Make sure all options are correctly selected. Type CONFIRM to proceed.") !== "CONFIRM"){ return; }
             var valueType = $payHeads.val();
             var fileUploadedFlag = document.getElementById("excelImport").files.length;
             var fiscalYearId = $fiscalYearId.val();
