@@ -671,7 +671,6 @@ class AllReportController extends HrisController {
                     'preference' => $this->preference,
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail'],
-                    'linkToEmpower' => $this->repository->checkIfEmpowerTableExists() ? 1 : 0,
         ]);
     }
 
