@@ -45,11 +45,15 @@ class AllReportController extends HrisController {
         $branchId = (int) $this->params()->fromRoute('id2');
 
         return Helper::addFlashMessagesToArray($this, [
-                    'comBraList' => [
-                        'BRANCH_LIST' => EntityHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID], [Branch::STATUS => "E"])
-                    ],
+//                    'comBraList' => [
+//                        'BRANCH_LIST' => EntityHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID], [Branch::STATUS => "E"])
+//                    ],
                     'monthId' => $monthId,
-                    'branchId' => $branchId,
+//                    'branchId' => $branchId,
+                    'preference' => $this->preference,
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail'],
                     'preference' => $this->preference
         ]);
     }
@@ -59,7 +63,6 @@ class AllReportController extends HrisController {
             $request = $this->getRequest();
             if ($request->isPost()) {
                 $postedData = $request->getPost();
-
                 $branchId = $postedData['branchId'];
                 if (!isset($branchId)) {
                     throw new Exception("parameter branchId is required");
@@ -69,8 +72,9 @@ class AllReportController extends HrisController {
                     throw new Exception("parameter monthId is required");
                 }
 
-                $reportData = $this->repository->branchWiseDailyReport($monthId, $branchId);
-                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+                $reportData = $this->repository->branchWiseDailyReport($postedData);
+                $days = $this->repository->getDaysInMonth($monthId);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'days' => $days, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }

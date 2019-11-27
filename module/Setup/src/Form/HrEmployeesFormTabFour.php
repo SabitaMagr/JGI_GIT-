@@ -141,7 +141,7 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Work On Holiday Rule","value_options":{"L":"Substitute Leave","O":"OverTime"}})
+     * @Annotation\Options({"label":"Work On Holiday Reward","value_options":{"L":"Substitute Leave","O":"OverTime"}})
      * @Annotation\Attributes({ "id":"wohFlag","class":"form-control"})
      */
     public $wohFlag;
