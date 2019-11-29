@@ -37,6 +37,7 @@ class Preference extends Model {
     public $companyAddress='';
     public $companyAccountNo='';
     public $leaveEncashMaxDays='500';
+    public $provinceWiseBranchFilter='N';
     
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
     CONST NEED_APPROVAL_FOR_LATE_CHECK_IN = "NEED_APPROVAL_FOR_LATE_CHECK";
@@ -71,6 +72,7 @@ class Preference extends Model {
     CONST COMPANY_ADDRESS="COMPANY_ADDRESS";
     CONST COMPANY_ACCOUNT_NO="COMPANY_ACCOUNT_NO";
     CONST LEAVE_ENCASH_MAX_DAYS="LEAVE_ENCASH_MAX_DAYS";
+    CONST PROVINCE_WISE_BRANCH_FILTER = "PROVINCE_WISE_BRANCH_FILTER";
 
     public $mappings = [
         'allowSystemAttendance' => self::ALLOW_SYSTEM_ATTENANCE,
@@ -105,7 +107,8 @@ class Preference extends Model {
         'companyName' =>self::COMPANY_NAME,
         'companyAddress' =>self::COMPANY_ADDRESS,
         'companyAccountNo' =>self::COMPANY_ACCOUNT_NO,
-        'leaveEncashMaxDays' =>self::LEAVE_ENCASH_MAX_DAYS
+        'leaveEncashMaxDays' =>self::LEAVE_ENCASH_MAX_DAYS,
+        'provinceWiseBranchFilter' =>self::PROVINCE_WISE_BRANCH_FILTER
     ];
     
 }

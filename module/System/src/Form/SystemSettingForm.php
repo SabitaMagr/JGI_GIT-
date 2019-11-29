@@ -221,6 +221,13 @@ class SystemSettingForm {
     public $attAppTimeChangeable;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Province wise branch filter"})
+     * @Annotation\Attributes({ "id":"provinceWiseBranchFilter","value":"N"})
+     */
+    public $provinceWiseBranchFilter;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success","id":"btnSubmit"})
      */

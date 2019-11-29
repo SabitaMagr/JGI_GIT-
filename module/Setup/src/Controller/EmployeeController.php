@@ -93,6 +93,9 @@ class EmployeeController extends HrisController {
                 'searchValues' => ApplicationHelper::getSearchData($this->adapter),
                 'acl' => $this->acl,
                 'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference,
+                'provinces' => ApplicationHelper::getProvinceList($this->adapter),
+                'braProv' => ApplicationHelper::getBranchFromProvince($this->adapter),
         ]);
     }
 
