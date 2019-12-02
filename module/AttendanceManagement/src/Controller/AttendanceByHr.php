@@ -71,7 +71,9 @@ class AttendanceByHr extends HrisController {
                 'employeeDetail' => $this->storageData['employee_detail'],
                 'allowShiftChange' =>  isset($this->preference['attAppShiftChangeable'])? $this->preference['attAppShiftChangeable']  : 'N',
                 'allowTimeChange' =>  isset($this->preference['attAppTimeChangeable'])? $this->preference['attAppTimeChangeable']  : 'N',
-                'preference' => $this->preference
+                'preference' => $this->preference,
+            'provinces' => EntityHelper::getProvinceList($this->adapter),
+            'braProv' => EntityHelper::getBranchFromProvince($this->adapter),
         ]);
     }
 

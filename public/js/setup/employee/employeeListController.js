@@ -3,9 +3,22 @@
     $(document).ready(function () {
         $("select").select2();
 
-
         var $employeeTable = $('#employeeTable');
         var $search = $('#search');
+
+        let $branch = $('#branchId');
+        let $province= $('#province');
+        let populateBranch ;
+
+        $province.on("change", function () {
+            populateBranch = [];
+            $.each(document.braProv, function(k,v){
+                if(v == $province.val()){
+                    populateBranch.push(k);
+                }
+            });
+            $branch.val(populateBranch).change();
+        });
 
         var actiontemplateConfig = {
             view: {

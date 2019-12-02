@@ -29,6 +29,7 @@ $travelSubCycle = $form->get('travelSubCycle');
 $subLeaveReference = $form->get('subLeaveReference');
 $subLeaveMaxDays = $form->get('subLeaveMaxDays');
 $leaveEncashMaxDays = $form->get('leaveEncashMaxDays');
+$provinceWiseBranchFilter = $form->get('provinceWiseBranchFilter');
 
 $submit = $form->get('submit');
 
@@ -221,8 +222,7 @@ if ($this->messages) {
                             <?php print $this->formElementErrors()->render($subLeaveMaxDays, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-                    
-                    
+
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($leaveEncashMaxDays); ?>
@@ -230,8 +230,17 @@ if ($this->messages) {
                             <?php print $this->formElementErrors()->render($leaveEncashMaxDays, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-                    
-                    
+
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($provinceWiseBranchFilter); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($provinceWiseBranchFilter); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($provinceWiseBranchFilter, ['class' => 'help-block error']); ?>
+                    </div>
+
                 </div>
                     <h3 class="form-section">Report</h3>
                 <div class="row">
