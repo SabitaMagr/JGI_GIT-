@@ -403,4 +403,16 @@ GROUP BY
         
     }
     
+     public function getEmployeeServiceId($employeeId, $sheetNo){
+           $sql = "SELECT SERVICE_TYPE_ID AS SERVICE_TYPE_ID
+            FROM HRIS_SALARY_SHEET_EMP_DETAIL
+            WHERE SHEET_NO= {$sheetNo} AND EMPLOYEE_ID={$employeeId}";
+        $resultList = $this->rawQuery($sql);
+        if (!(sizeof($resultList) == 1)) {
+            throw new Exception('No Report Found.');
+        }
+        return $resultList[0]['SERVICE_TYPE_ID'];
+        
+    }
+    
 }
