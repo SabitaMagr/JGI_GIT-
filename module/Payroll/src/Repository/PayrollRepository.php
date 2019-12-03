@@ -273,8 +273,8 @@ class PayrollRepository extends HrisRepository {
 
     public function fetchEmployeeList() {
         $sql = "
-                SELECT E.EMPLOYEE_ID,
-                  CONCAT(CONCAT(CONCAT(INITCAP(TRIM(E.FIRST_NAME)),' '),
+                SELECT E.EMPLOYEE_ID, E.GROUP_ID,
+                  E.EMPLOYEE_CODE || '-' || CONCAT(CONCAT(CONCAT(INITCAP(TRIM(E.FIRST_NAME)),' '),
                   CASE
                     WHEN E.MIDDLE_NAME IS NOT NULL
                     THEN CONCAT(INITCAP(TRIM(E.MIDDLE_NAME)), ' ')
