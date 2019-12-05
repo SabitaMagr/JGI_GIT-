@@ -1289,7 +1289,7 @@ window.app = (function ($, toastr, App) {
             pdf: {
                 fileName: pdfExportName,
                 allPages: true,
-                paperSize: "A4",
+                paperSize: "A3",
                 margin: { top: "3cm", right: "0.4cm", bottom: "1cm", left: "0.4cm" },
                 landscape: true,
                 template: kendo.template($("#page-template").html())(

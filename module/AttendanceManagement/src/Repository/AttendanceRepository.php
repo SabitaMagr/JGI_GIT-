@@ -165,6 +165,8 @@ class AttendanceRepository implements RepositoryInterface {
     }
 
     function insertAttendance($data){
+      $inTime = $data['inTime'] == null ? 'null' : "TO_DATE('{$data['attendanceDt']} {$data['inTime']}', 'DD-MON-YYYY HH:MI AM')" ;
+      $outTime = $data['outTime'] == null ? 'null' : "TO_DATE('{$data['attendanceDt']} {$data['outTime']}', 'DD-MON-YYYY HH:MI AM')" ;
       $sql = "
       DECLARE 
       V_REQ_ID NUMBER := {$data['requestId']};
@@ -177,8 +179,8 @@ class AttendanceRepository implements RepositoryInterface {
       BEGIN
       INSERT INTO HRIS_ATTENDANCE_REQUEST (ID, EMPLOYEE_ID, ATTENDANCE_DT, IN_TIME, OUT_TIME, 
       IN_REMARKS, OUT_REMARKS, TOTAL_HOUR, STATUS, APPROVED_BY, APPROVED_DT, REQUESTED_DT, APPROVED_REMARKS)
-      VALUES ({$data['requestId']}, {$data['employeeId']}, TO_DATE('{$data['attendanceDt']}', 'DD-MON-YYYY'), TO_DATE('{$data['attendanceDt']} {$data['inTime']}', 'DD-MON-YYYY HH:MI AM'),
-      TO_DATE('{$data['attendanceDt']} {$data['outTime']}', 'DD-MON-YYYY HH:MI AM'),
+      VALUES ({$data['requestId']}, {$data['employeeId']}, TO_DATE('{$data['attendanceDt']}', 'DD-MON-YYYY'), $inTime,
+      $outTime,
       '{$data['inRemarks']}', '{$data['outRemarks']}', {$data['totalHour']}, '{$data['status']}', {$data['approvedBy']},
       trunc(sysdate), trunc(sysdate), '{$data['approvedRemarks']}');
 
@@ -204,7 +206,6 @@ class AttendanceRepository implements RepositoryInterface {
 
       HRIS_REATTENDANCE(V_ATTENDANCE_DT, V_EMPLOYEE_ID, V_ATTENDANCE_DT);      
       END;";
-      
       $statement = $this->adapter->query($sql);
       $statement->execute();
     }
