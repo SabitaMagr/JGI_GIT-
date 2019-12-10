@@ -16,6 +16,26 @@ window.app = (function ($, toastr, App) {
         
     });
 
+    var filterExportColumns = function(exportColumns, map, include = true){
+        var map_bk = map;
+        if(exportColumns != null){
+            if(exportColumns.length > 0){
+                if(include){
+                    map = {};
+                    for(var i = 0; i < exportColumns.length; i++){
+                        map[exportColumns[i]] = map_bk[exportColumns[i]];
+                    }
+                }
+                else{
+                    for(var i = 0; i < exportColumns.length; i++){
+                        delete map[exportColumns[i]];
+                    }
+                }
+            }
+        }
+        return map;
+    };
+
     function getDataUri(url, callback) {
         var image = new Image();
 
@@ -2000,6 +2020,7 @@ window.app = (function ($, toastr, App) {
 
 
     return {
+        filterExportColumns : filterExportColumns,
         format: format,
         pullDataById: pullDataById,
         populateSelectElement: populateSelectElement,
