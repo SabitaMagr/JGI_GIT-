@@ -221,11 +221,10 @@
         });
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, exportMap, "AttendanceList.pdf");
-
         });
         
         $('#pdfExportDaily').on('click', function () {
-            app.exportToPDF($table, {
+            app.exportToPDFPotrait($table, {
                 'SN':'Sn',
             'EMPLOYEE_CODE': 'Code',
             'EMPLOYEE_NAME': ' Name',
@@ -233,8 +232,8 @@
             'ATTENDANCE_DT': 'Date',
             'IN_TIME': 'In Time',
             'OUT_TIME': 'Out Time'}, "DailyAttendance.pdf");
-
         });
+
         $('#excelExportDaily').on('click',function(){
             app.excelExport($table, {
                 'SN':'Sn',
