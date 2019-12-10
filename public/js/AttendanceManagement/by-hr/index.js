@@ -220,7 +220,7 @@
             app.excelExport($table, exportMap, "AttendanceList.xlsx");
         });
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, exportMap, "AttendanceList.pdf");
+            app.exportToPDF($table, exportMap, "AttendanceList.pdf",'A3');
         });
         
         $('#pdfExportDaily').on('click', function () {
