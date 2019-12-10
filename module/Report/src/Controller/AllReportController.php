@@ -730,13 +730,27 @@ from hris_employees where status='E'
 and Retired_Flag!='Y' and Resigned_Flag!='Y'");
         $empList=Helper::extractDbData($empRawList);
         
+        $empRawProfileList= EntityHelper::rawQueryResult($this->adapter, "select 
+e.employee_id
+,e.PROFILE_PICTURE_ID
+,ef.file_path
+from
+hris_employees e
+left join HRIS_EMPLOYEE_FILE ef on (ef.file_code=e.PROFILE_PICTURE_ID)");
+        
+        $empProfile=array();
+        foreach($empRawProfileList as $empProList){
+            $empProfile[$empProList['EMPLOYEE_ID']]=$empProList['FILE_PATH'];
+        }
+        
          return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'preference' => $this->preference,
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail'],
                     "calendarType"=>$this->storageData['preference']['calendarView'],
-                    'empList' => $empList
+                    'empList' => $empList,
+                    'empProfile' => $empProfile
         ]);
         
     }
