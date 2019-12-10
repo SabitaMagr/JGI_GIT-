@@ -127,34 +127,12 @@
         app.populateSelect($exparams, exportColumnParameters, 'VALUES', 'COLUMNS');
  
         $('#excelExport').on('click', function () {
-            var exportColumns = [];
-            var map_bk = map;
-            exportColumns = $('#exparamsId').val();
-            if(exportColumns != null){
-                if(exportColumns.length > 0){
-                    map = {};
-                    for(var i = 0; i < exportColumns.length; i++){
-                        map[exportColumns[i]] = map_bk[exportColumns[i]];
-                    }
-                }
-            }
-            app.excelExport($employeeTable, map, 'Employee List.xlsx');
-            map = map_bk;
+            var fc = app.filterExportColumns($("#exparamsId").val(), map);
+            app.excelExport($employeeTable, fc, 'Employee List.xlsx');
         });
         $('#pdfExport').on('click', function () {
-            var exportColumns = [];
-            var map_bk = map;
-            exportColumns = $('#exparamsId').val();
-            if(exportColumns != null){
-                if(exportColumns.length > 0){
-                    map = {};
-                    for(var i = 0; i < exportColumns.length; i++){
-                        map[exportColumns[i]] = map_bk[exportColumns[i]];
-                    }
-                }
-            }
-            app.exportToPDF($employeeTable, map, 'Employee List.pdf');
-            map = map_bk;
+            var fc = app.filterExportColumns($("#exparamsId").val(), map);
+            app.exportToPDF($employeeTable, fc, 'Employee List.pdf');
         });
 
         $search.on('click', function () {
