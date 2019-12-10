@@ -61,6 +61,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </div>
         <div class="actions">
             <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
+                <a href="<?= $this->url('attendancebyhr', ['action' => 'checkIn']) ?>" class="btn default btn-sm">
+                    <i class="fa fa-plus-square icon-black"></i> Check In </a>
+                <a href="<?= $this->url('attendancebyhr', ['action' => 'checkOut']) ?>" class="btn default btn-sm">
+                    <i class="fa fa-plus-square icon-black"></i> Check Out </a>
                 <a href="<?= $this->url('attendancebyhr', ['action' => 'add']) ?>" class="btn default btn-sm">
                     <i class="fa fa-plus-square icon-black"></i> New </a>
             <?php endif; ?>
