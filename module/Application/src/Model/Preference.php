@@ -14,7 +14,7 @@ class Preference extends Model {
     public $showAddressBook = 'Y';
     public $noticeType = 'M'; //['S','M']
     public $oldPayslipType = 'N';
-    public $latePenaltyLeaveDeduction = 0.5;
+    public $latePenaltyLeaveDeduction = '';
     public $enablePrevMthLeaveReq = 'Y';
     public $includeDayoffAsLeave = 'Y';
     public $includeHolidayAsLeave = 'Y';
@@ -38,7 +38,7 @@ class Preference extends Model {
     public $companyAccountNo='';
     public $leaveEncashMaxDays='500';
     public $provinceWiseBranchFilter='N';
-    
+
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
     CONST NEED_APPROVAL_FOR_LATE_CHECK_IN = "NEED_APPROVAL_FOR_LATE_CHECK";
     CONST ALLOW_ACCOUNT_LOCK = "ALLOW_ACCOUNT_LOCK";

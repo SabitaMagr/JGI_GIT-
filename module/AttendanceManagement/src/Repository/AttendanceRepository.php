@@ -167,6 +167,9 @@ class AttendanceRepository implements RepositoryInterface {
     function insertAttendance($data){
       $inTime = $data['inTime'] == null ? 'null' : "TO_DATE('{$data['attendanceDt']} {$data['inTime']}', 'DD-MON-YYYY HH:MI AM')" ;
       $outTime = $data['outTime'] == null ? 'null' : "TO_DATE('{$data['attendanceDt']} {$data['outTime']}', 'DD-MON-YYYY HH:MI AM')" ;
+      if($data->totalHour == null){
+          $data->totalHour = 'NULL';
+      }
       $sql = "
       DECLARE 
       V_REQ_ID NUMBER := {$data['requestId']};

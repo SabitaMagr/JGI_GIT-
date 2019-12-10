@@ -27,7 +27,7 @@
         $groupId.on('change', function(){
             let groupId = $groupId.val();
             let filteredEmployees = document.employees.filter((x) => x.GROUP_ID == groupId);
-            if(filteredEmployees.length == 0){ filteredEmployees = document.employees; }
+            if(groupId == -1){ filteredEmployees = document.employees; }
             app.populateSelect($employeeId, filteredEmployees, "EMPLOYEE_ID", "FULL_NAME", "");
         });
         
