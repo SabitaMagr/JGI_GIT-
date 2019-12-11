@@ -26,7 +26,6 @@ class Cron extends AbstractActionController {
     }
 
     public function todayAction() {
-
         $responseData = [];
         try {
             $request = $this->getRequest();
