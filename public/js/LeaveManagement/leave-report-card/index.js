@@ -118,8 +118,9 @@
             $("#table").table2excel({
                 exclude: ".noExl",
                 name: "leave-card",
-                filename: "leave-report-card" 
+                filename: "leave-report-card.xlsx" 
             });
         });
+
     });
 })(window.jQuery, window.app);
