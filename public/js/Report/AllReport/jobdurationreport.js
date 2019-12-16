@@ -56,11 +56,11 @@
 
         $('#excelExport').on('click', function () {
             var fc = app.filterExportColumns($("#exparamsId").val(), map);
-            app.excelExport($employeeTable, fc, 'Birthday Employee List.xlsx');        
+            app.excelExport($employeeTable, fc, 'Job Duration Report.xlsx');
         });
         $('#pdfExport').on('click', function () {
             var fc = app.filterExportColumns($("#exparamsId").val(), map);
-            app.exportToPDF($employeeTable, fc, 'Birthday Employee List.pdf');
+            app.exportToPDF($employeeTable, fc, 'Job Duration Report.pdf');
         });
        
         $search.on('click', function () {
