@@ -65,7 +65,7 @@ function setAbbr(temp){
          var exportVals;
          var columns=generateColsForKendo(32);
          
-          app.initializeKendoGrid($table, columns);
+          app.initializeKendoGrid($table, columns, null, null, 'Employee_Wise_Attendance_Report.xlsx');
         
         
         app.populateSelect($employeeList,document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME','Select','');

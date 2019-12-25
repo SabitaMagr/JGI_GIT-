@@ -111,7 +111,7 @@
             {field: 'FOOD_ALLOWANCE', title: "Food Allowance Count", width: 100},
             {field: 'SHIFT_ALLOWANCE', title: "Shift Allowance Count", width: 100},
             {field: 'NIGHT_SHIFT_ALLOWANCE', title: "Night Shift Allowance Count", width: 100},
-        ]);
+        ],null,null, 'Employee_Wise_Allowance_Report.xlsx');
 
 
         $search.on('click', function () {
