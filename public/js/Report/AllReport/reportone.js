@@ -65,7 +65,7 @@
             column['columns'] = innerColumns;
             columns.push(column);
         }
-        app.initializeKendoGrid($table, columns);
+        app.initializeKendoGrid($table, columns, null, null, 'Department_Wise_Attendance_Report');
 
         app.searchTable($table, ['DEPARTMENT_NAME']);
         $('#excelExport').on('click', function () {

@@ -143,6 +143,26 @@ class SystemRuleProcessor {
                 $id=$this->getFistParamenters($systemRule, $ruleFormula, 9);
                 $processedValue = $this->ssdRepo->fetchEmployeePreviousMonthAmount($this->monthId, $this->employeeId, $id);
                 break;
+            //EMPLOYEE_GRADE
+            case PayrollGenerator::SYSTEM_RULE[8]:
+                $ruleRepo = new RulesRepository($this->adapter);
+                $ruleDetails = $ruleRepo->fetchById($this->ruleId);
+                $ruleFormula = $ruleDetails['FORMULA'];
+                $absentVariable=$this->getFistParamenters($systemRule, $ruleFormula, 9);
+                $gradeDetails=$this->ssdRepo->fetchEmployeeGrade($this->monthId, $this->employeeId);
+                    $processedValue="eval( 'return "; 
+                if ($gradeDetails['NEW_GRADE'] == 0 || $gradeDetails['CUR_GRADE'] == $gradeDetails['NEW_GRADE']) {
+                    $processedValue .= "( (" . $gradeDetails['CUR_GRADE'] . '/' . $gradeDetails['MONTH_DAYS'] . ' ) *(' . $gradeDetails['CUR_GRADE_DAYS'] . '-' . $absentVariable . ")  )";
+                } else {
+//                    $processedValue .= "( (" . $gradeDetails['CUR_GRADE'] . '/' . $gradeDetails['MONTH_DAYS'] . ' ) *(' . $gradeDetails['CUR_GRADE_DAYS'] . '-' . $absentVariable . ")  )";
+//                    $processedValue .= " + ( (" . $gradeDetails['NEW_GRADE'] . '/' . $gradeDetails['MONTH_DAYS'] . ' ) *(' . $gradeDetails['NEW_GRADE_DAYS'] . '-' . $absentVariable . ")  )";
+                    
+                   
+                    $processedValue .= "( (" . $gradeDetails['CUR_GRADE'] . '/' . $gradeDetails['MONTH_DAYS'] . ' ) *( ('.$absentVariable.'<='.$gradeDetails['NEW_GRADE_DAYS'] .')?'.$gradeDetails['CUR_GRADE_DAYS'].':(' . $gradeDetails['CUR_GRADE_DAYS'] . '+' . $absentVariable .'-'.$absentVariable.")  )  )";
+                    $processedValue .= " + ( (" . $gradeDetails['NEW_GRADE'] . '/' . $gradeDetails['MONTH_DAYS'] . ' ) *( ('.$absentVariable.'<='.$gradeDetails['NEW_GRADE_DAYS'] .')?('.$gradeDetails['NEW_GRADE_DAYS'].'-'.$absentVariable."):(0) )  )";
+                }
+                    $processedValue.=";')"; 
+                break;
         }
         return $processedValue;
     }
