@@ -439,6 +439,7 @@ class SalarySheetController extends HrisController {
             'fiscalYears' => $fiscalYears,
             'months' => $months,
             'data' => $data,
+            'salaryTypes' => iterator_to_array($this->salarySheetRepo->fetchAllSalaryType(), false),
             'employees' => $employeeList 
         ]);
     }
@@ -457,7 +458,7 @@ class SalarySheetController extends HrisController {
                 $pivotString.= $payId[$i].' AS H_'.$payId[$i];
             }
             $sspvmRepo = new SSPayValueModifiedRepo($this->adapter);
-            $data = $sspvmRepo->modernFilter($postData['monthId'], $postData['companyId'], $postData['groupId'], $pivotString, $postData['employeeId']);
+            $data = $sspvmRepo->modernFilter($postData['monthId'], $postData['companyId'], $postData['groupId'], $pivotString, $postData['employeeId'], $postData['salaryTypeId']);
             $columns = $sspvmRepo->getColumns($_POST['payHeadId']);
             return new JsonModel(['success' => true, 'data' => Helper::extractDbData($data), 'columns' => Helper::extractDbData($columns), 'error' => '']);
         } catch (Exception $e) {
@@ -474,12 +475,13 @@ class SalarySheetController extends HrisController {
             $postedData = $request->getPost();
             $data = $postedData['data'];
             $monthId = $_POST['monthId'];
+            $salaryTypeId = $_POST['salaryTypeId'];
             $detailRepo = new SSPayValueModifiedRepo($this->adapter);
             foreach($data as $item){
                 if($item['employeeId'] == null || $item['employeeId'] == ''){
                     continue;
                 }
-                $detailRepo->setModifiedPayValue($item, $monthId);
+                $detailRepo->setModifiedPayValue($item, $monthId, $salaryTypeId);
             }
             return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
         } catch (Exception $e) {

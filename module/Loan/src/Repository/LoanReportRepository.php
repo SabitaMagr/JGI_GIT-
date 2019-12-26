@@ -150,13 +150,15 @@ class LoanReportRepository implements RepositoryInterface {
     HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
         WHERE 
         to_char(to_date(hlpd.from_date,'dd-mon-yy'),'mm') = 7
-        AND HLPD.FROM_DATE >= trunc(TO_DATE('{$fromDate}'),'month') 
+        AND HLPD.FROM_DATE >= trunc(TO_DATE('{$fromDate}')) 
         AND hlpd.paid_flag = 'Y'
             AND  HELR.LOAN_ID = $loanId
         AND HELR.EMPLOYEE_ID = $emp_id
         AND HLPD.LOAN_REQUEST_ID IN(
         SELECT LOAN_REQUEST_ID FROM hris_employee_loan_request
         WHERE EMPLOYEE_ID = $emp_id)
+        and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
+        (select loan_req_id from hris_loan_cash_payment))
     GROUP BY HLPD.FROM_DATE
     
     UNION ALL
@@ -172,6 +174,8 @@ class LoanReportRepository implements RepositoryInterface {
     from DUAL
     connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
     ) AND HELR.EMPLOYEE_ID = $emp_id
+    and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
+        (select loan_req_id from hris_loan_cash_payment))
     GROUP BY HLPD.FROM_DATE
     
     UNION ALL
@@ -187,6 +191,8 @@ class LoanReportRepository implements RepositoryInterface {
     from DUAL
     connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
     ) AND HELR.EMPLOYEE_ID = $emp_id
+    and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
+        (select loan_req_id from hris_loan_cash_payment))
     GROUP BY HLPD.FROM_DATE
     
     UNION ALL
@@ -202,6 +208,8 @@ class LoanReportRepository implements RepositoryInterface {
     from DUAL
     connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
     ) AND HELR.EMPLOYEE_ID = $emp_id
+    and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
+        (select loan_req_id from hris_loan_cash_payment))
     GROUP BY HLPD.FROM_DATE
     ORDER BY DT, DEBIT_AMOUNT DESC, CREDIT_AMOUNT DESC)
             
@@ -220,7 +228,8 @@ WHERE
     AND
         LOAN_DATE BETWEEN '{$fromDate}' AND '{$toDate}'    
     AND
-        employee_id = $emp_id)
+        employee_id = $emp_id
+        and loan_request_id not in (select new_loan_req_id from hris_loan_cash_payment))
 
         UNION ALL
 
@@ -303,6 +312,8 @@ ORDER BY
         AND HLPD.LOAN_REQUEST_ID IN(
         SELECT LOAN_REQUEST_ID FROM hris_employee_loan_request
         WHERE EMPLOYEE_ID = $emp_id) 
+        and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
+        (select loan_req_id from hris_loan_cash_payment))
         group by hlpd.from_date";
         
         $statement = $this->adapter->query($sql); 

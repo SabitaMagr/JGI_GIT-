@@ -1595,3 +1595,7 @@ insert into HRIS_PREFERENCES values ('PROVINCE_WISE_BRANCH_FILTER','N');
 
 alter table hris_shifts add break_deduct_flag char(1) default 'N'
 check (break_deduct_flag in ('Y', 'N'));
+
+alter table hris_ss_pay_value_modified
+add salary_type_id number default 1 not null 
+CONSTRAINT fk_salary_type REFERENCES hris_salary_type(SALARY_TYPE_ID);
