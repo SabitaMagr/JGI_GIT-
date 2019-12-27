@@ -9,6 +9,7 @@
         let $branch = $('#branchId');
         let $province= $('#province');
         let populateBranch ;
+        let exportData;
 
         $province.on("change", function () {
             populateBranch = [];
@@ -135,11 +136,21 @@
             app.exportToPDF($employeeTable, fc, 'Employee List.pdf');
         });
 
+        $('#excelExportWithImage').on('click', function () {
+            var data = {
+                exportData : exportData,
+                map : map
+            };
+            app.serverRequest(document.excelExportWithImageLink, data).then(function(response){
+                window.open(document.excelExportWithImageDownload);
+            });
+        });
+
         $search.on('click', function () {
             var data = document.searchManager.getSearchValues();
             app.serverRequest(document.pullEmployeeListForEmployeeTableLink, data).then(function (response) {
                 if (response.success) {
-                    console.log(response);
+                    exportData = response.data;
                     app.renderKendoGrid($employeeTable, response.data);
                 } else {
                     app.showMessage(response.error, 'error');
