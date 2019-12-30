@@ -35,6 +35,13 @@
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_PRESENT = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_PRESENT + parseFloat(rawData[i].IS_PRESENT);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.ON_LEAVE = data[rawData[i].EMPLOYEE_ID].TOTAL.ON_LEAVE + parseFloat(rawData[i].ON_LEAVE);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_DAYOFF = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_DAYOFF + parseFloat(rawData[i].IS_DAYOFF);
+                    data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY_WORK = data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY_WORK + parseFloat(rawData[i].HOLIDAY_WORK);
+
+                    if(rawData[i].TOTAL_HOUR != null && rawData[i].TOTAL_HOUR != ''){
+                        var minutes = parseInt(rawData[i].TOTAL_HOUR.match(/(.*):/g).pop().replace(":", "")) * 60 + parseInt(rawData[i].TOTAL_HOUR.match(/:(.*)/g).pop().replace(":", ""));
+                        data[rawData[i].EMPLOYEE_ID].TOTAL.TOTAL_HOUR = parseInt(data[rawData[i].EMPLOYEE_ID].TOTAL.TOTAL_HOUR) + parseInt(minutes);
+                    }
+                    console.log(data[rawData[i].EMPLOYEE_ID].TOTAL.TOTAL_HOUR);
                 } else {
                     data[rawData[i].EMPLOYEE_ID] = {
                         EMPLOYEE_CODE: rawData[i].EMPLOYEE_CODE,
@@ -45,7 +52,9 @@
                             IS_ABSENT: parseFloat(rawData[i].IS_ABSENT),
                             IS_PRESENT: parseFloat(rawData[i].IS_PRESENT),
                             ON_LEAVE: parseFloat(rawData[i].ON_LEAVE),
-                            IS_DAYOFF: parseFloat(rawData[i].IS_DAYOFF)
+                            IS_DAYOFF: parseFloat(rawData[i].IS_DAYOFF),
+                            HOLIDAY_WORK: parseFloat(rawData[i].HOLIDAY_WORK),
+                            TOTAL_HOUR: parseFloat(rawData[i].TOTAL_HOUR)
                         }
                     };
                     data[rawData[i].EMPLOYEE_ID].DAYS['C' + rawData[i].DAY_COUNT] =
@@ -54,6 +63,7 @@
                                 IS_PRESENT: rawData[i].IS_PRESENT,
                                 ON_LEAVE: rawData[i].ON_LEAVE,
                                 IS_DAYOFF: rawData[i].IS_DAYOFF,
+                                HOLIDAY_WORK: rawData[i].HOLIDAY_WORK,
                                 IN_TIME: rawData[i].IN_TIME,
                                 OUT_TIME: rawData[i].OUT_TIME,
                                 TOTAL_HOUR: rawData[i].TOTAL_HOUR,
@@ -92,6 +102,48 @@
                 });
             }
 
+            returnData.cols.push({
+                field: 'present',
+                title: 'P',
+                template: '<div data="#: total #" class="btn-group widget-btn-list present-attendance">' +
+                    '<a class="btn widget-btn custom-btn-present totalbtn"></a>' +
+                    '</div>'});
+
+            returnData.cols.push({
+                field: 'absent',
+                title: 'A',
+                template: '<div data="#: total #" class="btn-group widget-btn-list absent-attendance">' +
+                    '<a class="btn widget-btn custom-btn-absent totalbtn"></a>' +
+                    '</div>'});
+
+            returnData.cols.push({
+                field: 'leave',
+                title: 'L/H',
+                template: '<div data="#: total #" class="btn-group widget-btn-list leave-attendance">' +
+                    '<a class="btn widget-btn custom-btn-absent totalbtn"></a>' +
+                    '</div>'});
+
+            returnData.cols.push({
+                field: 'holidaywork',
+                title: 'WH',
+                template: '<div data="#: total #" class="btn-group widget-btn-list holidaywork-attendance">' +
+                    '<a class="btn widget-btn custom-btn-absent totalbtn"></a>' +
+                    '</div>'});
+
+            returnData.cols.push({
+                field: 'total',
+                title: 'Total',
+                template: '<div data="#: total #" class="btn-group widget-btn-list total-attendance">' +
+                    '<a class="btn widget-btn custom-btn-leave totalbtn"></a>' +
+                    '</div>'});
+
+            returnData.cols.push({
+                field: 'totalhour',
+                title: 'Total Hour',
+                template: '<div data="#: total #" class="btn-group widget-btn-list totalhour-attendance">' +
+                    '<a class="btn widget-btn custom-btn-leave totalbtn"></a>' +
+                    '</div>'});
+
             for (var k in data) {
                 var row = data[k].DAYS;
                 for (var i = 1; i <= days[0].TOTAL_DAYS; i++) {
@@ -102,8 +154,63 @@
                 row['employee'] = data[k].FULL_NAME;
                 row['code'] = (data[k].EMPLOYEE_CODE == null) ? '' : data[k].EMPLOYEE_CODE;
                 returnData.rows.push(row);
+                row['present'] = JSON.stringify(data[k].TOTAL.IS_PRESENT);
+                row['absent'] = JSON.stringify(data[k].TOTAL.IS_ABSENT);
+                row['dayoff'] = JSON.stringify(data[k].TOTAL.IS_DAYOFF);
+                row['leave'] = JSON.stringify(data[k].TOTAL.ON_LEAVE);
+                row['holidaywork'] = JSON.stringify(data[k].TOTAL.HOLIDAY_WORK);
+                row['total'] = JSON.stringify(data[k].TOTAL);
+                row['totalhour'] = JSON.stringify(data[k].TOTAL_HOUR);
             }
             return returnData;
+        };
+
+
+        var displayTotalInGrid = function (selector) {
+            $(selector).each(function (k, group) {
+                var $group = $(group);
+                var data = JSON.parse($group.attr('data'));
+                var $childrens = $group.children();
+                var $data = $($childrens[0]);
+
+                var presentDays = parseFloat(data['IS_PRESENT']);
+                var absentDays = parseFloat(data['IS_ABSENT']);
+                var leaveDays =  parseFloat(data['ON_LEAVE']) + parseFloat(data['IS_DAYOFF']);
+                var holidayWork = parseFloat(data['HOLIDAY_WORK']);
+
+                var totalhour = parseFloat(data['TOTAL_HOUR']);
+                totalhour = Math.floor(totalhour / 60) + ":" + totalhour % 60;
+
+                var actualeave = (leaveDays > holidayWork) ? (leaveDays-holidayWork) : (holidayWork - leaveDays);
+
+                var totalPresent = presentDays + leaveDays + holidayWork;
+                var actualPresent = (presentDays>0)? totalPresent : presentDays;
+
+                var total = presentDays + absentDays + leaveDays;
+
+
+                if(selector == '.present-attendance'){
+                    $data.html(presentDays);
+                    $data.attr('title', Number((presentDays * 100 / total).toFixed(1)));
+                } else if(selector == '.absent-attendance'){
+                    $data.html(absentDays);
+                    $data.attr('title', Number((absentDays * 100 / total).toFixed(1)));
+                } else if(selector == '.total-attendance'){
+                    $data.html(actualPresent);
+                    $data.attr('title', Number((actualPresent * 100 / total).toFixed(1)));
+                } else if(selector == '.leave-attendance'){
+                    $data.html(leaveDays);
+                    $data.attr('title', Number((leaveDays * 100 / total).toFixed(1)));
+                } else if(selector == '.holidaywork-attendance') {
+                    $data.html(holidayWork);
+                    $data.attr('title', Number((holidayWork * 100 / total).toFixed(1)));
+                } else if(selector == '.totalhour-attendance'){
+                    $data.html(totalhour);
+                    $data.attr('title', Number((totalhour * 100 / total).toFixed(1)));
+                } else {}
+
+            });
+
         };
 
         var initializeReport = function (q) {
@@ -165,6 +272,13 @@
                     pageable: false,
                     columns: extractedDetailData.cols
                 });
+
+                displayTotalInGrid('.present-attendance');
+                displayTotalInGrid('.absent-attendance');
+                displayTotalInGrid('.leave-attendance');
+                displayTotalInGrid('.holidaywork-attendance');
+                displayTotalInGrid('.total-attendance');
+                displayTotalInGrid('.totalhour-attendance');
 
             }, function (error) {
                 console.log('departmentWiseEmployeeMonthlyE', error);
@@ -229,9 +343,9 @@
             newWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</body><style>table {border-collapse: collapse;}table, th, td {border: 1px solid black;text-align: center;}</style></html>');
             newWin.document.close();
 
-            setTimeout(function () {
-                newWin.close();
-            }, 1000);
+            // setTimeout(function () {
+            //     newWin.close();
+            // }, 1000);
         });
 
 
