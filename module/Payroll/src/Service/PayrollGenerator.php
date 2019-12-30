@@ -63,7 +63,9 @@ class PayrollGenerator {
         "LOAN_INT",
         "PREVIOUS_TOTAL",
         "PREVIOUS_MONTH_AMOUNT",
-        "EMPLOYEE_GRADE"
+        "EMPLOYEE_GRADE",
+        "TOTAL_ADD",
+        "TOTAL_DED"
     ];
 
     public function __construct($adapter) {
@@ -214,7 +216,7 @@ class PayrollGenerator {
         if (strpos($rule, $variable) !== false) {
             $variableProcessor = new VariableProcessor($this->adapter, $this->employeeId, $this->monthId, $this->sheetNo);
             $processedVariable = $variableProcessor->processVariable($key);
-            return str_replace($variable, is_string($processedVariable) ? "'{$processedVariable}'" : $processedVariable, $rule);
+            return str_replace($variable, is_string($processedVariable) ? "{$processedVariable}" : $processedVariable, $rule);
         } else {
             return $rule;
         }
