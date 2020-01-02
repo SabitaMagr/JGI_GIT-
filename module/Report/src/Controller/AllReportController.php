@@ -36,7 +36,12 @@ class AllReportController extends HrisController {
                     ],
                     'monthId' => $monthId,
                     'branchId' => $branchId,
-                    'preference' => $this->preference
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail'],
+                    'preference' => $this->preference,
+                    'name' => $this->storageData['employee_detail']['EMPLOYEE_CODE'].'-'.$this->storageData['employee_detail']['FULL_NAME'],
+                    'companyLogo' => $this->storageData['employee_detail']['COMPANY_FILE_PATH']
         ]);
     }
     

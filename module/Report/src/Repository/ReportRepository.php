@@ -738,6 +738,17 @@ EOT;
                         THEN 1
                         ELSE 0
                       END) AS IS_DAYOFF,
+                      (
+                      CASE
+                        WHEN AD.LEAVE_ID   IS NULL
+                        AND AD.HOLIDAY_ID  IS NULL
+                        AND AD.TRAINING_ID IS NULL
+                        AND AD.TRAVEL_ID   IS NULL
+                        AND AD.IN_TIME     IS NOT NULL 
+                          AND  AD.DAYOFF_FLAG='Y'
+                        THEN 1
+                        ELSE 0
+                      END) AS HOLIDAY_WORK,
                       TO_CHAR(AD.IN_TIME, 'HH24:mi') as IN_TIME,
                       TO_CHAR(AD.OUT_TIME, 'HH24:mi') as OUT_TIME,
                       MIN_TO_HOUR(AD.TOTAL_HOUR)      AS TOTAL_HOUR
