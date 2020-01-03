@@ -36,7 +36,12 @@ class AllReportController extends HrisController {
                     ],
                     'monthId' => $monthId,
                     'branchId' => $branchId,
-                    'preference' => $this->preference
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail'],
+                    'preference' => $this->preference,
+                    'name' => $this->storageData['employee_detail']['EMPLOYEE_CODE'].'-'.$this->storageData['employee_detail']['FULL_NAME'],
+                    'companyLogo' => $this->storageData['employee_detail']['COMPANY_FILE_PATH']
         ]);
     }
     
@@ -663,6 +668,27 @@ class AllReportController extends HrisController {
             try {
                 $data = $request->getPost();
                 $reportData = $this->repository->reportWithOTforShivam($data);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return $this->stickFlashMessagesTo([
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'linkToEmpower' => $this->repository->checkIfEmpowerTableExists() ? 1 : 0,
+                    'preference' => $this->preference,
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail'],
+        ]);
+    }
+    
+    public function withOvertimeBotAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $reportData = $this->repository->reportWithOTforBot($data);
                 return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

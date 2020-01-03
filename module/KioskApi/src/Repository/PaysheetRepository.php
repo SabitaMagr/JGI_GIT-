@@ -36,7 +36,9 @@ AND EMPLOYEE_ID ={$employeeId} ORDER BY P.PRIORITY_INDEX
 
     public function fetchEmployeeDetail($employeeId) {
         $sql = "
-            select * from HRIS_SALARY_SHEET_EMP_DETAIL where EMPLOYEE_ID = {$employeeId} and MONTH_ID = 13
+        select he.employee_code,hd.* from HRIS_SALARY_SHEET_EMP_DETAIL hd 
+        join hris_employees he on (he.employee_id=hd.employee_id) 
+        where hd.employee_id={$employeeId} and MONTH_ID = 13
             ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

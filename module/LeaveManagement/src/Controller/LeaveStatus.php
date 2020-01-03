@@ -54,6 +54,14 @@ class LeaveStatus extends HrisController {
 
 
         $detail = $leaveApproveRepository->fetchById($id);
+
+        if($this->preference['displayHrApproved'] == 'Y' && $detail['HR_APPROVED'] == 'Y'){
+            $detail['APPROVER_ID'] = '-1';
+            $detail['APPROVER_NAME'] = 'HR Approved';
+            $detail['RECOMMENDER_ID'] = '-1';
+            $detail['RECOMMENDER_NAME'] = 'HR';
+        }
+
         $fileDetails = $leaveApproveRepository->fetchAttachmentsById($id);
 
         $status = $detail['STATUS'];
