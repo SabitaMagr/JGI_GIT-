@@ -1599,3 +1599,7 @@ check (break_deduct_flag in ('Y', 'N'));
 alter table hris_ss_pay_value_modified
 add salary_type_id number default 1 not null 
 CONSTRAINT fk_salary_type REFERENCES hris_salary_type(SALARY_TYPE_ID);
+
+alter table hris_employee_leave_request add HARDCOPY_SIGNED_FLAG
+char(1) default 'Y'
+check (HARDCOPY_SIGNED_FLAG IN ('N', 'Y'));
