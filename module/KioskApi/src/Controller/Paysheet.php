@@ -31,13 +31,12 @@ class Paysheet extends AbstractActionController
 
             $this->employeeId = $request->getHeader('EmployeeId')->getFieldValue();
             $data = $request->getPost();
-
             $count = $printRepository->fetchCount($data, $this->employeeId)[0]['COUNT'];
 
 //            print_r($count);
 //            die();
-            $printRepository->insertData($data, $this->employeeId);
 
+                        $printRepository->insertData($data, $this->employeeId);
             if ($count < 2) {
                 $requestType = $request->getMethod();
 

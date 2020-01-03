@@ -22,7 +22,7 @@ class KioskPrintRepo {
 
         $salaryTypeCondition = '';
         If($data['PrintType'] == 'PS'){
-            $salaryTypeCondition = " AND SALARY_TYPE_ID = {$data['SalaryTypeId']}";
+            //$salaryTypeCondition = " AND SALARY_TYPE_ID = {$data['SalaryTypeId']}";
         }
 //        print_r($data);
 //        die();
