@@ -139,7 +139,8 @@ class LeaveRequestRepository implements RepositoryInterface {
                       )
                   END
                 OR LA.FISCAL_YEAR_MONTH_NO IS NULL ) 
-                AND {$date} < LY.END_DATE";
+                AND {$date} <= LY.END_DATE";
+                
         $statement = $this->adapter->query($sql);
         return $statement->execute()->current();
     }
