@@ -36,7 +36,11 @@
                     data[rawData[i].EMPLOYEE_ID].TOTAL.ON_LEAVE = data[rawData[i].EMPLOYEE_ID].TOTAL.ON_LEAVE + parseFloat(rawData[i].ON_LEAVE);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_DAYOFF = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_DAYOFF + parseFloat(rawData[i].IS_DAYOFF);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY_WORK = data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY_WORK + parseFloat(rawData[i].HOLIDAY_WORK);
-
+                    
+                    if(isNaN(data[rawData[i].EMPLOYEE_ID].TOTAL.TOTAL_HOUR)) 
+                    {
+                    data[rawData[i].EMPLOYEE_ID].TOTAL.TOTAL_HOUR = 0;
+                    }
                     if(rawData[i].TOTAL_HOUR != null && rawData[i].TOTAL_HOUR != ''){
                         var minutes = parseInt(rawData[i].TOTAL_HOUR.match(/(.*):/g).pop().replace(":", "")) * 60 + parseInt(rawData[i].TOTAL_HOUR.match(/:(.*)/g).pop().replace(":", ""));
                         data[rawData[i].EMPLOYEE_ID].TOTAL.TOTAL_HOUR = parseInt(data[rawData[i].EMPLOYEE_ID].TOTAL.TOTAL_HOUR) + parseInt(minutes);

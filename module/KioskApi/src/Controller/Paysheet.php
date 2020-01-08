@@ -36,7 +36,7 @@ class Paysheet extends AbstractActionController
 //            print_r($count);
 //            die();
 
-                        $printRepository->insertData($data, $this->employeeId);
+            $printRepository->insertData($data, $this->employeeId);
             if ($count < 2) {
                 $requestType = $request->getMethod();
 
