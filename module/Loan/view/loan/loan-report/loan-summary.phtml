@@ -16,7 +16,7 @@ $this->headScript()
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
         ->appendFile($this->basePath('js/search.js'))
         ->appendFile($this->basePath('js/table2excel/src/jquery.table2excel.js'))
-        ->appendFile($this->basePath('js/loan/loan-report/loan-voucher_1.js'));
+        ->appendFile($this->basePath('js/loan/loan-report/loan-summary.js'));
 ?>
 
 <script>
@@ -26,7 +26,7 @@ $this->headScript()
     document.viewLink = '<?= $this->url("loanStatus", ["action" => "view"]) ?>';
     document.editLink = '<?= $this->url("loanStatus", ["action" => "edit"]) ?>';
     document.loanClosing = '<?= $this->url("loanApply", ["action" => "loanClosing"]) ?>';
-    document.pullLoanVoucherDetailsLink = '<?= $this->url("loanReport", ["action" => "loanVoucher"]) ?>';
+    document.pullLoanVoucherSummaryLink = '<?= $this->url("loanReport", ["action" => "loanSummary"]) ?>';
     document.preference =<?php echo json_encode($preference) ?>;
 </script>
 <div class="page-bar">
@@ -84,13 +84,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <div class="row margin-top-10">
             <div class="col-sm-2">
                 <label>Employee</label>
-                <select required class="form-control" name="employee" id="employeeId">
+                <select required multiple class="form-control" name="employee" id="employeeId">
                 </select>
             </div>
 
             <div class="col-sm-2">
                 <label>Account</label>
                 <select required class="form-control" name="account" id="account">
+                <option value="-1">Total Hotel Loan</option>
                     <?php foreach($loanList as $value){ ?>
                     <option value="<?=$value['LOAN_ID']?>"><?=$value['LOAN_NAME']?></option>
                     <?php } ?>
@@ -121,10 +122,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
         <div class="row margin-top-10">   
             <div class=" col-sm-offset-8 col-sm-4">
-                <div style="float: left;" id="summary1">
-                    <label for="summary">Summary</label>
-                    <input type="checkbox" id="summary">
-                    </div>
                 <button id="reset" class="btn default btn-sm pull-right">
                     Reset
                     <i class="fa fa-refresh"></i>
@@ -139,8 +136,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 </div>
 
 <div class="margin-top-20">  
-    <div id="loanRequestStatusTable">
-    </div>
-    <div id="summaryTable" style="display : none;">
+    <div id="summaryTable">
     </div>
 </div>

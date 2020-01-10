@@ -440,7 +440,8 @@ class SalarySheetController extends HrisController {
             'months' => $months,
             'data' => $data,
             'salaryTypes' => iterator_to_array($this->salarySheetRepo->fetchAllSalaryType(), false),
-            'employees' => $employeeList 
+            'employees' => $employeeList,
+            'acl' => $this->acl 
         ]);
     }
 
