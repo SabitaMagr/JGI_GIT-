@@ -2694,4 +2694,35 @@ EOT;
         return Helper::extractDbData($result);
     }
 
+    public function whereaboutsReport($data) {
+
+        $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], $data['genderId'], $data['locationId']);
+
+        $sql = "SELECT E.EMPLOYEE_CODE,
+                  E.FULL_NAME,
+                  EWA.*,
+                  B.BRANCH_NAME,
+                  DP.DEPARTMENT_NAME,
+                  D.DESIGNATION_TITLE,
+                  P.POSITION_NAME
+                FROM HRIS_EMP_WHEREABOUT_ASN EWA
+                LEFT JOIN HRIS_EMPLOYEES E
+                ON (EWA.EMPLOYEE_ID = E.EMPLOYEE_ID)
+                LEFT JOIN HRIS_BRANCHES B
+                ON (B.BRANCH_ID = E.BRANCH_ID)
+                LEFT JOIN HRIS_DEPARTMENTS DP
+                ON (DP.DEPARTMENT_ID = E.DEPARTMENT_ID)
+                LEFT JOIN HRIS_DESIGNATIONS D
+                ON (D.DESIGNATION_ID = E.DESIGNATION_ID)
+                LEFT JOIN HRIS_POSITIONS P
+                ON (P.POSITION_ID = E.POSITION_ID)
+                where 1=1 {$condition}
+                ORDER BY EWA.ORDER_BY
+                ";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
 }

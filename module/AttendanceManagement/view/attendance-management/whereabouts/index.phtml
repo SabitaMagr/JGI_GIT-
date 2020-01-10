@@ -8,12 +8,12 @@ $this->headScript()
     ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
     ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
     ->appendFile($this->basePath('js/search.js'))
-    ->appendFile($this->basePath('js/overtime/bulk-update/index.js'));
+    ->appendFile($this->basePath('js/AttendanceManagement/whereabouts/index.js'));
 ?>
 
 <script>
     document.searchValues =<?php echo json_encode($searchValues); ?>;
-    document.assignSubMandatory = '<?php echo $this->url('overtime-bulk-setup', ['action' => 'assign']); ?>';
+    document.assignSubMandatory = '<?php echo $this->url('whereabouts', ['action' => 'assign']); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
 </script>
@@ -43,28 +43,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <a href="" class="collapse" data-original-title="" title=""> </a>
             <a href="" class="fullscreen" data-original-title="" title=""> </a>
         </div>
-        <div class="actions">
-            <div class="btn-group">
-                <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-copy"></i> Tools
-                    <i class="fa fa-angle-down "></i>
-                </a>
-                <ul class="dropdown-menu pull-right">
-                    <li>
-                        <a href="javascript:;" id="excelExport">
-                            <i class="fa fa-file-excel-o" ></i>
-                            Export to Excel
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;" id="pdfExport">
-                            <i class="fa fa-file-pdf-o" ></i>
-                            Export to PDF
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+
     </div>
     <div class="portlet-body">
         <div class="row">
@@ -115,30 +94,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <select multiple class="form-control" name="employee" id="employeeId">
                 </select>
             </div>
-
-            <div class="col-sm-2">
-                <label>Holiday Work Reward</label>
-                <select class="form-control reset-field" name="wohReward" id="wohRewardID">
-                    <option value="">---</option>
-                    <option value="O">Overtime</option>
-                    <option value="L">Substitute Leave</option>
-                </select>
-            </div>
-<!--            <div class="col-sm-2">-->
-<!--                --><?php //print $this->formLabel($leaveFormElement); ?>
-<!--                --><?php //print $this->formElement($leaveFormElement); ?>
-<!--            </div>-->
         </div>
         <div class="row margin-top-10">
-            <div class="col-sm-2">
-                <label>Update value</label>
-                <select class="form-control reset-field" name="update" id="updateId">
-                    <option value="">---</option>
-                    <option value="O">Overtime Eligibility</option>
-                    <option value="W">WOH Reward</option>
-                </select>
-            </div>
-
             <div class="col-sm-10">
                 <button id="reset" class="btn default btn-sm pull-right hris-reset-btn">
                     Reset
@@ -176,10 +133,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 Position
             </th>
             <th>
-                Work on Holiday Reward
-            </th>
-            <th>
-                Overtime Eligible
+                Order
             </th>
             <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                 <div class="th-inner ">
@@ -195,30 +149,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
     </table>
 
-
-
 </div>
 
 <div class="row margin-top-30" >
-    <div class="col-sm-2 W H">
-        <div class="form-group">
-        <label>WOH Reward</label>
-        <select class="form-control" name="wohFlag" id="wohFlagId">
-            <option value="">--</option>
-            <option value="O">Overtime</option>
-            <option value="L">Substitute Leave</option>
-        </select>
-    </div>
-    </div>
-
-    <div class="col-sm-2 O H">
-            <label>Overtime Eligible</label>
-            <form name="overtimeEligible" id="overtimeEligibleId">
-                <input type="radio" name="overtime" value="Y" > Yes
-                <input type="radio" name="overtime" value="N" checked> No
-            </form>
-    </div>
-
     <div class="col-sm-6">
         <a id="assignBtn" class="btn btn-primary pull-right">Assign</a>
         </button>

@@ -1549,7 +1549,6 @@ CREATE TABLE HRIS_KIOSK_PRINT_STAT
     CONSTRAINT CHECK_PRINT_TYPE CHECK (PRINT_TYPE IN ('LV', 'LN' , 'PS'))
   );
 
-INSERT INTO HRIS_KIOSK_PRINT_STAT VALUES (0,0,0,'PS',NULL,NULL);
   ------END SOALTEE KIOSK API------
 
 
@@ -1583,7 +1582,6 @@ ALTER TABLE HRIS_LEAVE_MASTER_SETUP
 ADD APPLY_LIMIT NUMBER(2);
 
 
-
 select 
 leave_id,leave_code,leave_ename
 ,SUBSTR(leave_ename, 1, 3)
@@ -1603,3 +1601,8 @@ CONSTRAINT fk_salary_type REFERENCES hris_salary_type(SALARY_TYPE_ID);
 alter table hris_employee_leave_request add HARDCOPY_SIGNED_FLAG
 char(1) default 'Y'
 check (HARDCOPY_SIGNED_FLAG IN ('N', 'Y'));
+
+create table HRIS_EMP_WHEREABOUT_ASN(
+EMPLOYEE_ID NUMBER(7) NOT NULL,
+ORDER_BY NUMBER(4) NOT NULL
+);

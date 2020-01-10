@@ -828,4 +828,24 @@ left join HRIS_EMPLOYEE_FILE ef on (ef.file_code=e.PROFILE_PICTURE_ID)");
         ]);
     }
 
+    public function whereaboutsAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $reportData = $this->repository->whereaboutsReport($data);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return $this->stickFlashMessagesTo([
+            'searchValues' => EntityHelper::getSearchData($this->adapter),
+            'preference' => $this->preference,
+            'acl' => $this->acl,
+            'employeeDetail' => $this->storageData['employee_detail']
+        ]);
+    }
+
 }
