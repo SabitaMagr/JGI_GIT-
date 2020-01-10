@@ -308,7 +308,7 @@ class LoanReportRepository implements RepositoryInterface {
         and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
         (select loan_req_id from hris_loan_cash_payment))
         ";
-        
+        //echo $sql; die;
         $statement = $this->adapter->query($sql); 
         return $statement->execute();
     }
@@ -431,7 +431,7 @@ class LoanReportRepository implements RepositoryInterface {
         (opening_balance + dr_salary - cr_salary) as balance
         from (
         select 
-        sum(opening_balance) as opening_balance,
+        nvl(sum(opening_balance), 0) as opening_balance,
         sum(dr_salary) as dr_salary,
         sum(dr_interest) as dr_interest,
         sum(cr_salary) as cr_salary
@@ -449,11 +449,11 @@ class LoanReportRepository implements RepositoryInterface {
         {$loanCondition}
         AND trunc(hlpd.from_date, 'month') IN (
         SELECT
-        trunc(add_months('17-Jul-2019', level - 1), 'month') result
+        trunc(add_months('{$fromDate}', level - 1), 'month') result
         FROM
         dual
         CONNECT BY
-        level <= months_between('31-Dec-2019', '17-Jul-2019') + 1
+        level <= months_between('{$toDate}', '{$fromDate}') 
         )
         {$employeeCondition}
         AND ( helr.loan_status = 'OPEN'
@@ -481,11 +481,11 @@ class LoanReportRepository implements RepositoryInterface {
         {$loanCondition}
         AND trunc(hlpd.from_date, 'month') IN (
         SELECT
-        trunc(add_months('17-Jul-2019', level - 1), 'month') result
+        trunc(add_months('{$fromDate}', level - 1), 'month') result
         FROM
         dual
         CONNECT BY
-        level <= months_between('31-Dec-2019', '17-Jul-2019') + 1
+        level <= months_between('{$toDate}', '{$fromDate}')
         )
         {$employeeCondition}
         AND ( helr.loan_status = 'OPEN'
@@ -511,8 +511,8 @@ class LoanReportRepository implements RepositoryInterface {
         WHERE
         1 = 1
         {$loanCondition2}
-        AND ( loan_date BETWEEN '17-Jul-2019' AND '31-Dec-2019' )
-        AND to_char(TO_DATE('17-Jul-2019', 'dd-mon-yy'), 'mm') <> 7
+        AND ( loan_date BETWEEN '{$fromDate}' AND '{$toDate}' )
+        AND to_char(TO_DATE(loan_date, 'dd-mon-yy'), 'mm') <> 7
         {$employeeCondition2}
         AND loan_request_id NOT IN (
         SELECT
@@ -541,7 +541,7 @@ class LoanReportRepository implements RepositoryInterface {
                     {$loanCondition2}
                     {$employeeCondition2}
             )
-            AND payment_date BETWEEN '17-Jul-2019' AND '31-Dec-2019'
+            AND payment_date BETWEEN '{$fromDate}' AND '{$toDate}'
         
         union all
         
@@ -554,8 +554,8 @@ class LoanReportRepository implements RepositoryInterface {
             hris_loan_payment_detail     hlpd
             JOIN hris_employee_loan_request   helr ON ( helr.loan_request_id = hlpd.loan_request_id )
         WHERE
-            to_char(to_date(hlpd.from_date, 'dd-mon-yy'), 'mm') = 7
-            AND hlpd.from_date >= trunc(to_date('1-Jul-2019'), 'month')
+            to_char(to_date(hlpd.from_date, 'dd-mon-yy'), 'mm') = 7 AND
+            hlpd.from_date >= trunc(to_date('$fromDate'), 'month')
             AND hlpd.paid_flag = 'Y'
             {$loanCondition}
             {$employeeCondition}
@@ -581,6 +581,7 @@ class LoanReportRepository implements RepositoryInterface {
         on 1=1
         ";
         
+        //echo $sql; die;
         $statement = $this->adapter->query($sql); 
         return $statement->execute();
     }

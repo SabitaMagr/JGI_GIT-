@@ -130,9 +130,8 @@ class LoanReport extends HrisController {
                 $fromDate = !empty($_POST['fromDate']) ? $_POST['fromDate'] : null ;
                 $toDate = !empty($_POST['toDate']) ? $_POST['toDate'] : null ;
                 $loanId = !empty($_POST['loanId']) ? $_POST['loanId'] : null ;
-                
                 $data = [];
-
+                
                 foreach($emp_id as $eid){
                     $result = $this->repository->fetchLoanSummary($eid, $fromDate, $toDate, $loanId);
                     $loanSummary = Helper::extractDbData($result);

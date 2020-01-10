@@ -15,17 +15,54 @@
         var $table = $("#summaryTable");
         var $search = $("#search");
 
+        function loadKendo(data){
+            $table.kendoGrid({
+                dataSource: {
+                    data: data,
+                    schema: {
+                        model: {
+                            fields: {
+                                OPENING_BALANCE: {type: "number"},
+                                DR_SALARY: {type: "number"},
+                                DR_INTEREST: {type: "number"},
+                                CR_SALARY: {type: "number"},
+                                CR_INTEREST: {type: "number"},
+                                BALANCE: {type: "number"}
+                            }
+                        }
+                    },
+                    //pageSize: 20,
+                    pageable: {
+                        input: false,
+                        numeric: true,
+                        previousNext: true,
+                        butonCount: 5,
+                        pageSizes: [10, 20, 30, 40, "ALL"]
+                    },
+                    aggregate: [{ field: "OPENING_BALANCE", aggregate: "sum" },
+                                  { field: "DR_SALARY", aggregate: "sum" },
+                                  { field: "DR_INTEREST", aggregate: "sum" },
+                                  { field: "CR_SALARY", aggregate: "sum" },
+                                  { field: "CR_INTEREST", aggregate: "sum" },
+                                  { field: "BALANCE", aggregate: "sum" }]
+                },
+                sortable: true,
+                pageable: true,
+                columns: columns
+            });
+        }
+
         var columns = [
             {field: "EMPLOYEE", title: "Employee", width: 150},
-            {field: "OPENING_BALANCE", title: "Opening", width: 120},
-            {field: "DR_SALARY", title: "Dr. Salary", width: 120, format: "{0:0.##}"},
-            {field: "DR_INTEREST", title: "Dr. Interest", width: 120, format: "{0:0.##}"},
-            {field: "CR_SALARY", title: "Cr. Salary", width: 120, format: "{0:0.##}"},
-            {field: "CR_INTEREST", title: "Cr. Interest", width: 120, format: "{0:0.##}"},
-            {field: "BALANCE", title: "Balance", width: 120, format: "{0:0.##}"}
+            {field: "OPENING_BALANCE", title: "Opening", width: 120, aggregates: ["sum"], footerTemplate: "#=sum#"},
+            {field: "DR_SALARY", title: "Dr. Salary", width: 120, format: "{0:0.##}", aggregates: ["sum"], footerTemplate: "#=sum#"},
+            {field: "DR_INTEREST", title: "Dr. Interest", width: 120, format: "{0:0.##}", aggregates: ["sum"], footerTemplate: "#=sum#"},
+            {field: "CR_SALARY", title: "Cr. Salary", width: 120, format: "{0:0.##}", aggregates: ["sum"], footerTemplate: "#=sum#"},
+            {field: "CR_INTEREST", title: "Cr. Interest", width: 120, format: "{0:0.##}", aggregates: ["sum"], footerTemplate: "#=sum#"},
+            {field: "BALANCE", title: "Balance", width: 120, format: "{0:0.##}", aggregates: ["sum"], footerTemplate: "#=sum#"}
         ];
 
-        app.initializeKendoGrid($table, columns);
+        //app.initializeKendoGrid($table, columns);
         app.searchTable($table, ['EMPLOYEE']);
 
         $search.on('click', function () {
@@ -40,7 +77,7 @@
                     return option.value;
                 });
             }
-
+            
             if(fromDate == "" || toDate == ""){
                 alert("From date and To Date are required");
                 return false;
@@ -57,7 +94,8 @@
             window.app.pullDataById(document.pullLoanVoucherSummaryLink, data).then(function (success) {
                 App.unblockUI("#hris-page-content");
                 var data = success.data;
-                app.renderKendoGrid($table, data);
+                //app.renderKendoGrid($table, data);
+                loadKendo(data);
             }, function (failure) {
                 App.unblockUI("#hris-page-content");
             });
