@@ -161,7 +161,12 @@ class LoanReportRepository implements RepositoryInterface {
         connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
         ) {$employeeCondition}
         and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
-            (select loan_req_id from hris_loan_cash_payment))
+            (select loan_req_id from hris_loan_cash_payment)
+            OR 
+                (SELECT TO_CHAR(TO_DATE(FROM_DATE, 'DD-MM-YY'), 'MM') FROM HRIS_LOAN_PAYMENT_DETAIL 
+                WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID AND SNO = (SELECT MAX(SNO) FROM 
+                HRIS_LOAN_PAYMENT_DETAIL WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID)
+              )  <> 7    )
         GROUP BY HLPD.FROM_DATE
         
         UNION ALL
@@ -178,7 +183,12 @@ class LoanReportRepository implements RepositoryInterface {
         connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
         ) {$employeeCondition}
         and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
-            (select loan_req_id from hris_loan_cash_payment))
+            (select loan_req_id from hris_loan_cash_payment)
+            OR 
+                (SELECT TO_CHAR(TO_DATE(FROM_DATE, 'DD-MM-YY'), 'MM') FROM HRIS_LOAN_PAYMENT_DETAIL 
+                WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID AND SNO = (SELECT MAX(SNO) FROM 
+                HRIS_LOAN_PAYMENT_DETAIL WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID)
+              )  <> 7    )
         GROUP BY HLPD.FROM_DATE
         
         UNION ALL
@@ -195,7 +205,12 @@ class LoanReportRepository implements RepositoryInterface {
         connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
         ) {$employeeCondition}
         and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
-            (select loan_req_id from hris_loan_cash_payment))
+            (select loan_req_id from hris_loan_cash_payment)
+            OR 
+                (SELECT TO_CHAR(TO_DATE(FROM_DATE, 'DD-MM-YY'), 'MM') FROM HRIS_LOAN_PAYMENT_DETAIL 
+                WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID AND SNO = (SELECT MAX(SNO) FROM 
+                HRIS_LOAN_PAYMENT_DETAIL WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID)
+              )  <> 7    )
         GROUP BY HLPD.FROM_DATE
         ORDER BY DT, DEBIT_AMOUNT DESC, CREDIT_AMOUNT DESC)
                 
@@ -213,7 +228,7 @@ class LoanReportRepository implements RepositoryInterface {
         {$loanRequestCondition2}
         AND
             (LOAN_DATE BETWEEN '{$fromDate}' AND '{$toDate}')    
-            and to_char(to_date('{$fromDate}','dd-mon-yy'),'mm') <> 7
+            and to_char(to_date(loan_date,'dd-mon-yy'),'mm') <> 7
             {$employeeCondition2}
             and loan_request_id not in (select new_loan_req_id from hris_loan_cash_payment))
 
@@ -306,7 +321,14 @@ class LoanReportRepository implements RepositoryInterface {
             SELECT LOAN_REQUEST_ID FROM hris_employee_loan_request
         where 1=1 {$loanRequestCondition})
         and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
-        (select loan_req_id from hris_loan_cash_payment))
+        (select loan_req_id from hris_loan_cash_payment)
+OR 
+                (SELECT TO_CHAR(TO_DATE(FROM_DATE, 'DD-MM-YY'), 'MM') FROM HRIS_LOAN_PAYMENT_DETAIL 
+                WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID AND SNO = (SELECT MAX(SNO) FROM 
+                HRIS_LOAN_PAYMENT_DETAIL WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID)
+              )  <> 7        
+)
+        
         ";
         //echo $sql; die;
         $statement = $this->adapter->query($sql); 
