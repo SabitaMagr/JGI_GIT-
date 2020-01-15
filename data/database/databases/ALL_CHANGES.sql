@@ -1599,10 +1599,14 @@ add salary_type_id number default 1 not null
 CONSTRAINT fk_salary_type REFERENCES hris_salary_type(SALARY_TYPE_ID);
 
 alter table hris_employee_leave_request add HARDCOPY_SIGNED_FLAG
-char(1) default 'Y'
+char(1) default 'N'
 check (HARDCOPY_SIGNED_FLAG IN ('N', 'Y'));
 
 create table HRIS_EMP_WHEREABOUT_ASN(
 EMPLOYEE_ID NUMBER(7) NOT NULL,
 ORDER_BY NUMBER(4) NOT NULL
 );
+
+alter table hris_employee_travel_request add HARDCOPY_SIGNED_FLAG
+char(1) default 'N'
+check (HARDCOPY_SIGNED_FLAG IN ('N', 'Y'));
