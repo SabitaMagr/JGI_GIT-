@@ -4,13 +4,13 @@ use Zend\Mvc\Application;
 use Zend\Stdlib\ArrayUtils;
 
 // Define application environment
-defined('APPLICATION_ENV') || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
-//defined('APPLICATION_ENV') || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'development'));
+//defined('APPLICATION_ENV') || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
+defined('APPLICATION_ENV') || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'development'));
 /**
  * Display all errors when APPLICATION_ENV is development.
  */
 if ('development' == APPLICATION_ENV || 'staging' == APPLICATION_ENV) {
-    error_reporting(E_ALL);
+    error_reporting(E_ALL ^ ~E_DEPRECATED);
     ini_set("display_errors", 1);
 }
 else{

@@ -57,11 +57,13 @@ class LeaveStatus extends HrisController {
 
         if($this->preference['displayHrApproved'] == 'Y' && $detail['HR_APPROVED'] == 'Y'){
             $detail['APPROVER_ID'] = '-1';
-            $detail['APPROVER_NAME'] = 'HR Approved';
+            $detail['APPROVER_NAME'] = 'HR';
             $detail['RECOMMENDER_ID'] = '-1';
             $detail['RECOMMENDER_NAME'] = 'HR';
+            $detail['RECOMMENDED_BY_NAME'] = 'HR';
+            $detail['APPROVED_BY_NAME'] = 'HR';
         }
-
+        
         $fileDetails = $leaveApproveRepository->fetchAttachmentsById($id);
 
         $status = $detail['STATUS'];
@@ -171,6 +173,18 @@ class LeaveStatus extends HrisController {
             $request = $this->getRequest();
             $data = $request->getPost();
             $recordList = $this->repository->getLeaveRequestList($data);
+
+            if($this->preference['displayHrApproved'] == 'Y'){
+                for($i = 0; $i < count($recordList); $i++){
+                    if($recordList[$i]['HARDCOPY_SIGNED_FLAG'] == 'Y'){
+                        $recordList[$i]['APPROVER_ID'] = '-1';
+                        $recordList[$i]['APPROVER_NAME'] = 'HR';
+                        $recordList[$i]['RECOMMENDER_ID'] = '-1';
+                        $recordList[$i]['RECOMMENDER_NAME'] = 'HR';
+                    }
+                }
+            }
+
             return new JsonModel([
                 "success" => "true",
                 "data" => $recordList,
