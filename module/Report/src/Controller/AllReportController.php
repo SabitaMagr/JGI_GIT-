@@ -41,7 +41,7 @@ class AllReportController extends HrisController {
                     'employeeDetail' => $this->storageData['employee_detail'],
                     'preference' => $this->preference,
                     'name' => $this->storageData['employee_detail']['EMPLOYEE_CODE'].'-'.$this->storageData['employee_detail']['FULL_NAME'],
-                    'companyLogo' => $this->storageData['employee_detail']['COMPANY_FILE_PATH']
+                    'companyLogo' => $this->storageData['employee_detail']['COMPANY_FILE_PATH'],
         ]);
     }
     
@@ -59,7 +59,9 @@ class AllReportController extends HrisController {
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail'],
-                    'preference' => $this->preference
+                    'preference' => $this->preference,
+                    'name' => $this->storageData['employee_detail']['EMPLOYEE_CODE'].'-'.$this->storageData['employee_detail']['FULL_NAME'],
+                    'companyLogo' => $this->storageData['employee_detail']['COMPANY_FILE_PATH'],
         ]);
     }
 
@@ -78,8 +80,14 @@ class AllReportController extends HrisController {
                 }
 
                 $reportData = $this->repository->branchWiseDailyReport($postedData);
+                $branchName = -1;
+                if($postedData['branchId'] != null ) {
+                    $branchName = $this->repository->getBranchName($postedData['branchId'][0]);
+                }
                 $days = $this->repository->getDaysInMonth($monthId);
-                return new JsonModel(['success' => true, 'data' => $reportData, 'days' => $days, 'error' => '']);
+                $dates = $this->repository->getDates($monthId);
+
+                return new JsonModel(['success' => true, 'data' => $reportData, 'days' => $days, 'branchName' => $branchName, 'dates' => $dates, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }

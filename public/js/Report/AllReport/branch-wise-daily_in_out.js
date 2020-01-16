@@ -6,7 +6,8 @@
 
         var $year = $('#fiscalYear');
         var $month = $('#fiscalMonth');
-
+        var branchName = 'ALL';
+        var monthName = '';
         app.setFiscalMonth($year, $month);
 
         $.each(document.searchManager.getIds(), function (key, value) {
@@ -29,14 +30,17 @@
                                 IN_TIME: rawData[i].IN_TIME,
                                 OUT_TIME: rawData[i].OUT_TIME,
                                 TOTAL_HOUR: rawData[i].TOTAL_HOUR,
-                                EMPLOYEE_CODE: rawData[i].EMPLOYEE_CODE
+                                EMPLOYEE_CODE: rawData[i].EMPLOYEE_CODE,
+                                HOLIDAY: rawData[i].HOLIDAY,
+                                DEPARTMENT_NAME: rawData[i].DEPARTMENT_NAME,
                             });
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_ABSENT = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_ABSENT + parseFloat(rawData[i].IS_ABSENT);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_PRESENT = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_PRESENT + parseFloat(rawData[i].IS_PRESENT);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.ON_LEAVE = data[rawData[i].EMPLOYEE_ID].TOTAL.ON_LEAVE + parseFloat(rawData[i].ON_LEAVE);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_DAYOFF = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_DAYOFF + parseFloat(rawData[i].IS_DAYOFF);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY_WORK = data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY_WORK + parseFloat(rawData[i].HOLIDAY_WORK);
-                    
+                    data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY = data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY + parseFloat(rawData[i].HOLIDAY);
+
                     if(isNaN(data[rawData[i].EMPLOYEE_ID].TOTAL.TOTAL_HOUR)) 
                     {
                     data[rawData[i].EMPLOYEE_ID].TOTAL.TOTAL_HOUR = 0;
@@ -51,6 +55,7 @@
                         EMPLOYEE_CODE: rawData[i].EMPLOYEE_CODE,
                         EMPLOYEE_ID: rawData[i].EMPLOYEE_ID,
                         FULL_NAME: rawData[i].FULL_NAME,
+                        DEPARTMENT_NAME: rawData[i].DEPARTMENT_NAME,
                         DAYS: {},
                         TOTAL: {
                             IS_ABSENT: parseFloat(rawData[i].IS_ABSENT),
@@ -58,7 +63,8 @@
                             ON_LEAVE: parseFloat(rawData[i].ON_LEAVE),
                             IS_DAYOFF: parseFloat(rawData[i].IS_DAYOFF),
                             HOLIDAY_WORK: parseFloat(rawData[i].HOLIDAY_WORK),
-                            TOTAL_HOUR: parseFloat(rawData[i].TOTAL_HOUR)
+                            TOTAL_HOUR: parseFloat(rawData[i].TOTAL_HOUR),
+                            HOLIDAY: parseFloat(rawData[i].HOLIDAY),
                         }
                     };
                     data[rawData[i].EMPLOYEE_ID].DAYS['C' + rawData[i].DAY_COUNT] =
@@ -71,7 +77,8 @@
                                 IN_TIME: rawData[i].IN_TIME,
                                 OUT_TIME: rawData[i].OUT_TIME,
                                 TOTAL_HOUR: rawData[i].TOTAL_HOUR,
-                                EMPLOYEE_CODE: rawData[i].EMPLOYEE_CODE
+                                EMPLOYEE_CODE: rawData[i].EMPLOYEE_CODE,
+                                HOLIDAY: rawData[i].HOLIDAY
 
                             });
 
@@ -92,8 +99,14 @@
             });
 
             returnData.cols.push({
+                field: 'DEPARTMENT_NAME',
+                title: 'Department',
+                template: '<span style="text-align: left">#=department#</span>'
+            });
+
+            returnData.cols.push({
                 title: 'Time',
-                width: 400,
+                // width: 400,
                 template: '<span style="text-align: center"><i>In_time</br>Out_time</br>Total_hour</i></span>'
             });
 
@@ -157,6 +170,7 @@
                 }
                 row['employee'] = data[k].FULL_NAME;
                 row['code'] = (data[k].EMPLOYEE_CODE == null) ? '' : data[k].EMPLOYEE_CODE;
+                row['department'] = data[k].DEPARTMENT_NAME;
                 returnData.rows.push(row);
                 row['present'] = JSON.stringify(data[k].TOTAL.IS_PRESENT);
                 row['absent'] = JSON.stringify(data[k].TOTAL.IS_ABSENT);
@@ -165,6 +179,7 @@
                 row['holidaywork'] = JSON.stringify(data[k].TOTAL.HOLIDAY_WORK);
                 row['total'] = JSON.stringify(data[k].TOTAL);
                 row['totalhour'] = JSON.stringify(data[k].TOTAL_HOUR);
+                row['holiday'] = JSON.stringify(data[k].HOLIDAY);
             }
             return returnData;
         };
@@ -179,7 +194,7 @@
 
                 var presentDays = parseFloat(data['IS_PRESENT']);
                 var absentDays = parseFloat(data['IS_ABSENT']);
-                var leaveDays =  parseFloat(data['ON_LEAVE']) + parseFloat(data['IS_DAYOFF']);
+                var leaveDays =  parseFloat(data['ON_LEAVE']) + parseFloat(data['IS_DAYOFF']) + parseFloat(data['HOLIDAY']);
                 var holidayWork = parseFloat(data['HOLIDAY_WORK']);
 
                 var totalhour = parseFloat(data['TOTAL_HOUR']);
@@ -188,7 +203,7 @@
                 var actualeave = (leaveDays > holidayWork) ? (leaveDays-holidayWork) : (holidayWork - leaveDays);
 
                 var totalPresent = presentDays + leaveDays + holidayWork;
-                var actualPresent = (presentDays>0)? totalPresent : presentDays;
+                var actualPresent = (presentDays>0)? totalPresent : presentDays + leaveDays;
 
                 var total = presentDays + absentDays + leaveDays;
 
@@ -222,6 +237,12 @@
             app.pullDataById(document.wsBranchWiseDailyReport, q).then(function (response) {
                 console.log('branchWiseEmployeeMonthlyR', response);
                 var extractedDetailData = extractDetailData(response.data, response.days);
+                if(response.branchName != -1){
+                    branchName = response.branchName[0].BRANCH_NAME;
+                    console.log(branchName);
+                }
+                monthName = response.dates[0].MONTH_EDESC;
+                console.log(monthName);
                 console.log('extractedDetailData', extractedDetailData);
                 $tableContainer.kendoGrid({
                     dataSource: {
@@ -344,9 +365,10 @@
             var newWin = window.open('', 'Print-Window');
 
             newWin.document.open();
-            newWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</body><style>table {border-collapse: collapse;}table, th, td {border: 1px solid black;text-align: center;}</style></html>');
+            newWin.document.write('<html><body onload="window.print()"><div style="text-align: center;"><p style="font-size:20px;" ><b>'+document.preference.companyName+'</b></p><p style="font-size:20px;"><b>'+document.preference.companyAddress+'</b></p></div><div style="text-align: left;"><p style="font-size:15px;"><b>Branch: '+branchName+'<br/>Month: '+monthName+'</b></p></div>' + divToPrint.innerHTML + '<br/></body><style>table {border-collapse: collapse;}table, th, td {border: 1px solid black;text-align: center;} table td:nth-child(2){ text-align: left; }</style></html>');
             newWin.document.close();
 
+            branchName = 'ALL';
             // setTimeout(function () {
             //     newWin.close();
             // }, 1000);

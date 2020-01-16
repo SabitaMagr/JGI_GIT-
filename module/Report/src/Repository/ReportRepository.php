@@ -689,6 +689,7 @@ EOT;
                       TRUNC(AD.ATTENDANCE_DT)-TRUNC(M.FROM_DATE)+1                              AS DAY_COUNT, 
                       E.EMPLOYEE_ID                                                             AS EMPLOYEE_ID ,
                       E.EMPLOYEE_CODE                                                               AS EMPLOYEE_CODE,
+                      HD.DEPARTMENT_NAME                                                             AS DEPARTMENT_NAME,
                       E.FIRST_NAME                                                                   AS FIRST_NAME,
                       E.MIDDLE_NAME                                                                  AS MIDDLE_NAME,
                       E.LAST_NAME                                                                    AS LAST_NAME,
@@ -749,18 +750,32 @@ EOT;
                         THEN 1
                         ELSE 0
                       END) AS HOLIDAY_WORK,
+                      (
+                      CASE
+                        WHEN AD.LEAVE_ID   IS NULL
+                        AND AD.HOLIDAY_ID  IS NOT NULL
+                        AND AD.TRAINING_ID IS NULL
+                        AND AD.TRAVEL_ID   IS NULL
+                        AND AD.IN_TIME     IS NULL 
+                          AND  AD.DAYOFF_FLAG='N'
+                        THEN 1
+                        ELSE 0
+                      END) AS HOLIDAY,
                       TO_CHAR(AD.IN_TIME, 'HH24:mi') as IN_TIME,
                       TO_CHAR(AD.OUT_TIME, 'HH24:mi') as OUT_TIME,
                       MIN_TO_HOUR(AD.TOTAL_HOUR)      AS TOTAL_HOUR
                     FROM HRIS_ATTENDANCE_DETAIL AD
                     JOIN HRIS_EMPLOYEES E
-                    ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID),
+                    ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID)
+                    LEFT JOIN HRIS_DEPARTMENTS HD 
+                    ON (HD.DEPARTMENT_ID = E.DEPARTMENT_ID),
                       ( SELECT FROM_DATE,TO_DATE FROM HRIS_MONTH_CODE WHERE MONTH_ID={$monthId}
                       ) M
                     WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
+                    and E.EMPLOYEE_ID not in (select employee_id from hris_job_history where RETIRED_FLAG = 'Y' or DISABLED_FLAG = 'Y')
                     {$searchCondition}
-                    ORDER BY AD.ATTENDANCE_DT,
-                      E.EMPLOYEE_ID
+                    ORDER BY 
+                      TO_NUMBER(NVL(E.EMPLOYEE_CODE,'0'),'9999D99','nls_numeric_characters=,.') asc
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -2467,6 +2482,7 @@ between  '{$fromDate}' and '{$toDate}'
             LEFT JOIN HRIS_DEPARTMENTS D
             ON (E.DEPARTMENT_ID= D.DEPARTMENT_ID)
             WHERE 1 = 1 {$searchCondition}
+            and E.EMPLOYEE_ID not in (select employee_id from hris_job_history where RETIRED_FLAG = 'Y' or DISABLED_FLAG = 'Y')
             ORDER BY C.COMPANY_NAME,
               D.DEPARTMENT_NAME,
               E.FULL_NAME 
@@ -2725,4 +2741,18 @@ EOT;
         return Helper::extractDbData($result);
     }
 
+    public function getBranchName($branchId) {
+        $sql = "select BRANCH_NAME from HRIS_BRANCHES where BRANCH_ID = {$branchId}";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function getDates($monthId) {
+        $sql = "SELECT TO_DATE, FROM_DATE, MONTH_EDESC FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
 }
