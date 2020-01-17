@@ -345,6 +345,14 @@
         var yyyy = today.getFullYear();
         var today = dd + '/' + mm + '/' + yyyy;
 
+        $('#excelExport').on('click', function () {
+            $tableContainer.table2excel({
+                exclude: ".noExl",
+                name: "Branch wise daily",
+                filename: "Branch wise daily"
+            });
+        });
+
 
 
         $("#printAsPDF").click(function (e) {

@@ -159,6 +159,15 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Salary Group"})
+     * @Annotation\Attributes({ "id":"groupId","class":"form-control"})
+     */
+    public $groupId;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Event Type"})
      * @Annotation\Attributes({ "id":"serviceEventTypeId","class":"form-control"})
      */
@@ -210,6 +219,7 @@ class HrEmployeesFormTabFour extends Model {
         'payEmpType' => 'PAY_EMP_TYPE',
         'wohFlag' => 'WOH_FLAG',
         'overtimeEligible' => 'OVERTIME_ELIGIBLE',
+        'groupId' => 'GROUP_ID',
     ];
 
 }

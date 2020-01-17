@@ -431,6 +431,7 @@ class EmployeeController extends HrisController {
 //                'relation' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_RELATIONS", "RELATION_ID", ["RELATION_NAME"], ["STATUS" => 'E'], "RELATION_NAME", "ASC", null, false, true),
             'relation' => ApplicationHelper::getTableList($this->adapter, "HRIS_RELATIONS", ["RELATION_ID","RELATION_NAME"], ["STATUS" => 'E']),
             'serviceEventTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, true, true),
+            'group' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SALARY_SHEET_GROUP", "GROUP_ID", ["GROUP_NAME"],null, "GROUP_NAME", "ASC", null, true, true),
         ]);
     }
 

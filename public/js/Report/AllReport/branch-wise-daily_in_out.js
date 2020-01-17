@@ -353,11 +353,11 @@
             });
         });
 
-        $('#exportPdf').on('click', function () {
-            kendo.drawing.drawDOM($tableContainer).then(function (group) {
-                kendo.drawing.pdf.saveAs(group, "Branch wise daily In Out.pdf");
-            });
-        });
+        // $('#exportPdf').on('click', function () {
+        //     kendo.drawing.drawDOM($tableContainer).then(function (group) {
+        //         kendo.drawing.pdf.saveAs(group, "Branch wise daily In Out.pdf");
+        //     });
+        // });
 
         $("#printAsPDF").click(function (e) {
             var divToPrint = document.getElementById('reportTable');
