@@ -365,3 +365,8 @@ check (locked in ('Y', 'N'));
 
 alter table hris_salary_sheet add approved char(1) DEFAULT 'N'
 check (approved in ('Y', 'N'));
+
+
+alter table hris_ss_pay_value_modified
+add salary_type_id number default 1 not null 
+CONSTRAINT fk_salary_type REFERENCES hris_salary_type(SALARY_TYPE_ID);

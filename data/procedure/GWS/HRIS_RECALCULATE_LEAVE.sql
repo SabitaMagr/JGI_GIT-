@@ -7,6 +7,7 @@ AS
   V_IS_ASSIGNED              CHAR(1 BYTE);
   V_TOTAL_NO_OF_ENCASH         NUMBER;
   v_functional_type_id         NUMBER;
+  v_travel_increment_old          NUMBER;
   v_travel_increment_new          NUMBER;
 BEGIN
   FOR leave_addition IN
@@ -62,7 +63,7 @@ BEGIN
   
       -- FOR PROJECT LEAVE START
     
-    FOR PROJECT_LEAVE IN (select employee_id,ROUND((SUM(TO_DATE-FROM_DATE+1)/15),0) AS TOTAL_TRAVEL,
+FOR PROJECT_LEAVE IN (select employee_id,ROUND((SUM(TO_DATE-FROM_DATE+1)/15),0) AS TOTAL_TRAVEL,
 (SELECT
 leave_id
 FROM
@@ -79,18 +80,40 @@ AND (employee_id =
         THEN P_EMPLOYEE_ID
       END
     OR P_EMPLOYEE_ID IS NULL)
-    AND TO_DATE < '01-JAN-20'
 GROUP BY EMPLOYEE_ID)
 LOOP
-v_travel_increment_new:=0;
+
+
+
+-- to give 1 start
+begin
+select ROUND((SUM(TO_DATE-FROM_DATE+1)/15),0) AS TOTAL_TRAVEL
+into
+v_travel_increment_old
+from hris_employee_travel_request
+where STATUS='AP' and employee_id=PROJECT_LEAVE.employee_id
+AND TO_DATE < '01-JAN-20'
+GROUP BY EMPLOYEE_ID;
+EXCEPTION
+    WHEN no_data_found THEN
+      v_travel_increment_old:=0;
+    END;
+
+-- to give 1 end
+
 
  -- TO GIVE 2 DAYS FOR 15 DAY TRAVEL FROM JAN 1 2020 START
+ begin
 select ROUND((SUM(TO_DATE-FROM_DATE+1)/15),0)*2 AS TOTAL_TRAVEL 
 into
 v_travel_increment_new
 from hris_employee_travel_request where employee_id=PROJECT_LEAVE.employee_id
 and STATUS='AP' AND TO_DATE >= '01-JAN-20'
 GROUP BY EMPLOYEE_ID;
+EXCEPTION
+    WHEN no_data_found THEN
+      v_travel_increment_new:=0;
+    END;
  -- TO GIVE 2 DAYS FOR 15 DAY TRAVEL FROM JAN 1 2020 END
 
 BEGIN
@@ -103,7 +126,10 @@ FROM
 hris_employees
 WHERE 
 employee_id=PROJECT_LEAVE.EMPLOYEE_ID;
-END;
+EXCEPTION
+    WHEN no_data_found THEN
+      v_functional_type_id:=2;
+    END;
 
 IF(v_functional_type_id=1)
 THEN
@@ -121,7 +147,7 @@ SELECT (
     AND LEAVE_ID      = PROJECT_LEAVE.LEAVE_ID;
     IF(V_IS_ASSIGNED  ='Y')THEN
       UPDATE HRIS_EMPLOYEE_LEAVE_ASSIGN
-      SET TOTAL_DAYS   = (PROJECT_LEAVE.TOTAL_TRAVEL+v_travel_increment_new)
+      SET TOTAL_DAYS   = (v_travel_increment_old+v_travel_increment_new)
       WHERE EMPLOYEE_ID= PROJECT_LEAVE.EMPLOYEE_ID
       AND LEAVE_ID     = PROJECT_LEAVE.LEAVE_ID;
     ELSE
@@ -138,7 +164,7 @@ SELECT (
         (
           PROJECT_LEAVE.EMPLOYEE_ID,
           PROJECT_LEAVE.LEAVE_ID,
-          (PROJECT_LEAVE.TOTAL_TRAVEL+v_travel_increment_new),
+          (v_travel_increment_old+v_travel_increment_new),
           0,
           TRUNC(SYSDATE)
         );
