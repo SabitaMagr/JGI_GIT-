@@ -1,3 +1,14 @@
+<style>
+    .btn.green:not(.btn-outline), .green {
+        background-color: #63AB6A !important;
+        border-color: #63AB6A !important;
+    }
+    abbr[title] {
+        border-bottom: none !important;
+        cursor: inherit !important;
+        text-decoration: none !important;
+    }
+</style>
 <?php
 $this->headLink()
     ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
@@ -7,7 +18,8 @@ $this->headLink()
 $this->headScript()
     ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
     ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'));
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+    ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 $this->headScript()->appendFile($this->basePath('js/search.js'));
 $this->headScript()->appendFile($this->basePath('js/Report/AllReport/whereabouts-report.js'));
 
@@ -17,6 +29,7 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/whereabouts
     document.acl =<?php echo json_encode($acl); ?>;
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
     document.getWhereabouts = "<?php echo $this->url('allreport', ['action' => 'whereabouts']);?>";
+    document.preference =<?php echo json_encode($preference) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\overtime-report')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -93,6 +106,22 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/whereabouts
                     </div>
                 </div>
 
+                <div class="row margin-top-10">
+                    <div class="col-sm-2">
+                        <input type="text" id="fromDate" name="fromDate"  class="form-control reset-field" placeholder="From Date"/>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control reset-field" placeholder="From Date Nepali"/>
+
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text"  id="toDate" name="toDate"  class="form-control reset-field" placeholder="To Date"/>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control reset-field" placeholder="To Date Nepali"/>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-sm-12">
                         <button id="reset" class="btn default btn-sm pull-right hris-reset-btn">
@@ -107,39 +136,11 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/whereabouts
                 </div>
             </div>
         </div>
-        <div class="portlet box blue">
-            <div class="portlet-title">
-                <div class="tools">
-                    <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
-                    <a href="" class="fullscreen" data-original-title="" title=""> </a>
-                </div>
-                <div class="actions">
-                    <div class="btn-group">
-                        <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-copy"></i> Tools
-                            <i class="fa fa-angle-down "></i>
-                        </a>
-                        <ul class="dropdown-menu pull-right">
-                            <li>
-                                <a href="javascript:;" id="excelExport">
-                                    <i class="fa fa-file-excel-o" ></i> 
-                                    Export to Excel 
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:;" id="pdfExport">
-                                    <i class="fa fa-file-pdf-o" ></i> 
-                                    Export to PDF
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+        <div class="portlet box ">
             <div class="portlet-body">
                 <div class="row">
                     <div class="col-sm-12">
-                        <div id="table">
+                        <div id="report">
                         </div>
                     </div>
                 </div>

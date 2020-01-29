@@ -59,7 +59,7 @@
             {field: "FUNCTIONAL_TYPE_EDESC", title: "Functional Type", width: 150},
             {field: "FUNCTIONAL_LEVEL_EDESC", title: "Functional Level", width: 150},
             {field: "EMPLOYEE_ID", title: "Action", width: 120, locked: true, template: app.genKendoActionTemplate(actiontemplateConfig)}
-        ]);
+        ], null, null, null, 'Employee List');
         app.searchTable('employeeTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], false);
   
         var map = {

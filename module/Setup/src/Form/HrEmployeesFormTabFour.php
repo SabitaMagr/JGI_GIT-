@@ -200,6 +200,16 @@ class HrEmployeesFormTabFour extends Model {
      */
     public $endDate;
 
+    /**
+     * @Annotation\Required(false)
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Allowance"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"9"}})
+     * @Annotation\Attributes({ "id":"allowance", "class":"form-control","step":"1","min":"0"})
+     */
+    public $allowance ;
+
     public $mappings = [
         'joinDate' => 'JOIN_DATE',
         'salary' => 'SALARY',
@@ -220,6 +230,7 @@ class HrEmployeesFormTabFour extends Model {
         'wohFlag' => 'WOH_FLAG',
         'overtimeEligible' => 'OVERTIME_ELIGIBLE',
         'groupId' => 'GROUP_ID',
+        'allowance' => 'ALLOWANCE',
     ];
 
 }
