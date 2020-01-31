@@ -1610,3 +1610,5 @@ ORDER_BY NUMBER(4) NOT NULL
 alter table hris_employee_travel_request add HARDCOPY_SIGNED_FLAG
 char(1) default 'N'
 check (HARDCOPY_SIGNED_FLAG IN ('N', 'Y'));
+
+alter table hris_employee_loan_request add modified_date date;

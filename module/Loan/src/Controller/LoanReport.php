@@ -146,8 +146,14 @@ class LoanReport extends HrisController {
         $loanList = $this->repository->getLoanlist();
         $loanList = Helper::extractDbData($loanList);
         
+        $searchValues = ApplicationHelper::getSearchData($this->adapter);
+
+        $allEmployees = Helper::extractDbData($this->repository->getAllEmployees());
+
+        $searchValues['employee'] = $allEmployees;
+
         return $this->stickFlashMessagesTo([
-                'searchValues' => ApplicationHelper::getSearchData($this->adapter),
+                'searchValues' => $searchValues,
                 'acl' => $this->acl,
                 'employeeDetail' => $this->storageData['employee_detail'],
                 'loanList' => $loanList,
