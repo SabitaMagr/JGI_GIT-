@@ -211,15 +211,21 @@
 
                 var presentDays = parseFloat(data['IS_PRESENT']);
                 var absentDays = parseFloat(data['IS_ABSENT']);
-                var leaveDays =  parseFloat(data['ON_LEAVE']) + parseFloat(data['IS_DAYOFF']) + parseFloat(data['HOLIDAY']);
+                var leaveDayoffHoliday =  parseFloat(data['ON_LEAVE']) + parseFloat(data['IS_DAYOFF']) + parseFloat(data['HOLIDAY']);
                 var holidayWork = parseFloat(data['HOLIDAY_WORK']);
 
-                var actualeave = (leaveDays > holidayWork) ? (leaveDays-holidayWork) : (holidayWork - leaveDays);
+                // var actualeave = (leaveDays > holidayWork) ? (leaveDays-holidayWork) : (holidayWork - leaveDays);
 
-                var totalPresent = presentDays + leaveDays + holidayWork;
-                var actualPresent = (presentDays>0)? totalPresent : presentDays + leaveDays;
+                var actualLeaves = leaveDayoffHoliday;
 
-                var total = presentDays + absentDays + leaveDays;
+                if(presentDays == 0) {
+                    actualLeaves = 0;
+                }
+
+                var totalPresent = presentDays + actualLeaves + holidayWork;
+                var actualPresent = (presentDays>0)? totalPresent : presentDays + actualLeaves;
+
+                var total = presentDays + absentDays + leaveDayoffHoliday;
 
 
                 if(selector == '.present-attendance'){
@@ -232,8 +238,8 @@
                     $data.html(actualPresent);
                     $data.attr('title', Number((actualPresent * 100 / total).toFixed(1)));
                 } else if(selector == '.leave-attendance'){
-                    $data.html(leaveDays);
-                    $data.attr('title', Number((leaveDays * 100 / total).toFixed(1)));
+                    $data.html(leaveDayoffHoliday);
+                    $data.attr('title', Number((leaveDayoffHoliday * 100 / total).toFixed(1)));
                 } else if(selector == '.holidaywork-attendance'){
                     $data.html(holidayWork);
                     $data.attr('title', Number((holidayWork * 100 / total).toFixed(1)));

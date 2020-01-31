@@ -2712,33 +2712,132 @@ EOT;
 
     public function whereaboutsReport($data) {
 
-        $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], $data['genderId'], $data['locationId']);
+        $pivotString = '';
+        for ($i = 1; $i <= $data['days']; $i++) {
+            if ($i != $data['days']) {
+                $pivotString .= $i . ' AS ' . 'D' . $i . ', ';
+            } else {
+                $pivotString .= $i . ' AS ' . 'D' . $i;
+            }
+        }
 
-        $sql = "SELECT E.EMPLOYEE_CODE,
-                  E.FULL_NAME,
-                  EWA.*,
-                  B.BRANCH_NAME,
-                  DP.DEPARTMENT_NAME,
-                  D.DESIGNATION_TITLE,
-                  P.POSITION_NAME
-                FROM HRIS_EMP_WHEREABOUT_ASN EWA
-                LEFT JOIN HRIS_EMPLOYEES E
-                ON (EWA.EMPLOYEE_ID = E.EMPLOYEE_ID)
-                LEFT JOIN HRIS_BRANCHES B
-                ON (B.BRANCH_ID = E.BRANCH_ID)
-                LEFT JOIN HRIS_DEPARTMENTS DP
-                ON (DP.DEPARTMENT_ID = E.DEPARTMENT_ID)
-                LEFT JOIN HRIS_DESIGNATIONS D
-                ON (D.DESIGNATION_ID = E.DESIGNATION_ID)
-                LEFT JOIN HRIS_POSITIONS P
-                ON (P.POSITION_ID = E.POSITION_ID)
-                where 1=1 {$condition}
-                ORDER BY EWA.ORDER_BY
-                ";
+        $leaveDetails=$this->getLeaveList();
+        $leavePivotString = $this->getLeaveCodePivot($leaveDetails);
+        $searchConditon = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], null, null, $data['functionalTypeId']);
+
+        $sql = <<<EOT
+                SELECT PL.*,MLD.*,
+         CL.PRESENT,
+         CL.ABSENT,
+         CL.LEAVE,
+         CL.DAYOFF,
+         CL.HOLIDAY,
+         CL.WORK_DAYOFF,
+         CL.WORK_HOLIDAY,
+         (CL.PRESENT+CL.ABSENT+CL.LEAVE+CL.DAYOFF+CL.HOLIDAY+CL.WORK_DAYOFF+CL.WORK_HOLIDAY) AS TOTAL
+       FROM
+         (SELECT *
+         FROM
+           (SELECT E.FULL_NAME,
+             AD.EMPLOYEE_ID,
+             E.EMPLOYEE_CODE,
+             CASE
+               WHEN AD.OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+               THEN 'PR'
+               WHEN AD.OVERALL_STATUS = 'LV' AND AD.HALFDAY_FLAG='N' THEN 'L'||'-'||LMS.LEAVE_CODE
+               WHEN AD.OVERALL_STATUS = 'LV' AND AD.HALFDAY_FLAG!='N' THEN 'HL'||'-'||LMS.LEAVE_CODE
+               ELSE AD.OVERALL_STATUS
+             END AS OVERALL_STATUS,
+             
+             (AD.ATTENDANCE_DT- to_date('{$data['fromDate']}','DD-Mon-YYYY') +1) AS DAY_COUNT
+           FROM HRIS_ATTENDANCE_DETAIL AD
+           LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS ON (AD.LEAVE_ID=LMS.LEAVE_ID)
+           AND (AD.ATTENDANCE_DT BETWEEN to_date('{$data['fromDate']}','DD-Mon-YYYY') AND to_date('{$data['toDate']}','DD-Mon-YYYY'))
+           JOIN HRIS_EMPLOYEES E
+           ON (E.EMPLOYEE_ID =AD.EMPLOYEE_ID)
+       {$searchConditon}
+           JOIN HRIS_EMP_WHEREABOUT_ASN W
+           ON (W.EMPLOYEE_ID = AD.EMPLOYEE_ID)
+           ) PIVOT (MAX (OVERALL_STATUS) FOR DAY_COUNT IN ({$pivotString})) 
+         ) PL
+       LEFT JOIN
+         (SELECT EMPLOYEE_ID,
+           COUNT(
+           CASE
+             WHEN OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+             THEN 1
+           END) AS PRESENT,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'AB'
+             THEN 1
+           END) AS ABSENT,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'LV'
+             THEN 1
+           END) AS LEAVE,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'DO'
+             THEN 1
+           END) AS DAYOFF,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'HD'
+             THEN 1
+           END) AS HOLIDAY,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'WD'
+             THEN 1
+           END) AS WORK_DAYOFF,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'WH'
+             THEN 1
+           END) AS WORK_HOLIDAY
+         FROM HRIS_ATTENDANCE_DETAIL
+         WHERE ATTENDANCE_DT BETWEEN to_date('{$data['fromDate']}','DD-Mon-YYYY') AND to_date('{$data['toDate']}','DD-Mon-YYYY')
+         GROUP BY EMPLOYEE_ID
+         )CL
+       ON (PL.EMPLOYEE_ID=CL.EMPLOYEE_ID)
+          LEFT JOIN
+         (
+         select 
+ *
+ from
+ (select 
+AD.employee_id,
+AD.leave_id,
+ sum(
+ case AD.HALFDAY_FLAG
+ when 'N'  then 1
+ else 0.5 end
+ ) as LTBM
+from HRIS_ATTENDANCE_DETAIL AD
+  WHERE 
+ leave_id  is not null 
+ and AD.ATTENDANCE_DT BETWEEN to_date('{$data['fromDate']}','DD-Mon-YYYY') AND to_date('{$data['toDate']}','DD-Mon-YYYY')
+   group by AD.employee_id,AD.leave_id
+   )
+   PIVOT ( MAX (LTBM) FOR LEAVE_ID IN (
+   {$leavePivotString}
+   )
+   )
+         ) MLD
+       ON (PL.EMPLOYEE_ID=MLD.EMPLOYEE_ID)
+       LEFT JOIN HRIS_EMP_WHEREABOUT_ASN W
+       ON (PL.EMPLOYEE_ID = W.EMPLOYEE_ID)
+       order by W.ORDER_BY
+                 
+EOT;
+print_r($sql);
+die();
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        return Helper::extractDbData($result);
+        return ['leaveDetails'=>$leaveDetails, 'data' => Helper::extractDbData($result)];
     }
 
     public function getBranchName($branchId) {
