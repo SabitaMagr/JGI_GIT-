@@ -665,7 +665,8 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                   FUNL.FUNCTIONAL_LEVEL_EDESC                                       AS FUNCTIONAL_LEVEL_EDESC,
                   E.SALARY                                                          AS SALARY,
                   E.SALARY_PF                                                       AS SALARY_PF,
-                  E.REMARKS                                                         AS REMARKS
+                  E.REMARKS                                                         AS REMARKS,
+                  E.Allowance                                                       AS ALLOWANACE
                 FROM HRIS_EMPLOYEES E
                 LEFT JOIN HRIS_COMPANY C
                 ON E.COMPANY_ID=C.COMPANY_ID

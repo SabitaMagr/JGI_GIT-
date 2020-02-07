@@ -18,8 +18,7 @@
             {field: "AGE", title: "Age", width: 130},
             {field: "DOJ", title: "JoinDate", width: 100},
             {field: "SERVICE_TYPE_NAME", title: "Service Type", width: 100},
-            {field: "BASIC", title: "Basic", width: 100},
-            {field: "GRADE", title: "Grade", width: 100},
+            {field: "SALARY", title: "Salary", width: 100},
             {field: "ALLOWANCE", title: "Allowance", width: 100},
             {field: "GROSS", title: "Gross", width: 100}
         ];
@@ -29,21 +28,21 @@
         app.searchTable('employeeTable', ['EMPLOYEE_CODE', 'FULL_NAME'], false);
   
         var map = {
-            //'EMPLOYEE_ID': 'Employee Id',
             'EMPLOYEE_CODE': 'Employee Code',
             'FULL_NAME': 'Employee',
-            'SERVICE_DURATION': 'Service Duration',
-            'FUNCTIONAL_TYPE_EDESC': 'Functional Type',
             'DEPARTMENT_NAME': 'Department',
-            'POSITION_NAME': 'Position',
-            'BIRTH_DATE_AD': 'BirthDate',
-            'AGE': 'Age',
-            'DOJ': 'JoinDate',
-            'SERVICE_TYPE_NAME': 'Service Type',
-            'BASIC': 'Basic',
+            'DESIGNATION_TITLE': 'Designation',
             'GRADE': 'Grade',
-            'ALLOWANCE': 'Alowance',
-            'GROSS': 'Gross',
+            'DOB': 'BirthDate',
+            'DOJ': 'JoinDate',
+            'AGE': 'Age',
+            'SERVICE_DURATION': 'Service Duration',
+            'SERVICE_TYPE_NAME': 'Service Type',
+            'FUNCTIONAL_TYPE_EDESC': 'Functional Type',
+            'POSITION_NAME': 'Position',
+            'SALARY': 'Basic',
+            'ALLOWANCE': 'Allowance',
+            'GROSS': 'Gross'
         }; 
 
         var exportColumnParameters = [];

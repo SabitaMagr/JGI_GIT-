@@ -61,7 +61,7 @@ class KioskPrintRepo {
             $salaryTypeInsert = ", {$data['SalaryTypeId']}";
         }
 
-        $sql = "INSERT INTO HRIS_KIOSK_PRINT_STAT(PRINT_ID,MONTH_ID,EMPLOYEE_ID,PRINT_TYPE {$loanKey} {$salaryTypeKey}) VALUES ((SELECT MAX(PRINT_ID)+1 FROM HRIS_KIOSK_PRINT_STAT),(select MONTH_ID from HRIS_MONTH_CODE where TRUNC(SYSDATE) between from_date and to_date),{$employeeId},'{$data['PrintType']}'{$loanInsert}{$salaryTypeInsert})";
+        $sql = "INSERT INTO HRIS_KIOSK_PRINT_STAT(PRINT_ID,MONTH_ID,EMPLOYEE_ID,PRINT_TYPE {$loanKey} {$salaryTypeKey}) VALUES ((SELECT NVL(MAX(PRINT_ID),0)+1 FROM HRIS_KIOSK_PRINT_STAT),(select MONTH_ID from HRIS_MONTH_CODE where TRUNC(SYSDATE) between from_date and to_date),{$employeeId},'{$data['PrintType']}'{$loanInsert}{$salaryTypeInsert})";
 
         $statement = $this->adapter->query($sql);
         $statement->execute();

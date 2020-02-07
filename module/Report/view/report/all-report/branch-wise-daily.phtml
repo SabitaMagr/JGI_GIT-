@@ -10,7 +10,8 @@ $this->headLink()
 $this->headScript()
     ->appendFile($this->basePath('js/search.js'))
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/table2excel/src/jquery.table2excel.js'));
 $this->headScript()->appendFile($this->basePath('js/Report/AllReport/branch-wise-daily.js'));
 ?>
 <?php if ($this->messages) { ?>
@@ -59,6 +60,22 @@ document.preference =<?php echo json_encode($preference) ?>;
                 </ul>
             </div>
         </div>
+
+        <div class="actions">
+            <div class="btn-group">
+                <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-copy"></i> Tools
+                    <i class="fa fa-angle-down "></i>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li >
+                        <a id="excelExport" href="javascript:;"  >
+                            <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
         <div class="actions">
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
         </div>

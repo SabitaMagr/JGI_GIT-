@@ -6,6 +6,8 @@
 
         var $year = $('#fiscalYear');
         var $month = $('#fiscalMonth');
+        var monthName = 'ALL';
+        var branchName = '';
 
         app.setFiscalMonth($year, $month);
 
@@ -13,7 +15,7 @@
             $('#' + value).select2();
         });
 
-        // app.searchTable('reportTable', ['code', 'employee'], false);
+        app.searchTable('reportTable', ['code', 'employee'], false);
 
         var extractDetailData = function (rawData, days) {
             console.log(rawData);
@@ -28,25 +30,30 @@
                                 ON_LEAVE: rawData[i].ON_LEAVE,
                                 IS_DAYOFF: rawData[i].IS_DAYOFF,
                                 HOLIDAY_WORK: rawData[i].HOLIDAY_WORK,
-                                EMPLOYEE_CODE: rawData[i].EMPLOYEE_CODE
+                                EMPLOYEE_CODE: rawData[i].EMPLOYEE_CODE,
+                                DEPARTMENT_NAME: rawData[i].DEPARTMENT_NAME,
+                                HOLIDAY: rawData[i].HOLIDAY,
                             });
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_ABSENT = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_ABSENT + parseFloat(rawData[i].IS_ABSENT);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_PRESENT = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_PRESENT + parseFloat(rawData[i].IS_PRESENT);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.ON_LEAVE = data[rawData[i].EMPLOYEE_ID].TOTAL.ON_LEAVE + parseFloat(rawData[i].ON_LEAVE);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_DAYOFF = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_DAYOFF + parseFloat(rawData[i].IS_DAYOFF);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY_WORK = data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY_WORK + parseFloat(rawData[i].HOLIDAY_WORK);
+                    data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY = data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY + parseFloat(rawData[i].HOLIDAY);
                 } else {
                     data[rawData[i].EMPLOYEE_ID] = {
                         EMPLOYEE_CODE: rawData[i].EMPLOYEE_CODE,
                         EMPLOYEE_ID: rawData[i].EMPLOYEE_ID,
                         FULL_NAME: rawData[i].FULL_NAME,
+                        DEPARTMENT_NAME: rawData[i].DEPARTMENT_NAME,
                         DAYS: {},
                         TOTAL: {
                             IS_ABSENT: parseFloat(rawData[i].IS_ABSENT),
                             IS_PRESENT: parseFloat(rawData[i].IS_PRESENT),
                             ON_LEAVE: parseFloat(rawData[i].ON_LEAVE),
                             IS_DAYOFF: parseFloat(rawData[i].IS_DAYOFF),
-                            HOLIDAY_WORK: parseFloat(rawData[i].HOLIDAY_WORK)
+                            HOLIDAY_WORK: parseFloat(rawData[i].HOLIDAY_WORK),
+                            HOLIDAY: parseFloat(rawData[i].HOLIDAY),
                         }
                     };
                     data[rawData[i].EMPLOYEE_ID].DAYS['C' + rawData[i].DAY_COUNT] =
@@ -55,7 +62,8 @@
                                 IS_PRESENT: rawData[i].IS_PRESENT,
                                 ON_LEAVE: rawData[i].ON_LEAVE,
                                 IS_DAYOFF: rawData[i].IS_DAYOFF,
-                                HOLIDAY_WORK: rawData[i].HOLIDAY_WORK
+                                HOLIDAY_WORK: rawData[i].HOLIDAY_WORK,
+                                HOLIDAY: rawData[i].HOLIDAY,
                             });
 
                 }
@@ -81,6 +89,12 @@
                 field: 'employee',
                 title: 'Employees',
                 template: '<span style="text-align: left">#=employee#</span>'
+            });
+
+            returnData.cols.push({
+                field: 'DEPARTMENT_NAME',
+                title: 'Department',
+                template: '<span style="text-align: left">#=department#</span>'
             });
             for (var i = 1; i <= days[0].TOTAL_DAYS; i++) {
                 var temp = 'C' + i;
@@ -134,6 +148,7 @@
                 }
                 row['employee'] = data[k].FULL_NAME;
                 row['code'] = (data[k].EMPLOYEE_CODE == null) ? '' : data[k].EMPLOYEE_CODE;
+                row['department'] = data[k].DEPARTMENT_NAME;
                 returnData.rows.push(row);
                 row['present'] = JSON.stringify(data[k].TOTAL.IS_PRESENT);
                 row['absent'] = JSON.stringify(data[k].TOTAL.IS_ABSENT);
@@ -141,6 +156,7 @@
                 row['leave'] = JSON.stringify(data[k].TOTAL.ON_LEAVE);
                 row['holidaywork'] = JSON.stringify(data[k].TOTAL.HOLIDAY_WORK);
                 row['total'] = JSON.stringify(data[k].TOTAL);
+                row['holiday'] = JSON.stringify(data[k].HOLIDAY);
             }
             return returnData;
         };
@@ -166,12 +182,14 @@
                                 $group.html('L');
                                 $group.parent().addClass('bg-blue1 textcolor2');
 
-                            } else if (data.IS_DAYOFF == 1){
+                            } else if (data.HOLIDAY_WORK == 1){
+                                $group.html('WH');
+                                $group.parent().addClass('bg-white1 textcolor3 ');
+                            } else if (data.HOLIDAY == 1 || data.IS_DAYOFF == 1){
                                 $group.html('H');
                                 $group.parent().addClass('bg-white1 textcolor3 ');
                             } else {
-                                $group.html('WH');
-                                $group.parent().addClass('bg-white1 textcolor3 ');
+
                             }
 
                         }
@@ -193,15 +211,21 @@
 
                 var presentDays = parseFloat(data['IS_PRESENT']);
                 var absentDays = parseFloat(data['IS_ABSENT']);
-                var leaveDays =  parseFloat(data['ON_LEAVE']) + parseFloat(data['IS_DAYOFF']);
+                var leaveDayoffHoliday =  parseFloat(data['ON_LEAVE']) + parseFloat(data['IS_DAYOFF']) + parseFloat(data['HOLIDAY']);
                 var holidayWork = parseFloat(data['HOLIDAY_WORK']);
 
-                var actualeave = (leaveDays > holidayWork) ? (leaveDays-holidayWork) : (holidayWork - leaveDays);
+                // var actualeave = (leaveDays > holidayWork) ? (leaveDays-holidayWork) : (holidayWork - leaveDays);
 
-                var totalPresent = presentDays + leaveDays + holidayWork;
-                var actualPresent = (presentDays>0)? totalPresent : presentDays;
+                var actualLeaves = leaveDayoffHoliday;
 
-                var total = presentDays + absentDays + leaveDays;
+                if(presentDays == 0) {
+                    actualLeaves = 0;
+                }
+
+                var totalPresent = presentDays + actualLeaves + holidayWork;
+                var actualPresent = (presentDays>0)? totalPresent : presentDays + actualLeaves;
+
+                var total = presentDays + absentDays + leaveDayoffHoliday;
 
 
                 if(selector == '.present-attendance'){
@@ -214,8 +238,8 @@
                     $data.html(actualPresent);
                     $data.attr('title', Number((actualPresent * 100 / total).toFixed(1)));
                 } else if(selector == '.leave-attendance'){
-                    $data.html(leaveDays);
-                    $data.attr('title', Number((leaveDays * 100 / total).toFixed(1)));
+                    $data.html(leaveDayoffHoliday);
+                    $data.attr('title', Number((leaveDayoffHoliday * 100 / total).toFixed(1)));
                 } else if(selector == '.holidaywork-attendance'){
                     $data.html(holidayWork);
                     $data.attr('title', Number((holidayWork * 100 / total).toFixed(1)));
@@ -244,6 +268,12 @@
                 // }
                 console.log('branchWiseEmployeeMonthlyR', response);
                 var extractedDetailData = extractDetailData(response.data, response.days);
+                if(response.branchName != -1){
+                    branchName = response.branchName[0].BRANCH_NAME;
+                    console.log(branchName);
+                }
+                monthName = response.dates[0].MONTH_EDESC;
+                console.log(monthName);
                 console.log('extractedDetailData', extractedDetailData);
 //                $tableContainer.remove();
                 $tableContainer.kendoGrid({
@@ -321,6 +351,14 @@
         var yyyy = today.getFullYear();
         var today = dd + '/' + mm + '/' + yyyy;
 
+        $('#excelExport').on('click', function () {
+            $tableContainer.table2excel({
+                exclude: ".noExl",
+                name: "Branch wise daily",
+                filename: "Branch wise daily"
+            });
+        });
+
 
 
         $("#printAsPDF").click(function (e) {
@@ -331,9 +369,21 @@
 
             var newWin = window.open('', 'Print-Window');
             newWin.document.open();
-            newWin.document.write('<html><body onload="window.print()"><div style="text-align: center;"><p>'+document.preference.companyName+'</p><p>'+document.preference.companyAddress+'</p></div>' + divToPrint.innerHTML + '<br/><div><span style="display: inline;">Generated By: '+document.name+'</span><span style="display: inline; float: right;">Generated Date: '+today+'</span></div></body><style>table {border-collapse: collapse;}table, th, td {border: 1px solid black;text-align: center;} table td:nth-child(2){ text-align: left; }</style></html>');
+            newWin.document.write('<html><body onload="window.print()"> <div style="text-align: center;"><p style="font-size:20px;"><b>'+document.preference.companyName+'</b></p><p style="font-size:18px;"><b>'+document.preference.companyAddress+'</b></p></div><div style="text-align: left;"><p style="font-size:15px;"><b>Branch: '+branchName+'<br/>Month: '+monthName+'</b></p></div>' + divToPrint.innerHTML + '<br/><div><span style="display: inline;">Generated By: '+document.name+'</span><span style="display: inline; float: right;">Generated Date: '+today+'</span></div></body><style>table {border-collapse: collapse;}table, th, td {border: 1px solid black;text-align: center;} table td:nth-child(2){ text-align: left; }</style></html>');
             newWin.document.close();
+
+            branchName = 'ALL';
         });
+
+        var weekday = new Array(7);
+        weekday[0] = "Sun";
+        weekday[1] = "Mon";
+        weekday[2] = "Tue";
+        weekday[3] = "Wed";
+        weekday[4] = "Thu";
+        weekday[5] = "Fri";
+        weekday[6] = "Sat";
+
 
     });
 })(window.jQuery, window.app);

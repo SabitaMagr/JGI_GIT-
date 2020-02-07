@@ -148,10 +148,10 @@
 
 
         $('#excelExport').on('click', function () {
-            app.excelExport($table, exportVals, 'Employee_Wise_Allowance_Report');
+            app.excelExport($table, exportVals, 'Employee Wise Allowance Report');
         });
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, exportVals, 'Employee_Wise_Allowance_Report');
+            app.exportToPDF($table, exportVals, 'Employee Wise Allowance Report');
         });
 
 
