@@ -650,7 +650,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                 FOR Variance_Id 
                 IN ($variable)
                 ))GB
-                LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=GB.EMPLOYEE_ID)
+                 JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=GB.EMPLOYEE_ID)
                 LEFT JOIN Hris_Salary_Sheet_Emp_Detail SSED ON 
     (SSED.SHEET_NO=GB.SHEET_NO AND SSED.EMPLOYEE_ID=GB.EMPLOYEE_ID AND SSED.MONTH_ID=GB.MONTH_ID)
                 LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)

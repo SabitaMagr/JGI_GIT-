@@ -201,7 +201,8 @@ FROM (SELECT *
               HA.EMPLOYEE_ID,
                     HA.PREVIOUS_YEAR_BAL,
                     HA.LEAVE_ID,
-                    HA.TOTAL_DAYS AS TOTAL,
+                    HA.TOTAL_DAYS AS CURR,
+                    HA.PREVIOUS_YEAR_BAL+HA.TOTAL_DAYS AS TOTAL,
                     HA.BALANCE,
                     HS.ENCASH_DAYS as ENCASHED,
                     ( HA.PREVIOUS_YEAR_BAL + ha.total_days - ha.balance - (case when
@@ -214,7 +215,7 @@ FROM (SELECT *
               WHERE ha.EMPLOYEE_ID IN
                 ( SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 AND E.STATUS='E' {$searchConditon}
                 ){$monthlyCondition} {$leaveCondition}
-              ) PIVOT (sum ( ENCASHED ) AS ENCASHED, MAX(PREVIOUS_YEAR_BAL) AS PREVIOUS_YEAR_BAL,MAX(BALANCE) AS BALANCE,MAX(TOTAL) AS TOTAL,MAX(TAKEN) AS TAKEN FOR LEAVE_ID IN ({$leaveArrayDb}) )
+              ) PIVOT (sum ( ENCASHED ) AS ENCASHED, MAX(PREVIOUS_YEAR_BAL) AS PREVIOUS_YEAR_BAL,MAX(BALANCE) AS BALANCE,MAX(CURR) AS CURR,MAX(TOTAL) AS TOTAL,MAX(TAKEN) AS TAKEN FOR LEAVE_ID IN ({$leaveArrayDb}) )
             ) LA LEFT JOIN HRIS_EMPLOYEES E ON (LA.EMPLOYEE_ID=E.EMPLOYEE_ID)
             LEFT JOIN HRIS_DESIGNATIONS DES
       ON E.DESIGNATION_ID=DES.DESIGNATION_ID 

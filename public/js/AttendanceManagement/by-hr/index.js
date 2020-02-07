@@ -284,6 +284,7 @@
             var shiftId = $("#shiftId").val();
             var in_time = $("#inTime").val();
             var out_time = $("#outTime").val();
+            var outNextDay = $("#outNextDay").prop('checked');
             $bulkBtnContainer.hide();
             var impactOtherDays = $impactOtherDays.prop('checked');
             for (var i in selectItems) {
@@ -295,7 +296,8 @@
                         id: i, employeeId: selectItems[i]['employeeId'], 
                         attendanceDt: selectItems[i]['attendanceDt'], 
                         action: btnId, 
-                        impactOtherDays: impactOtherDays
+                        impactOtherDays: impactOtherDays,
+                        outNextDay: outNextDay
                     });
                 }
             }

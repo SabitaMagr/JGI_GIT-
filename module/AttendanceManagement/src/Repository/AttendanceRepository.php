@@ -166,8 +166,14 @@ class AttendanceRepository implements RepositoryInterface {
 
     function insertAttendance($data){
       $inTime = $data['inTime'] == null ? 'null' : "TO_DATE('{$data['attendanceDt']} {$data['inTime']}', 'DD-MON-YYYY HH:MI AM')" ;
-      $outTime = $data['outTime'] == null ? 'null' : "TO_DATE('{$data['attendanceDt']} {$data['outTime']}', 'DD-MON-YYYY HH:MI AM')" ;
-      if($data->totalHour == null){
+        if ($data['nextDay']) {
+            $outNextDay='Y';
+            $outTime = $data['outTime'] == null ? 'null' : "(TO_DATE('{$data['attendanceDt']} {$data['outTime']}', 'DD-MON-YYYY HH:MI AM'))+1";
+        } else {
+            $outNextDay='N';
+            $outTime = $data['outTime'] == null ? 'null' : "TO_DATE('{$data['attendanceDt']} {$data['outTime']}', 'DD-MON-YYYY HH:MI AM')";
+        }
+        if($data->totalHour == null){
           $data->totalHour = 'NULL';
       }
       $sql = "
@@ -179,6 +185,7 @@ class AttendanceRepository implements RepositoryInterface {
       V_ATTENDANCE_DT HRIS_ATTENDANCE.ATTENDANCE_DT%TYPE;
       V_IN_REMARKS VARCHAR2(200);
       V_OUT_REMARKS VARCHAR2(200);
+      V_OUT_NEXT_DAY CHAR(1):='{$outNextDay}';
       BEGIN
       INSERT INTO HRIS_ATTENDANCE_REQUEST (ID, EMPLOYEE_ID, ATTENDANCE_DT, IN_TIME, OUT_TIME, 
       IN_REMARKS, OUT_REMARKS, TOTAL_HOUR, STATUS, APPROVED_BY, APPROVED_DT, REQUESTED_DT, APPROVED_REMARKS)
@@ -194,7 +201,7 @@ class AttendanceRepository implements RepositoryInterface {
       IF V_IN_TIME IS NOT NULL THEN
       INSERT INTO HRIS_ATTENDANCE (EMPLOYEE_ID, ATTENDANCE_DT, IP_ADDRESS, ATTENDANCE_FROM, 
       ATTENDANCE_TIME, REMARKS, THUMB_ID, CHECKED) 
-      VALUES (V_EMPLOYEE_ID, V_ATTENDANCE_DT, '', 'ATTENDANCE APPLICATION', V_IN_TIME, 
+      VALUES (V_EMPLOYEE_ID, V_ATTENDANCE_DT, 'IN', 'ATTENDANCE APPLICATION', V_IN_TIME, 
       V_IN_REMARKS, (SELECT ID_THUMB_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = V_EMPLOYEE_ID),
       'Y');
       END IF;
@@ -202,7 +209,7 @@ class AttendanceRepository implements RepositoryInterface {
       IF V_OUT_TIME IS NOT NULL THEN
       INSERT INTO HRIS_ATTENDANCE (EMPLOYEE_ID, ATTENDANCE_DT, IP_ADDRESS, ATTENDANCE_FROM, 
       ATTENDANCE_TIME, REMARKS, THUMB_ID, CHECKED) 
-      VALUES (V_EMPLOYEE_ID, V_ATTENDANCE_DT, '', 'ATTENDANCE APPLICATION', V_OUT_TIME, 
+      VALUES (V_EMPLOYEE_ID, case when V_OUT_NEXT_DAY='Y' then  V_ATTENDANCE_DT +1 else V_ATTENDANCE_DT END, 'OUT', 'ATTENDANCE APPLICATION', V_OUT_TIME, 
       V_OUT_REMARKS, (SELECT ID_THUMB_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = V_EMPLOYEE_ID),
       'Y');
       END IF;

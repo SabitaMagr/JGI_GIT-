@@ -118,14 +118,26 @@ class LeaveApply extends HrisController {
                         }
                     }
                 }
-                return $this->redirect()->toRoute("leavestatus");
+                
+                return $this->redirect()->toRoute('leaveapply', array(
+                            'controller' => 'LeaveApply',
+                            'action' => 'add'
+                ));
+//                return $this->redirect()->toRoute("leavestatus");
             }
         }
 
-        $applyOptionValues = [
-            'RQ' => 'Pending',
-            'AP' => 'Approved'
-        ];
+        if ($this->acl['HR_APPROVE'] == Y) {
+            $applyOptionValues = [
+                'RQ' => 'Pending',
+                'AP' => 'Approved'
+            ];
+        } else {
+            $applyOptionValues = [
+                'RQ' => 'Pending',
+            ];
+        }
+
         $applyOption = $this->getSelectElement(['name' => 'applyStatus', 'id' => 'applyStatus', 'class' => 'form-control', 'label' => 'Type'], $applyOptionValues);
 
         $subLeaveReference = 'N';

@@ -127,7 +127,7 @@ class PayrollGenerator {
                 $formula = 0;
             }
             // to override formula end
-            $q = ['MONTH_ID' => $this->monthId, 'PAY_ID' => $ruleId, 'EMPLOYEE_ID' => $this->employeeId];
+            $q = ['MONTH_ID' => $this->monthId, 'PAY_ID' => $ruleId, 'EMPLOYEE_ID' => $this->employeeId , 'SALARY_TYPE_ID' => $salaryTypeId];
             $ruleValue = $this->sspvmRepo->fetch($q);
             if ($ruleValue == null) {
                 $refRules = $this->ruleRepo->fetchReferencingRules($ruleId);

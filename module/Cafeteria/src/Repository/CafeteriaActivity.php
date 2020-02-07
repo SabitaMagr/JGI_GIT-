@@ -70,7 +70,7 @@ class CafeteriaActivity implements RepositoryInterface {
             $qty = $data['qty'][$i];
             $rate = $data['rate'][$i];
             $total = $data['total'][$i];
-            $sql = "INSERT INTO HRIS_CAFETERIA_LOG_DETAIL(SERIAL_NO, LOG_NO, LOG_DATE, TIME_CODE, MENU_CODE, QUANTITY, RATE, TOTAL_AMOUNT, CREATED_BY, CREATED_DATE, EMPLOYEE_ID, PAY_TYPE, MODIFY_DATE) VALUES((SELECT NVL(MAX(SERIAL_NO)+1, 1) FROM HRIS_CAFETERIA_LOG_DETAIL), $logNo, '$logDate', $timeId, $menuId, $qty, $rate, $total, $createdBy, trunc(sysdate), $employeeId, '$payType', trunc(sysdate))";
+            $sql = "INSERT INTO HRIS_CAFETERIA_LOG_DETAIL(SERIAL_NO, LOG_NO, LOG_DATE, TIME_CODE, MENU_CODE, QUANTITY, RATE, TOTAL_AMOUNT, CREATED_BY, CREATED_DATE, EMPLOYEE_ID, PAY_TYPE, MODIFY_DATE) VALUES((SELECT NVL(MAX(SERIAL_NO)+1, 1) FROM HRIS_CAFETERIA_LOG_DETAIL where log_no = {$logNo} ), $logNo, '$logDate', $timeId, $menuId, $qty, $rate, $total, $createdBy, trunc(sysdate), $employeeId, '$payType', trunc(sysdate))";
             $statement = $this->adapter->query($sql);
             $statement->execute();
         }
@@ -95,9 +95,9 @@ class CafeteriaActivity implements RepositoryInterface {
     public function getEmployeesDetails(){
         $sql = "SELECT E.EMPLOYEE_ID, E.EMPLOYEE_CODE, E.FULL_NAME, D1.DEPARTMENT_NAME, D2.DESIGNATION_TITLE, HEF.FILE_PATH 
         FROM HRIS_EMPLOYEES E 
-        JOIN HRIS_DEPARTMENTS D1 ON E.DEPARTMENT_ID = D1.DEPARTMENT_ID
-        JOIN HRIS_DESIGNATIONS D2 ON E.DESIGNATION_ID = D2.DESIGNATION_ID
-        JOIN HRIS_EMPLOYEE_FILE HEF ON E.PROFILE_PICTURE_ID = HEF.FILE_CODE";
+        LEFT JOIN HRIS_DEPARTMENTS D1 ON E.DEPARTMENT_ID = D1.DEPARTMENT_ID
+        LEFT JOIN HRIS_DESIGNATIONS D2 ON E.DESIGNATION_ID = D2.DESIGNATION_ID
+        LEFT JOIN HRIS_EMPLOYEE_FILE HEF ON E.PROFILE_PICTURE_ID = HEF.FILE_CODE";
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }
