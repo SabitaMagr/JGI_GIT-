@@ -119,7 +119,8 @@ class SSPayValueModifiedRepo extends HrisRepository {
             $select->where([
                 SSPayValueModified::MONTH_ID => $q['MONTH_ID'],
                 SSPayValueModified::PAY_ID => $q['PAY_ID'],
-                SSPayValueModified::EMPLOYEE_ID => $q['EMPLOYEE_ID']
+                SSPayValueModified::EMPLOYEE_ID => $q['EMPLOYEE_ID'],
+                SSPayValueModified::SALARY_TYPE_ID => $q['SALARY_TYPE_ID']
             ]);
         });
         $data = iterator_to_array($iterator);

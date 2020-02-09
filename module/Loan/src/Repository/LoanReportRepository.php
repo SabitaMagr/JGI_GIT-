@@ -143,9 +143,9 @@ class LoanReportRepository implements RepositoryInterface {
     public function fetchLoanVoucher($emp_id, $fromDate, $toDate, $loanId){
 
         $employeeCondition = $emp_id == '' || $emp_id == null || $emp_id == -1? '' : " AND HELR.EMPLOYEE_ID = $emp_id";
-        $loanCondition = $loanId == '' || $loanId == null || $loanId == -1? '' : " AND  HELR.LOAN_ID = $loanId" ;
+        $loanCondition = $loanId == '' || $loanId == null || $loanId == -1? ' AND HELR.LOAN_ID IN (1,2,3,7) ' : " AND  HELR.LOAN_ID = $loanId" ;
         $loanRequestCondition = $emp_id == '' || $emp_id == null || $emp_id == -1? '' : " AND EMPLOYEE_ID = $emp_id" ;
-        $loanRequestCondition2 = $loanId == '' || $loanId == null || $loanId == -1? '' : " AND loan_id = $loanId" ;
+        $loanRequestCondition2 = $loanId == '' || $loanId == null || $loanId == -1? ' AND LOAN_ID IN (1,2,3,7) ' : " AND loan_id = $loanId" ;
         $employeeCondition2 = $emp_id == '' || $emp_id == null || $emp_id == -1? '' : " AND EMPLOYEE_ID = $emp_id";
 
         $sql = "SELECT DT, particulars, debit_amount, credit_amount, balance FROM(
@@ -160,13 +160,10 @@ class LoanReportRepository implements RepositoryInterface {
         from DUAL
         connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
         ) {$employeeCondition}
-        and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
+        and (helr.loan_status = 'OPEN' or helr.modified_date >= '{$fromDate}' or 
+        helr.loan_request_id in 
             (select loan_req_id from hris_loan_cash_payment)
-            OR 
-                (SELECT TO_CHAR(TO_DATE(FROM_DATE, 'DD-MM-YY'), 'MM') FROM HRIS_LOAN_PAYMENT_DETAIL 
-                WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID AND SNO = (SELECT MAX(SNO) FROM 
-                HRIS_LOAN_PAYMENT_DETAIL WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID)
-              )  <> 7    )
+             ) 
         GROUP BY HLPD.FROM_DATE
         
         UNION ALL
@@ -182,13 +179,10 @@ class LoanReportRepository implements RepositoryInterface {
         from DUAL
         connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
         ) {$employeeCondition}
-        and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
+        and (helr.loan_status = 'OPEN' or helr.modified_date >= '{$fromDate}' or 
+        helr.loan_request_id in 
             (select loan_req_id from hris_loan_cash_payment)
-            OR 
-                (SELECT TO_CHAR(TO_DATE(FROM_DATE, 'DD-MM-YY'), 'MM') FROM HRIS_LOAN_PAYMENT_DETAIL 
-                WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID AND SNO = (SELECT MAX(SNO) FROM 
-                HRIS_LOAN_PAYMENT_DETAIL WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID)
-              )  <> 7    )
+             )
         GROUP BY HLPD.FROM_DATE
         
         UNION ALL
@@ -204,13 +198,10 @@ class LoanReportRepository implements RepositoryInterface {
         from DUAL
         connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
         ) {$employeeCondition}
-        and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
+        and (helr.loan_status = 'OPEN' or helr.modified_date >= '{$fromDate}' 
+        or helr.loan_request_id in 
             (select loan_req_id from hris_loan_cash_payment)
-            OR 
-                (SELECT TO_CHAR(TO_DATE(FROM_DATE, 'DD-MM-YY'), 'MM') FROM HRIS_LOAN_PAYMENT_DETAIL 
-                WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID AND SNO = (SELECT MAX(SNO) FROM 
-                HRIS_LOAN_PAYMENT_DETAIL WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID)
-              )  <> 7    )
+              )
         GROUP BY HLPD.FROM_DATE
         ORDER BY DT, DEBIT_AMOUNT DESC, CREDIT_AMOUNT DESC)
                 
@@ -301,9 +292,9 @@ class LoanReportRepository implements RepositoryInterface {
       
     public function fetchOpeningBalance($emp_id, $fromDate, $loanId){
         $employeeCondition = $emp_id == '' || $emp_id == null || $emp_id == -1? '' : " AND HELR.EMPLOYEE_ID = $emp_id";
-        $loanCondition = $loanId == '' || $loanId == null || $loanId == -1? '' : " AND  HELR.LOAN_ID = $loanId" ;
+        $loanCondition = $loanId == '' || $loanId == null || $loanId == -1? ' AND HELR.LOAN_ID IN (1,2,3,7) ' : " AND  HELR.LOAN_ID = $loanId" ;
         $loanRequestCondition = $emp_id == '' || $emp_id == null || $emp_id == -1? '' : " AND EMPLOYEE_ID = $emp_id" ;
-        $loanRequestCondition2 = $loanId == '' || $loanId == null || $loanId == -1? '' : " AND loan_id = $loanId" ;
+        $loanRequestCondition2 = $loanId == '' || $loanId == null || $loanId == -1? ' AND LOAN_ID IN (1,2,3,7) ' : " AND loan_id = $loanId" ;
         $employeeCondition2 = $emp_id == '' || $emp_id == null || $emp_id == -1? '' : " AND EMPLOYEE_ID = $emp_id";
 
         $sql = "SELECT 
@@ -320,14 +311,9 @@ class LoanReportRepository implements RepositoryInterface {
         AND HLPD.LOAN_REQUEST_ID IN(
             SELECT LOAN_REQUEST_ID FROM hris_employee_loan_request
         where 1=1 {$loanRequestCondition})
-        and (helr.loan_status = 'OPEN' or helr.loan_request_id in 
+        and (helr.loan_status = 'OPEN' or helr.modified_date >= '{$fromDate}' or helr.loan_request_id in 
         (select loan_req_id from hris_loan_cash_payment)
-OR 
-                (SELECT TO_CHAR(TO_DATE(FROM_DATE, 'DD-MM-YY'), 'MM') FROM HRIS_LOAN_PAYMENT_DETAIL 
-                WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID AND SNO = (SELECT MAX(SNO) FROM 
-                HRIS_LOAN_PAYMENT_DETAIL WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID)
-              )  <> 7        
-)
+        )
         
         ";
         //echo $sql; die;
@@ -353,14 +339,14 @@ OR
         $sql = "SELECT
                 e.employee_code AS employee_code,
                 e.FULL_NAME AS FULL_NAME,
+                HLCP.id,
                 initcap(l.loan_name) AS LOAN_NAME,
                 lr.requested_amount AS TOTAL_AMOUNT,
                 HLCP.PAYMENT_AMOUNT AS PAID_AMOUNT,
-                (lr.requested_amount-HLCP.PAYMENT_AMOUNT) AS BALANCE,
                 INITCAP(TO_CHAR(HLCP.payment_date, 'DD-MON-YYYY'))        AS PAID_DATE_AD,
                 BS_DATE(TO_CHAR(HLCP.payment_date, 'DD-MON-YYYY'))        AS PAID_DATE_BS,
                 HLCP.REMARKS AS REMARKS
-                
+                             
                 FROM HRIS_EMPLOYEE_LOAN_REQUEST LR
                 JOIN HRIS_LOAN_CASH_PAYMENT HLCP 
                 ON LR.LOAN_REQUEST_ID = HLCP.LOAN_REQ_ID
@@ -379,19 +365,7 @@ OR
                 LEFT OUTER JOIN HRIS_EMPLOYEES APRV
                 ON APRV.EMPLOYEE_ID = RA.APPROVED_BY
                 WHERE L.STATUS   ='E'
-                AND E.STATUS     ='E'
-                AND (RECM.STATUS =
-                  CASE
-                    WHEN RECM.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR RECM.STATUS  IS NULL)
-                AND (APRV.STATUS =
-                  CASE
-                    WHEN APRV.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR APRV.STATUS   IS NULL)";
+                AND E.STATUS     ='E' ";
 
         if ($loanId != -1) {
             $sql .= " AND LR.LOAN_ID ='" . $loanId . "'";
@@ -478,7 +452,7 @@ OR
         level <= months_between('{$toDate}', '{$fromDate}') 
         )
         {$employeeCondition}
-        AND ( helr.loan_status = 'OPEN'
+        AND ( helr.loan_status = 'OPEN' or helr.modified_date >= '{$fromDate}'
         OR helr.loan_request_id IN (
         SELECT
         loan_req_id
@@ -515,7 +489,7 @@ OR
         level <= months_between('{$toDate}', '{$fromDate}')
         )
         {$employeeCondition}
-        AND ( helr.loan_status = 'OPEN'
+        AND ( helr.loan_status = 'OPEN' or helr.modified_date >= '{$fromDate}'
         OR helr.loan_request_id IN (
         SELECT
         loan_req_id
@@ -601,26 +575,22 @@ OR
                     1 = 1
                     {$employeeCondition2}
             )
-            AND ( helr.loan_status = 'OPEN'
-                  OR helr.loan_request_id IN (
-                SELECT
-                    loan_req_id
-                FROM
-                    hris_loan_cash_payment
-            ) 
-             OR 
-                (SELECT TO_CHAR(TO_DATE(FROM_DATE, 'DD-MM-YY'), 'MM') FROM HRIS_LOAN_PAYMENT_DETAIL 
-                WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID AND SNO = (SELECT MAX(SNO) FROM 
-                HRIS_LOAN_PAYMENT_DETAIL WHERE LOAN_REQUEST_ID = HELR.LOAN_REQUEST_ID)
-              )  = 7)
-            
         )) join 
         (select employee_id, employee_code || '-' || full_name as employee 
         from hris_employees where employee_id = {$emp_id}) e
         on 1=1
         ";
-        
-//        echo $sql; die;
+        //echo $sql; die;
+        $statement = $this->adapter->query($sql); 
+        return $statement->execute();
+    }
+
+    public function getAllEmployees(){
+        $sql = "SELECT EMPLOYEE_ID, EMPLOYEE_CODE, EMPLOYEE_CODE || '-' || FULL_NAME AS FULL_NAME, FULL_NAME AS FULL_NAME_SCIENTIFIC, COMPANY_ID, 
+        BRANCH_ID, DEPARTMENT_ID, 
+        DESIGNATION_ID, POSITION_ID, SERVICE_TYPE_ID, SERVICE_EVENT_TYPE_ID, GENDER_ID, EMPLOYEE_TYPE, 
+        GROUP_ID, FUNCTIONAL_TYPE_ID FROM HRIS_EMPLOYEES";
+    
         $statement = $this->adapter->query($sql); 
         return $statement->execute();
     }

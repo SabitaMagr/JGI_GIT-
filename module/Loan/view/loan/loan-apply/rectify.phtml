@@ -22,7 +22,7 @@ $remarks = $form->get('remarks');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
-$form->setAttribute('action', $this->url('loanApply', ['action' => 'loanClosing', 'id' => $id]));
+$form->setAttribute('action', $this->url('loanApply', ['action' => 'rectify', 'id' => $id]));
 
 $form->prepare();
 ?>
@@ -91,28 +91,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
                     <input type="hidden" class="forn-control" name="repaymentMonths" id="repaymentMonths" value="">
-                    <div class="col-sm-4">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <?php print $this->formLabel($paidDate); ?>
-                                    <span class="required" aria-required="true">*</span>
-                                    <?php print $this->formElement($paidDate); ?>
-                                    <?php print $this->formElementErrors()->render($paidDate, ['class' => 'help-block']); ?>
-                                </div>
-                            </div>     
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="nepaliDate">&nbsp;</label>
-                                    <div class="input-group">
-                                        <input type="text" name="nepaliDate" id="nepaliDate"
-                                               class="form-control" value="">
-                                    </div>
-                                </div>
-                            </div>     
-                        </div> 
-                    </div>
-                    
                 </div>
 
 

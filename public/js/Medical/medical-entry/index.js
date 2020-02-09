@@ -29,7 +29,14 @@
             {field: "CLAIM_OF_NAME", title: "Claim Of", width: 90},
             {field: "BILL_STATUS_NAME", title: "Status", width: 80},
             {field: "REQUESTED_AMT", title: "Request Amt", width: 80},
-            {field: "APPROVED_AMT", title: "Approved Amt", width: 80}
+            {field: "APPROVED_AMT", title: "Approved Amt", width: 80},
+            {field: "MEDICAL_ID", title: "Action", width: 80, template: `
+                #if(BILL_STATUS == 'RQ'){#
+            <span>                                  
+                <a class="btn  btn-icon-only btn-success" href="${document.viewLink}/#: MEDICAL_ID #" style="height:17px;" title="view">
+                <i class="fa fa-search-plus"></i>
+                </a>
+            </span>#}#`}
 //            {field: ["ADVANCE_ID"], title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
         ];
         var map = {

@@ -1220,7 +1220,7 @@ class EmployeeController extends HrisController {
     }
     
     public function getSearchDataforResignedOrRetired(){
-        $employeeWhere = ["RETIRED_FLAG = 'Y' OR RESIGNED_FLAG = 'Y'"];
+        $employeeWhere = ["RETIRED_FLAG = 'Y' OR RESIGNED_FLAG = 'Y' OR STATUS='D'"];
         $companyList = ApplicationHelper::getTableList($this->adapter, Company::TABLE_NAME, [Company::COMPANY_ID, Company::COMPANY_NAME], [Company::STATUS => "E"]);
         $branchList = ApplicationHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID], [Branch::STATUS => "E"],"","BRANCH_NAME ASC");
         $departmentList = ApplicationHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"],"","DEPARTMENT_NAME ASC");

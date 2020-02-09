@@ -281,7 +281,7 @@ class AttendanceByHr extends HrisController {
             $inTime = "TO_DATE('{$postedData['in_time']}', 'HH:MI AM')";
             $outTime = "TO_DATE('{$postedData['out_time']}', 'HH:MI AM')";
             //return new JsonModel(['success' => true, 'data' => $postedData, 'error' => '']);
-            $this->repository->manualAttendance($postedData['employeeId'], Helper::getExpressionDate($postedData['attendanceDt'])->getExpression(), $postedData['action'], $postedData['impactOtherDays'] === 'true', $postedData['shiftId'], $inTime, $outTime);
+            $this->repository->manualAttendance($postedData['employeeId'], Helper::getExpressionDate($postedData['attendanceDt'])->getExpression(), $postedData['action'], $postedData['impactOtherDays'] === 'true', $postedData['shiftId'], $inTime, $outTime,$postedData['outNextDay'] === 'true');
             return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

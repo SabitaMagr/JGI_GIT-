@@ -1633,3 +1633,6 @@ ALTER TABLE HRIS_EMPLOYEE_PENALTY_DAYS
 ADD LD_ID NUMBER;
 
 ------------ FOR LEAVE DEDUCTION END-----------
+
+alter table hris_employee_loan_request add modified_date date;
+

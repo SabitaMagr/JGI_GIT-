@@ -1473,7 +1473,7 @@ GROUP BY IARA.EMPLOYEE_ID) AA ON (AA.EMPLOYEE_ID=E.EMPLOYEE_ID)
                 LEFT JOIN HRIS_FUNCTIONAL_LEVELS FUNL
                 ON E.FUNCTIONAL_LEVEL_ID=FUNL.FUNCTIONAL_LEVEL_ID
                 {$joinIfSyngery}
-                WHERE 1=1 AND (E.RETIRED_FLAG = 'Y' OR E.RESIGNED_FLAG = 'Y')
+                WHERE 1=1 AND (E.RETIRED_FLAG = 'Y' OR E.RESIGNED_FLAG = 'Y' OR E.STATUS='D')
                 {$condition}
                 {$orderByString}";
                 
