@@ -76,7 +76,6 @@ function setAbbr(temp){
                 var leaveDetails=response.data.leaveDetails;
                 var columns=generateColsForKendo(days,leaveDetails);
 
-
                 $table.empty();
 
                 $table.kendoGrid({

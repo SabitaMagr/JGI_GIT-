@@ -2746,6 +2746,8 @@ EOT;
                THEN 'PR'
                WHEN AD.OVERALL_STATUS = 'LV' AND AD.HALFDAY_FLAG='N' THEN 'L'||'-'||LMS.LEAVE_CODE
                WHEN AD.OVERALL_STATUS = 'LV' AND AD.HALFDAY_FLAG!='N' THEN 'HL'||'-'||LMS.LEAVE_CODE
+               WHEN AD.OVERALL_STATUS IN ('AB') and AD.ATTENDANCE_DT > trunc(SYSDATE)
+               THEN 'O'
                ELSE AD.OVERALL_STATUS
              END AS OVERALL_STATUS,
              
@@ -2832,8 +2834,6 @@ from HRIS_ATTENDANCE_DETAIL AD
        order by W.ORDER_BY
                  
 EOT;
-print_r($sql);
-die();
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

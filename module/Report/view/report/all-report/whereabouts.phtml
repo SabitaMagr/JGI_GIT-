@@ -137,6 +137,64 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/whereabouts
             </div>
         </div>
         <div class="portlet box ">
+            <div style="margin-left: 20px" class='my-legend' >
+                <div  class='legend-title'>Legend</div>
+                <div class='legend-scale'>
+                    <ul class='legend-labels col-sm-3' >
+                        <li><span align="center" style='background:#e7505a; border-color:#e7505a'>AB</span>Absent</li>
+                        <li><span align="center" style='background:#3598dc; border-color:#3598dc'>PR</span>Present</li>
+                        <li><span align="center" style='background:#63AB6A; border-color:#63AB6A'>L-*</span>Leave-*</li>
+                        <li><span align="center" style='background:#F0F0F0; color: black !important; border-color:#F0F0F0'>O</span>Office</li>
+                    </ul>
+                    <ul class='legend-labels col-sm-6'>
+                        <li><span align="center" style='background:#c49f47; border-color:#c49f47'>DO</span>Day off</li>
+                        <li><span align="center" style='background:yellowgreen; border-color:yellowgreen'>WD</span>Work On DayOff</li>
+                        <li><span align="center" style='background:#8E44AD; border-color:#8E44AD'>HD</span>Holiday</li>
+                        <li><span align="center" style='background:yellowgreen; border-color:yellowgreen'>WH</span>Work On Holiday</li>
+                    </ul>
+                </div>
+            </div>
+
+            <style type='text/css'>
+                .my-legend .legend-title {
+                    text-align: left;
+                    margin-bottom: 5px;
+                    font-weight: bold;
+                    font-size: 90%;
+                }
+                .my-legend .legend-scale ul {
+                    margin: 0;
+                    margin-bottom: 5px;
+                    padding: 0;
+                    float: left;
+                    list-style: none;
+                }
+                .my-legend .legend-scale ul li {
+                    font-size: 80%;
+                    list-style: none;
+                    margin-left: 0;
+                    line-height: 18px;
+                    margin-bottom: 2px;
+                }
+                .my-legend ul.legend-labels li span {
+                    display: block;
+                    float: left;
+                    height: 16px;
+                    width: 30px;
+                    color: white;
+                    margin-right: 5px;
+                    margin-left: 0;
+                    border: 1px solid #999;
+                }
+                .my-legend .legend-source {
+                    font-size: 70%;
+                    color: #999;
+                    clear: both;
+                }
+                .my-legend a {
+                    color: #777;
+                }
+            </style>
             <div class="portlet-body">
                 <div class="row">
                     <div class="col-sm-12">
