@@ -108,7 +108,6 @@
             },
             dataSource: dataSource,
             pageable: true,
-            height: 550,
             columns: [
                 {field: "EMPLOYEE_CODE", title: "Code", width: "90px"},
                 {field: "FULL_NAME", title: "Employee", width: "110px"},

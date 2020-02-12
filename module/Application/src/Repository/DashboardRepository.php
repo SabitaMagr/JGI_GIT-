@@ -245,9 +245,22 @@ class DashboardRepository {
                       ||ETR.DESTINATION
                       ||')'
                     WHEN ATN.OVERALL_STATUS ='TN'
-                    THEN 'On Training ('
-                      ||(CASE WHEN ATN.TRAINING_TYPE = 'A' THEN TMS.TRAINING_NAME ELSE ETN.TITLE END)
-                      ||')'
+                    THEN (CASE 
+                    WHEN TMS.SHOW_AS_TRAINING = 'Y' 
+                        THEN 'On Training ('
+                        || (CASE
+                          WHEN ATN.TRAINING_TYPE = 'A'
+                          THEN TMS.TRAINING_NAME
+                          ELSE ETN.TITLE
+                            END)
+                        ||')'
+                    ELSE
+                       (CASE
+                          WHEN ATN.TRAINING_TYPE = 'A'
+                          THEN TMS.TRAINING_NAME
+                          ELSE ETN.TITLE
+                        END)
+                      END)  
                     WHEN ATN.OVERALL_STATUS ='WD'
                     THEN 'Work On Dayoff'
                     WHEN ATN.OVERALL_STATUS ='WH'

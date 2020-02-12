@@ -1813,6 +1813,7 @@ VALUES
 );
 
 
+
 INSERT
 INTO HRIS_MENUS
 (
@@ -1848,5 +1849,42 @@ VALUES
     12,
     NULL,
     NULL,
+    'Y'
+);
+
+
+INSERT
+INTO HRIS_MENUS
+(
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+)
+VALUES
+(
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Leave Deduction',
+    2,
+    NULL,
+    'leavededuction',
+    'E',
+    to_date('31-JAN-20','DD-MON-RR'),
+    to_date('31-JAN-20','DD-MON-RR'),
+    'fa fa-pencil',
+    'index',
+    6,NULL,NULL,
     'Y'
 );

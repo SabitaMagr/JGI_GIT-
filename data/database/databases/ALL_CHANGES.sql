@@ -1608,7 +1608,51 @@ alter table hris_employee_travel_request add HARDCOPY_SIGNED_FLAG
 char(1) default 'N'
 check (HARDCOPY_SIGNED_FLAG IN ('N', 'Y'));
 
-alter table hris_employee_loan_request add modified_date date;
 alter table HRIS_EMPLOYEES add ALLOWANCE NUMBER(9);
 
 ALTER TABLE HRIS_EMPLOYEE_TRAVEL_REQUEST ADD ITNARY_ID NUMBER(7,0);
+
+CREATE TABLE HRIS_EMPLOYEE_LEAVE_DEDUCTION
+(
+    ID           NUMBER NOT NULL,
+    EMPLOYEE_ID  NUMBER(7) NOT NULL ,
+    LEAVE_ID     NUMBER(7) NOT NULL,
+    DEDUCTION_DT DATE,
+    NO_OF_DAYS   FLOAT(126) NOT NULL,
+    STATUS       VARCHAR2(2) NOT NULL,
+    REMARKS      VARCHAR2(255),
+    CREATED_DT  DATE,
+    CREATED_BY  NUMBER(7),
+    MODIFIED_DT  DATE,
+    MODIFIED_BY  NUMBER(7),
+    CONSTRAINT ID_PK PRIMARY KEY (ID),
+    CONSTRAINT CHECK_STATUS
+    CHECK (STATUS IN ('AP', 'C'))
+);
+
+ALTER TABLE HRIS_EMPLOYEE_PENALTY_DAYS
+ADD LD_ID NUMBER;
+
+------------ FOR LEAVE DEDUCTION END-----------
+
+alter table hris_employee_loan_request add modified_date date;
+
+--------- HRIS BANKS START ----------
+alter table HRIS_EMPLOYEES add bank_id number(7);
+
+CREATE TABLE HRIS_BANKS (
+BANK_ID number(7) PRIMARY KEY,
+BANK_NAME VARCHAR2(255),
+COMPANY_ACC_NO VARCHAR2(25),
+BRANCH_NAME VARCHAR2(255),lo
+CREATED_BY NUMBER(7),
+CREATED_DT DATE,
+STATUS char(1) default 'E'
+);
+
+insert into HRIS_BANKS (bank_id, bank_name, status) values ((select nvl(max(bank_id),0)+1 from HRIS_BANKS), 'KUMARI BANK', 'E');
+
+--------- HRIS BANKS END ----------
+
+alter table HRIS_TRAINING_MASTER_SETUP add show_as_training varchar2(2) default 'Y';
+

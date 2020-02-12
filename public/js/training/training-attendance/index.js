@@ -30,7 +30,7 @@
             {field: "TRAINING_ID", title: "Action", width: 120, template: action}
         ]);
 
-        app.searchTable('trainingTable', ['TRAINING_NAME', 'COMPANY_NAME', 'START_DATE_AD', 'END_DATE_AD', 'START_DATE_BS', 'END_DATE_BS', 'DURATION', 'INSTITUTE_NAME']);
+        app.searchTable($table, ['TRAINING_NAME', 'COMPANY_NAME', 'START_DATE_AD', 'END_DATE_AD', 'START_DATE_BS', 'END_DATE_BS', 'DURATION', 'INSTITUTE_NAME']);
         var map = {
             'TRAINING_NAME': 'Training',
             'COMPANY_NAME': 'Company',

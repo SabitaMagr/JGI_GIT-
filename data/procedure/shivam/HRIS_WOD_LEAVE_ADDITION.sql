@@ -35,7 +35,7 @@ BEGIN
     V_EMPLOYEE_ID,
     P_EMPLOYEE_ID
   FROM HRIS_EMPLOYEE_WORK_DAYOFF
-  WHERE ID= P_WOD_ID;
+  WHERE ID= P_WOD_ID AND STATUS = 'AP' ;
   --
   
   --select past balance from HRIS_EMPLOYEE_LEAVE_ASSIGN  and set into variable

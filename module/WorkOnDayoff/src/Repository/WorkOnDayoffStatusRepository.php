@@ -137,75 +137,107 @@ class WorkOnDayoffStatusRepository extends HrisRepository {
         if ($toDate != null) {
             $toDateCondition = "AND WD.TO_DATE<=TO_DATE('{$toDate}','DD-MM-YYYY')";
         }
-        $sql = "SELECT INITCAP(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY'))              AS FROM_DATE_AD,
-                  BS_DATE(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY'))                   AS FROM_DATE_BS,
-                  INITCAP(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY'))                     AS TO_DATE_AD,
-                  BS_DATE(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY'))                     AS TO_DATE_BS,
-                  INITCAP(TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY'))              AS REQUESTED_DATE_AD,
-                  BS_DATE(TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY'))              AS REQUESTED_DATE_BS,
-                  LEAVE_STATUS_DESC(WD.STATUS)                                    AS STATUS,
-                  WD.REMARKS                                                      AS REMARKS,
-                  WD.DURATION                                                     AS DURATION,
-                  WD.EMPLOYEE_ID                                                  AS EMPLOYEE_ID,
-                  WD.ID                                                           AS ID,
-                  WD.MODIFIED_DATE                                                AS MODIFIED_DATE,
-                  INITCAP(TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY'))            AS RECOMMENDED_DATE,
-                  INITCAP(TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY'))               AS APPROVED_DATE,
-                  E.EMPLOYEE_CODE                                                 AS EMPLOYEE_CODE,
-                  INITCAP(E.FULL_NAME)                                            AS FULL_NAME,
-                  INITCAP(E1.FULL_NAME)                                           AS RECOMMENDED_BY_NAME,
-                  INITCAP(E2.FULL_NAME)                                           AS APPROVED_BY_NAME,
-                  RA.RECOMMEND_BY                                                 AS RECOMMENDER_ID,
-                  RA.APPROVED_BY                                                  AS APPROVER_ID,
-                  INITCAP(RECM.FULL_NAME)                                         AS RECOMMENDER_NAME,
-                  INITCAP(APRV.FULL_NAME)                                         AS APPROVER_NAME,
-                  WD.RECOMMENDED_BY                                               AS RECOMMENDED_BY,
-                  WD.APPROVED_BY                                                  AS APPROVED_BY,
-                  WD.RECOMMENDED_REMARKS                                          AS RECOMMENDED_REMARKS,
-                  WD.APPROVED_REMARKS                                             AS APPROVED_REMARKS
-                FROM HRIS_EMPLOYEE_WORK_DAYOFF WD
-                LEFT OUTER JOIN HRIS_EMPLOYEES E
-                ON E.EMPLOYEE_ID=WD.EMPLOYEE_ID
-                LEFT OUTER JOIN HRIS_EMPLOYEES E1
-                ON E1.EMPLOYEE_ID=WD.RECOMMENDED_BY
-                LEFT OUTER JOIN HRIS_EMPLOYEES E2
-                ON E2.EMPLOYEE_ID=WD.APPROVED_BY
-                LEFT OUTER JOIN HRIS_RECOMMENDER_APPROVER RA
-                ON WD.EMPLOYEE_ID = RA.EMPLOYEE_ID
-                LEFT OUTER JOIN HRIS_EMPLOYEES RECM
-                ON RECM.EMPLOYEE_ID = RA.RECOMMEND_BY
-                LEFT OUTER JOIN HRIS_EMPLOYEES APRV
-                ON APRV.EMPLOYEE_ID = RA.APPROVED_BY
-                WHERE E.STATUS   ='E'
-                AND (E1.STATUS   =
-                  CASE
-                    WHEN E1.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR E1.STATUS  IS NULL)
-                AND (E2.STATUS =
-                  CASE
-                    WHEN E2.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR E2.STATUS    IS NULL)
-                AND (RECM.STATUS =
-                  CASE
-                    WHEN RECM.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR RECM.STATUS  IS NULL)
-                AND (APRV.STATUS =
-                  CASE
-                    WHEN APRV.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR APRV.STATUS IS NULL)
-                {$searchCondition}
-                {$statusCondition}
-                {$fromDateCondition}
-                {$toDateCondition}
-                ORDER BY WD.REQUESTED_DATE DESC";
+         $sql = "SELECT INITCAP(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY'))              AS FROM_DATE_AD,
+                   BS_DATE(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY'))                   AS FROM_DATE_BS,
+                   INITCAP(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY'))                     AS TO_DATE_AD,
+                   BS_DATE(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY'))                     AS TO_DATE_BS,
+                   INITCAP(TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY'))              AS REQUESTED_DATE_AD,
+                   BS_DATE(TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY'))              AS REQUESTED_DATE_BS,
+                   LEAVE_STATUS_DESC(WD.STATUS)                                    AS STATUS,
+                   WD.REMARKS                                                      AS REMARKS,
+                   WD.DURATION                                                     AS DURATION,
+                   WD.EMPLOYEE_ID                                                  AS EMPLOYEE_ID,
+                   WD.ID                                                           AS ID,
+                   WD.MODIFIED_DATE                                                AS MODIFIED_DATE,
+                   INITCAP(TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY'))            AS RECOMMENDED_DATE,
+                   INITCAP(TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY'))               AS APPROVED_DATE,
+                   E.EMPLOYEE_CODE                                                 AS EMPLOYEE_CODE,
+                   INITCAP(E.FULL_NAME)                                            AS FULL_NAME,
+                   INITCAP(E1.FULL_NAME)                                           AS RECOMMENDED_BY_NAME,
+                   INITCAP(E2.FULL_NAME)                                           AS APPROVED_BY_NAME,
+                   RA.RECOMMEND_BY                                                 AS RECOMMENDER_ID,
+                   RA.APPROVED_BY                                                  AS APPROVER_ID,
+                   INITCAP(RECM.FULL_NAME)                                         AS RECOMMENDER_NAME,
+                   INITCAP(APRV.FULL_NAME)                                         AS APPROVER_NAME,
+                   WD.RECOMMENDED_BY                                               AS RECOMMENDED_BY,
+                   WD.APPROVED_BY                                                  AS APPROVED_BY,
+                   WD.RECOMMENDED_REMARKS                                          AS RECOMMENDED_REMARKS,
+                   WD.APPROVED_REMARKS                                             AS APPROVED_REMARKS
+                 FROM HRIS_EMPLOYEE_WORK_DAYOFF WD
+                 LEFT OUTER JOIN HRIS_EMPLOYEES E
+                 ON E.EMPLOYEE_ID=WD.EMPLOYEE_ID
+                 LEFT OUTER JOIN HRIS_EMPLOYEES E1
+                 ON E1.EMPLOYEE_ID=WD.RECOMMENDED_BY
+                 LEFT OUTER JOIN HRIS_EMPLOYEES E2
+                 ON E2.EMPLOYEE_ID=WD.APPROVED_BY
+                 LEFT OUTER JOIN HRIS_RECOMMENDER_APPROVER RA
+                 ON WD.EMPLOYEE_ID = RA.EMPLOYEE_ID
+                 LEFT OUTER JOIN HRIS_EMPLOYEES RECM
+                 ON RECM.EMPLOYEE_ID = RA.RECOMMEND_BY
+                 LEFT OUTER JOIN HRIS_EMPLOYEES APRV
+                 ON APRV.EMPLOYEE_ID = RA.APPROVED_BY
+                 WHERE E.STATUS   ='E'
+                 AND (E1.STATUS   =
+                   CASE
+                     WHEN E1.STATUS IS NOT NULL
+                     THEN ('E')
+                   END
+                 OR E1.STATUS  IS NULL)
+                 AND (E2.STATUS =
+                   CASE
+                     WHEN E2.STATUS IS NOT NULL
+                     THEN ('E')
+                   END
+                 OR E2.STATUS    IS NULL)
+                 AND (RECM.STATUS =
+                   CASE
+                     WHEN RECM.STATUS IS NOT NULL
+                     THEN ('E')
+                   END
+                 OR RECM.STATUS  IS NULL)
+                 AND (APRV.STATUS =
+                   CASE
+                     WHEN APRV.STATUS IS NOT NULL
+                     THEN ('E')
+                   END
+                 OR APRV.STATUS IS NULL)
+                 {$searchCondition}
+                 {$statusCondition}
+                 {$fromDateCondition}
+                 {$toDateCondition}
+                 ORDER BY WD.REQUESTED_DATE DESC";
+
+        // FOR SHIVAM
+//        $sql = "SELECT INITCAP(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY'))              AS FROM_DATE_AD,
+//                  BS_DATE(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY'))                   AS FROM_DATE_BS,
+//                  INITCAP(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY'))                     AS TO_DATE_AD,
+//                  BS_DATE(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY'))                     AS TO_DATE_BS,
+//                  INITCAP(TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY'))              AS REQUESTED_DATE_AD,
+//                  BS_DATE(TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY'))              AS REQUESTED_DATE_BS,
+//                  LEAVE_STATUS_DESC(WD.STATUS)                                    AS STATUS,
+//                  WD.REMARKS                                                      AS REMARKS,
+//                  WD.DURATION                                                     AS DURATION,
+//                  WD.EMPLOYEE_ID                                                  AS EMPLOYEE_ID,
+//                  WD.ID                                                           AS ID,
+//                  WD.MODIFIED_DATE                                                AS MODIFIED_DATE,
+//                  INITCAP(TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY'))            AS RECOMMENDED_DATE,
+//                  INITCAP(TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY'))               AS APPROVED_DATE,
+//                  E.EMPLOYEE_CODE                                                 AS EMPLOYEE_CODE,
+//                  INITCAP(E.FULL_NAME)                                            AS FULL_NAME,
+//                  WD.RECOMMENDED_BY                                               AS RECOMMENDED_BY,
+//                  WD.APPROVED_BY                                                  AS APPROVED_BY,
+//                  WD.RECOMMENDED_REMARKS                                          AS RECOMMENDED_REMARKS,
+//                  WD.APPROVED_REMARKS                                             AS APPROVED_REMARKS
+//                FROM HRIS_EMPLOYEE_WORK_DAYOFF WD
+//                LEFT OUTER JOIN HRIS_EMPLOYEES E
+//                ON E.EMPLOYEE_ID=WD.EMPLOYEE_ID
+//                WHERE E.STATUS   ='E'
+//                {$searchCondition}
+//                {$statusCondition}
+//                {$fromDateCondition}
+//                {$toDateCondition}
+//                ORDER BY WD.REQUESTED_DATE DESC";
+
         $finalSql = $this->getPrefReportQuery($sql);
         return $this->rawQuery($finalSql);
     }

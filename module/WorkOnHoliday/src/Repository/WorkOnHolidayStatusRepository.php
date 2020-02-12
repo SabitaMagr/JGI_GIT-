@@ -225,6 +225,41 @@ class WorkOnHolidayStatusRepository extends HrisRepository {
                 {$holidayCondition}
                 {$fromDateCondition}
                 {$toDateCondition} ORDER BY WH.REQUESTED_DATE DESC";
+
+        // FOR SHIVAM
+//        $sql = "SELECT INITCAP(H.HOLIDAY_ENAME) AS HOLIDAY_ENAME,
+//                  WH.DURATION,
+//                  INITCAP(TO_CHAR(WH.FROM_DATE, 'DD-MON-YYYY'))                   AS FROM_DATE_AD,
+//                  BS_DATE(TO_CHAR(WH.FROM_DATE, 'DD-MON-YYYY'))                   AS FROM_DATE_BS,
+//                  INITCAP(TO_CHAR(WH.TO_DATE, 'DD-MON-YYYY'))                     AS TO_DATE_AD,
+//                  BS_DATE(TO_CHAR(WH.TO_DATE, 'DD-MON-YYYY'))                     AS TO_DATE_BS,
+//                  INITCAP(TO_CHAR(WH.REQUESTED_DATE, 'DD-MON-YYYY'))              AS REQUESTED_DATE_AD,
+//                  BS_DATE(TO_CHAR(WH.REQUESTED_DATE, 'DD-MON-YYYY'))              AS REQUESTED_DATE_BS,
+//                  LEAVE_STATUS_DESC(WH.STATUS)                                    AS STATUS,
+//                  WH.EMPLOYEE_ID                                                  AS EMPLOYEE_ID,
+//                  WH.ID                                                           AS ID,
+//                  WH.REMARKS                                                      AS REMARKS,
+//                  INITCAP(TO_CHAR(WH.RECOMMENDED_DATE, 'DD-MON-YYYY'))            AS RECOMMENDED_DATE,
+//                  INITCAP(TO_CHAR(WH.APPROVED_DATE, 'DD-MON-YYYY'))               AS APPROVED_DATE,
+//                  E.EMPLOYEE_CODE                                                 AS EMPLOYEE_CODE,
+//                  INITCAP(E.FULL_NAME)                                            AS FULL_NAME,
+//                  WH.RECOMMENDED_BY                                               AS RECOMMENDED_BY,
+//                  WH.APPROVED_BY                                                  AS APPROVED_BY,
+//                  WH.RECOMMENDED_REMARKS                                          AS RECOMMENDED_REMARKS,
+//                  WH.APPROVED_REMARKS                                             AS APPROVED_REMARKS
+//                FROM HRIS_EMPLOYEE_WORK_HOLIDAY WH
+//                LEFT OUTER JOIN HRIS_HOLIDAY_MASTER_SETUP H
+//                ON H.HOLIDAY_ID=WH.HOLIDAY_ID
+//                LEFT OUTER JOIN HRIS_EMPLOYEES E
+//                ON E.EMPLOYEE_ID=WH.EMPLOYEE_ID
+//                WHERE H.STATUS    ='E'
+//                AND E.STATUS      ='E'
+//                {$searchCondition}
+//                {$statusCondition}
+//                {$holidayCondition}
+//                {$fromDateCondition}
+//                {$toDateCondition} ORDER BY WH.REQUESTED_DATE DESC";
+
         $finalSql = $this->getPrefReportQuery($sql);
         return $this->rawQuery($finalSql);
     }
