@@ -1610,3 +1610,5 @@ check (HARDCOPY_SIGNED_FLAG IN ('N', 'Y'));
 
 alter table hris_employee_loan_request add modified_date date;
 alter table HRIS_EMPLOYEES add ALLOWANCE NUMBER(9);
+
+ALTER TABLE HRIS_EMPLOYEE_TRAVEL_REQUEST ADD ITNARY_ID NUMBER(7,0);

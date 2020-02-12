@@ -37,6 +37,20 @@ return [
                     ],
                 ],
             ],
+            'travelItnary' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/travel/itnary[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\TravelItnaryRequest::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation' => [
@@ -104,7 +118,8 @@ return [
     'controllers' => [
         'factories' => [
             Controller\TravelStatus::class => ControllerFactory::class,
-            Controller\TravelApply::class => ControllerFactory::class
+            Controller\TravelApply::class => ControllerFactory::class,
+            Controller\TravelItnaryRequest::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

@@ -25,35 +25,9 @@ BEGIN
     WHERE ID_THUMB_ID=P_THUMB_ID;
   EXCEPTION
   WHEN NO_DATA_FOUND THEN
-    INSERT
-    INTO HRIS_ATTENDANCE_DATA_LOG
-      (
-        THUMB_ID,
-        STATUS,
-        CREATED_DATE
-      )
-      VALUES
-      (
-        P_THUMB_ID,
-        'NO EMPLOYEE ASSIGNED FOR THIS THUMB_ID : '
-        ||P_THUMB_ID,
-        SYSDATE
-      );
+    NULL;
   WHEN too_many_rows THEN
-    INSERT
-    INTO HRIS_ATTENDANCE_DATA_LOG
-      (
-        THUMB_ID,
-        STATUS,
-        CREATED_DATE
-      )
-      VALUES
-      (
-        P_THUMB_ID,
-        'MULTIPLE EMPLOYEE ASSIGNED FOR THIS THUMB_ID : '
-        ||P_THUMB_ID,
-        SYSDATE
-      );
+    NULL;
   END;
   INSERT
   INTO HRIS_ATTENDANCE
