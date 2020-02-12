@@ -171,11 +171,15 @@ class EmployeeController extends HrisController {
             $empowerCompanyCodeKVList = $this->listValueToKV($empowerCompanyList, "COMPANY_CODE", "COMPANY_EDESC",true);
             $empowerBranchKVList = $this->listValueToKV($empowerBranchList, "BRANCH_CODE", "BRANCH_EDESC",true);
             
-            
+
              $empowerCompanyCode = $this->formThree->get('empowerCompanyCode');
              $empowerBranchCode = $this->formThree->get('empowerBranchCode');
              $empowerCompanyCode->setValueOptions($empowerCompanyCodeKVList);
              $empowerBranchCode->setValueOptions($empowerBranchKVList);
+
+             $bankId = $this->formThree->get('bankId');
+             $bankNameList = ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_BANKS", "BANK_ID", ["BANK_NAME"], "STATUS = 'E'" ,"BANK_ID", "ASC", "-", true, true, null);
+             $bankId->setValueOptions($bankNameList);
         }
         if (!$this->formFour) {
             $this->formFour = $builder->createForm($formTabFour);

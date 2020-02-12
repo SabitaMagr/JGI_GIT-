@@ -1636,3 +1636,21 @@ ADD LD_ID NUMBER;
 
 alter table hris_employee_loan_request add modified_date date;
 
+--------- HRIS BANKS START ----------
+alter table HRIS_EMPLOYEES add bank_id number(7);
+
+CREATE TABLE HRIS_BANKS (
+BANK_ID number(7) PRIMARY KEY,
+BANK_NAME VARCHAR2(255),
+COMPANY_ACC_NO VARCHAR2(25),
+BRANCH_NAME VARCHAR2(255),lo
+CREATED_BY NUMBER(7),
+CREATED_DT DATE,
+STATUS char(1) default 'E'
+);
+
+insert into HRIS_BANKS (bank_id, bank_name, status) values ((select nvl(max(bank_id),0)+1 from HRIS_BANKS), 'KUMARI BANK', 'E');
+
+--------- HRIS BANKS END ----------
+
+alter table HRIS_TRAINING_MASTER_SETUP add show_as_training varchar2(2) default 'Y';

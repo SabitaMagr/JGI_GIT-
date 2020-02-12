@@ -50,7 +50,7 @@ class LeaveDeductionForm {
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Options({"label":"No of Days"})
      * @Annotation\Required(true)
-     * @Annotation\Attributes({ "id":"noOfDays", "class":"form-control"})
+     * @Annotation\Attributes({ "id":"noOfDays", "class":"form-control", "min":"0","step":"0.5"})
      */
     public $noOfDays;
 

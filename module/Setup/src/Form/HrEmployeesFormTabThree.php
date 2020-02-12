@@ -97,7 +97,7 @@ class HrEmployeesFormTabThree extends Model {
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
-     * @Annotation\Options({"label":"Bank Account"})
+     * @Annotation\Options({"label":"Empower Bank Account"})
      * @Annotation\Attributes({ "id":"idAccCode", "class":"form-control" })
      */
     public $idAccCode;
@@ -184,6 +184,14 @@ class HrEmployeesFormTabThree extends Model {
      * @Annotation\Attributes({ "id":"empowerBranchCode", "class":"form-control" })
      */
     public $empowerBranchCode;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"label":"Bank Name"})
+     * @Annotation\Attributes({ "id":"bankId", "class":"form-control" })
+     */
+    public $bankId;
     
     
     public $modifiedBy;
@@ -210,6 +218,7 @@ class HrEmployeesFormTabThree extends Model {
         'modifiedDt' => 'MODIFIED_DT',
         'empowerCompanyCode' => 'EMPOWER_COMPANY_CODE',
         'empowerBranchCode' => 'EMPOWER_BRANCH_CODE',
+        'bankId' => 'BANK_ID',
     ];
 
 }

@@ -110,6 +110,13 @@ class TrainingForm {
      * @Annotation\Attributes({ "id":"dailyTrainingHour", "class":" form-control","step":"0.1"})
      */
     public $dailyTrainingHour;
-    
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Show As Training"})
+     * @Annotation\Attributes({ "id":"showAsTraining"})
+     */
+    public $showAsTraining;
 
 }

@@ -18,6 +18,7 @@ $trainingType->setValueOptions($trainingTypeList);
 $instituteName = $form->get('instituteId');
 $instituteName->setValueOptions($instituteNameList);
 $dailyTrainingHour = $form->get('dailyTrainingHour');
+$showAsTraining = $form->get('showAsTraining');
 
 $companyId = $form->get('companyId');
 $companyId->setValueOptions($companies);
@@ -177,6 +178,16 @@ $form->prepare();
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($isWithinCompany, ['class' => 'help-block error']); ?>
+                    </div>
+
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($showAsTraining); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($showAsTraining); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($showAsTraining, ['class' => 'help-block error']); ?>
                     </div>
                 </div>
 

@@ -23,6 +23,7 @@
         columnOptions.push({'VALUES' : '2', 'COLUMNS' : 'Total'});
         columnOptions.push({'VALUES' : '3', 'COLUMNS' : 'Taken'});
         columnOptions.push({'VALUES' : '4', 'COLUMNS' : 'Encashed'});
+        columnOptions.push({'VALUES' : '5', 'COLUMNS' : 'Deducted'});
 
         var $options = $('#options');
         app.populateSelect($options, columnOptions, 'VALUES', 'COLUMNS');
@@ -96,6 +97,15 @@
                             width: 70
                         }) 
                 map['L' + leaveList[i]['LEAVE_ID'] + '_' + 'ENCASHED'] = leaveList[i]['LEAVE_ENAME'] + '(Encashed)';
+                }
+
+                if(optionalColumns.indexOf("5") !== -1){
+                    columnsList.columns.push({
+                        title: 'Deducted',
+                        field: 'L' + leaveList[i]['LEAVE_ID'] + '_' + 'DEDUCTED',
+                        width: 70
+                    })
+                    map['L' + leaveList[i]['LEAVE_ID'] + '_' + 'DEDUCTED'] = leaveList[i]['LEAVE_ENAME'] + '(Deducted)';
                 }
                 
                 columnsList.columns.push({

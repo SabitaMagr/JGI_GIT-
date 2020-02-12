@@ -206,16 +206,22 @@ FROM (SELECT *
                     HA.BALANCE,
                     HS.ENCASH_DAYS as ENCASHED,
                     ( HA.PREVIOUS_YEAR_BAL + ha.total_days - ha.balance - (case when
-                    HS.ENCASH_DAYS is null then 0 else HS.ENCASH_DAYS end)) AS taken
+                    HS.ENCASH_DAYS is null then 0 else HS.ENCASH_DAYS end) - nvl(EPD.penalty_days,0)) AS taken,
+                    EPD.penalty_days as DEDUCTED
               FROM 
               HRIS_EMPLOYEE_LEAVE_ASSIGN HA
                     left JOIN 
                     HRIS_EMP_SELF_LEAVE_CLOSING HS
                     on (HA.EMPLOYEE_ID = HS.EMPLOYEE_ID and HA.leave_id = HS.leave_id)
+                    left join (
+                    select employee_id,leave_id,sum(no_of_days) as penalty_days
+                    from HRIS_EMPLOYEE_PENALTY_DAYS
+                    group by employee_id,leave_id) EPD
+                    on (EPD.EMPLOYEE_ID = HA.EMPLOYEE_ID AND EPD.LEAVE_ID = HA.LEAVE_ID)
               WHERE ha.EMPLOYEE_ID IN
                 ( SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 AND E.STATUS='E' {$searchConditon}
                 ){$monthlyCondition} {$leaveCondition}
-              ) PIVOT (sum ( ENCASHED ) AS ENCASHED, MAX(PREVIOUS_YEAR_BAL) AS PREVIOUS_YEAR_BAL,MAX(BALANCE) AS BALANCE,MAX(CURR) AS CURR,MAX(TOTAL) AS TOTAL,MAX(TAKEN) AS TAKEN FOR LEAVE_ID IN ({$leaveArrayDb}) )
+              ) PIVOT (sum ( ENCASHED ) AS ENCASHED, sum ( DEDUCTED ) AS DEDUCTED, MAX(PREVIOUS_YEAR_BAL) AS PREVIOUS_YEAR_BAL,MAX(BALANCE) AS BALANCE,MAX(CURR) AS CURR,MAX(TOTAL) AS TOTAL,MAX(TAKEN) AS TAKEN FOR LEAVE_ID IN ({$leaveArrayDb}) )
             ) LA LEFT JOIN HRIS_EMPLOYEES E ON (LA.EMPLOYEE_ID=E.EMPLOYEE_ID)
             LEFT JOIN HRIS_DESIGNATIONS DES
       ON E.DESIGNATION_ID=DES.DESIGNATION_ID 

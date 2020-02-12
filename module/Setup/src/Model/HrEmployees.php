@@ -111,6 +111,7 @@ class HrEmployees extends Model {
     public $wohFlag;
     public $overtimeEligible;
     public $allowance;
+    public $bankId;
 
     
     const TABLE_NAME = "HRIS_EMPLOYEES";
@@ -220,6 +221,7 @@ class HrEmployees extends Model {
     const WOH_FLAG = "WOH_FLAG";
     const OVERTIME_ELIGIBLE = "OVERTIME_ELIGIBLE";
     const ALLOWANCE = "ALLOWANCE";
+    const BANK_ID = "BANK_ID";
 
     
     public $mappings = [
@@ -329,6 +331,7 @@ class HrEmployees extends Model {
         'wohFlag' =>self::WOH_FLAG,
         'overtimeEligible' =>self::OVERTIME_ELIGIBLE,
         'allowance' => self::ALLOWANCE,
+        'bankId' => self::BANK_ID,
     ];
 
 }
