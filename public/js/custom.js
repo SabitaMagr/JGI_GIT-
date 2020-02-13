@@ -129,6 +129,7 @@ window.app = (function ($, toastr, App) {
     var addComboTimePicker = function () {
         for (var x in arguments) {
             arguments[x].combodate({
+                 firstItem: 'name',
                 minuteStep: 1
             });
         }

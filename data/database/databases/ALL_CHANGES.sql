@@ -1610,7 +1610,8 @@ check (HARDCOPY_SIGNED_FLAG IN ('N', 'Y'));
 
 alter table HRIS_EMPLOYEES add ALLOWANCE NUMBER(9);
 
------------- FOR LEAVE DEDUCTION START-----------
+ALTER TABLE HRIS_EMPLOYEE_TRAVEL_REQUEST ADD ITNARY_ID NUMBER(7,0);
+
 CREATE TABLE HRIS_EMPLOYEE_LEAVE_DEDUCTION
 (
     ID           NUMBER NOT NULL,
@@ -1654,3 +1655,4 @@ insert into HRIS_BANKS (bank_id, bank_name, status) values ((select nvl(max(bank
 --------- HRIS BANKS END ----------
 
 alter table HRIS_TRAINING_MASTER_SETUP add show_as_training varchar2(2) default 'Y';
+

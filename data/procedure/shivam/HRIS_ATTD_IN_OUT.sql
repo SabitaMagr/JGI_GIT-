@@ -22,13 +22,16 @@ END;
 
 
 begin
-select out_time
+select 
+case when
+out_time is null then in_time else out_time 
+end 
 INTO V_YESTERDAY_OUT_TIME
 from Hris_Attendance_Detail
 where Attendance_Dt=trunc(P_FROM_ATTENDANCE_TIME)-1 and employee_id=P_EMPLOYEE_ID;
 EXCEPTION
 WHEN no_data_found THEN
-raise_application_error(-20344,'no attendance in that date');
+NULL;
 END;
 
 if(V_YESTERDAY_OUT_TIME is null)

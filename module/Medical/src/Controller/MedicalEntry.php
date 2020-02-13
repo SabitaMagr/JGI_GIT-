@@ -76,7 +76,7 @@ class MedicalEntry extends HrisController {
                     'form' => $this->form,
 //                    'CuremployeeId' => $this->employeeId,
                     'customRenderer' => Helper::renderCustomView(),
-                    'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, FULL_NAME=>"EMPLOYEE_CODE||'-'||FULL_NAME"], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"])
+                    'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, 'FULL_NAME'=>"EMPLOYEE_CODE||'-'||FULL_NAME"], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"])
         ]);
     }
 

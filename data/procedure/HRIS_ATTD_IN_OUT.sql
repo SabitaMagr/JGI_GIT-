@@ -14,7 +14,10 @@ BEGIN
 
 
 begin
-select out_time
+select 
+case when
+out_time is null then in_time else out_time 
+end 
 INTO V_YESTERDAY_OUT_TIME
 from Hris_Attendance_Detail
 where Attendance_Dt=trunc(P_FROM_ATTENDANCE_TIME)-1 and employee_id=P_EMPLOYEE_ID;
