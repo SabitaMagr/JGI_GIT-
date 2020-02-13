@@ -16,9 +16,19 @@
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, map, 'Query result.pdf');
         });
-        
-        $search.on('click', function () {
 
+
+        $('#query_input').keydown(function (e) {
+            if (e.ctrlKey && e.keyCode == 13) {
+                searchClick();
+            }
+        });
+
+        $search.on("click", function () {
+            searchClick();
+        });
+
+        function searchClick() {
             var query_input = $('#query_input').val();
             var data = {
                 query: query_input
@@ -34,7 +44,7 @@
                         columns.push({field: x, title: x, width: 130});
                         map[x] = x;
                     }
-                    
+
                     app.initializeKendoGrid($table, columns);
                     app.renderKendoGrid($table, resData);
 
@@ -45,11 +55,12 @@
             }, function (error) {
                 app.showMessage(error, 'error');
             });
-        });
+        }
 
         $reset.on('click', function () {
             $('#query_input').val('');
         });
+
     });
 })(window.jQuery, window.app);
 

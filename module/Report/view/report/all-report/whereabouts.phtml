@@ -44,6 +44,20 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/whereabouts
                     <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
                     <a href="" class="fullscreen" data-original-title="" title=""> </a>
                 </div>
+                <div class="actions">
+                    <div class="btn-group">
+                        <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-copy"></i> Tools
+                            <i class="fa fa-angle-down "></i>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
+                            <li >
+                                <a id="pdfExport" href="javascript:;"  >
+                                    <i class="fa fa-file-excel-o" ></i> Export to PDF </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="portlet-body hris-filter-container" style="display: block;">
                 <div class="row">
@@ -136,7 +150,7 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/whereabouts
                 </div>
             </div>
         </div>
-        <div class="portlet box ">
+        <div class="portlet box " id="fullReport">
             <div style="margin-left: 20px" class='my-legend' >
                 <div  class='legend-title'>Legend</div>
                 <div class='legend-scale'>
