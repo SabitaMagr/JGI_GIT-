@@ -157,6 +157,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
                   L.LEAVE_ENAME                                    AS LEAVE_ENAME,
                   T.TRAINING_NAME                                  AS TRAINING_NAME,
                   TVL.DESTINATION                                  AS TRAVEL_DESTINATION,
+                  P.POSITION_NAME                                  AS POSITION_NAME,
+                  BP.PROVINCE_NAME                                 AS BRANCH_PROVINCE,
                   (
                   CASE
                     WHEN A.OVERALL_STATUS = 'DO'
@@ -265,6 +267,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 ON A.SHIFT_ID=S.SHIFT_ID
                 LEFT JOIN  HRIS_OVERTIME_MANUAL OM
                 ON (OM.ATTENDANCE_DATE=A.ATTENDANCE_DT AND OM.EMPLOYEE_ID=A.EMPLOYEE_ID)
+                LEFT JOIN HRIS_PROVINCES BP on (BP.PROVINCE_ID=BR.PROVINCE_ID)
                 WHERE 1=1 {$presentTypeCondition} 
                 {$searchConditon}
                 {$fromDateCondition}

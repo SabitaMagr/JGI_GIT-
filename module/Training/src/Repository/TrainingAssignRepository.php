@@ -222,6 +222,7 @@ class TrainingAssignRepository implements RepositoryInterface {
                  END LOOP;
 
                  BEGIN
+                 HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
                  HRIS_TRAINING_LEAVE_REWARD(V_EMPLOYEE_ID,V_TRAINING_ID);
                  END;
 

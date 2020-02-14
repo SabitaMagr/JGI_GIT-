@@ -198,7 +198,9 @@
         var exportMap = {
             'COMPANY_NAME': ' Company',
             'BRANCH_NAME': 'Branch',
+            'BRANCH_PROVINCE':'Branch Province',
             'DEPARTMENT_NAME': ' Department',
+            'POSITION_NAME': ' Position',
             'EMPLOYEE_CODE': 'Code',
             'EMPLOYEE_NAME': ' Name',
             'ATTENDANCE_DT': 'Attendance Date(AD)',

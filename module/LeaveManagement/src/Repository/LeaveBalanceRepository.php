@@ -194,7 +194,10 @@ class LeaveBalanceRepository {
         $sql = "
            SELECT LA.*,E.FULL_NAME, E.EMPLOYEE_CODE AS EMPLOYEE_CODE
 ,D.Department_Name,
-    Funt.Functional_Type_Edesc                 
+    Funt.Functional_Type_Edesc        
+    ,BP.PROVINCE_NAME                                 AS BRANCH_PROVINCE,
+     BR.BRANCH_NAME
+     ,P.POSITIOIN_NAME
 FROM (SELECT *
             FROM
               (SELECT 
@@ -230,6 +233,8 @@ FROM (SELECT *
       LEFT JOIN hris_departments d on d.department_id=e.department_id
     left join Hris_Functional_Types funt on funt.Functional_Type_Id=e.Functional_Type_Id
     left join Hris_Service_Types st on (st.service_type_id=E.Service_Type_Id)
+    LEFT JOIN HRIS_BRANCHES BR ON (E.BRANCH_ID = BR.BRANCH_ID)
+    LEFT JOIN HRIS_PROVINCES BP on (BP.PROVINCE_ID=BR.PROVINCE_ID)
 ";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
