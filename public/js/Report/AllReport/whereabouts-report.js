@@ -209,7 +209,7 @@ function setAbbr(temp){
             app.excelExport($table, exportVals, 'Whereabouts Report');
         });
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, exportVals, 'Whereabouts Report','A1');
+            // app.exportToPDF($table, exportVals, 'Whereabouts Report','A1');
         });
 
 

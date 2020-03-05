@@ -111,7 +111,7 @@ class SystemUtility extends HrisController {
             try {
                 $data = $_POST['query'];
                 $queryResult = $this->repository->runQuery($data);
-                return new JsonModel(['success' => true, 'data' => $queryResult, 'message' => null]);
+                return new JsonModel(['success' => true, 'data' => $queryResult, 'message' => 'Query Fired Successfully']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
             }

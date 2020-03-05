@@ -21,7 +21,7 @@ class SynergyRepository extends HrisRepository {
         if (!$this->linkedWithSynergy) {
             return [];
         }
-        $condition = $companyCode != null ? " AND COMPANY_CODE = {$companyCode}" : "";
+        $condition = $companyCode != null ? " AND COMPANY_CODE = '{$companyCode}'" : "";
         $sql = "SELECT * FROM FORM_SETUP WHERE GROUP_SKU_FLAG = 'I'" . $condition;
         return $this->rawQuery($sql);
     }
