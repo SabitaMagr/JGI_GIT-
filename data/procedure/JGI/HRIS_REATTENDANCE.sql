@@ -35,9 +35,7 @@ AS
   V_HALF_INTERVAL      DATE;
   v_NEXT_HALF_INTERVAL DATE;
   v_training_id          number;
-  v_roaster_shift_id number;
-  V_BREAK_DEDUCT_FLAG char(1 byte);
-  v_middle_diff number;
+  v_travel_id          number;
 BEGIN
   IF P_TO_ATTENDANCE_DT IS NOT NULL THEN
     V_TO_ATTENDANCE_DT  :=P_TO_ATTENDANCE_DT;
@@ -91,32 +89,15 @@ BEGIN
       V_TWO_DAY_SHIFT  := employee.TWO_DAY_SHIFT;
       V_IGNORE_TIME    :=employee.IGNORE_TIME;
       V_SHIFT_ID       := employee.SHIFT_ID;
-      v_roaster_shift_id := null;
-      V_BREAK_DEDUCT_FLAG :=null;
-      v_middle_diff :=0;
-      
-      begin
-      select CASE when  shift_id > 0 then shift_id else null end into v_roaster_shift_id
-      from HRIS_EMPLOYEE_SHIFT_ROASTER where employee_id=employee.EMPLOYEE_ID and FOR_DATE=employee.ATTENDANCE_DT;
-      EXCEPTION
-      WHEN NO_DATA_FOUND THEN
-          null;
-        END;
-      
       --
       DELETE
       FROM HRIS_ATTENDANCE_DETAIL
       WHERE ATTENDANCE_DT= TRUNC(employee.ATTENDANCE_DT)
       AND EMPLOYEE_ID    = employee.EMPLOYEE_ID ;
       --
-      if(v_roaster_shift_id is null)then
       V_SHIFT_ID    :=HRIS_BEST_CASE_SHIFT(employee.EMPLOYEE_ID,TRUNC(employee.ATTENDANCE_DT));
-      end if;
-      
       IF(V_SHIFT_ID IS NULL)THEN
         V_SHIFT_ID  :=employee.SHIFT_ID;
-      ELSE
-      select two_day_shift into V_TWO_DAY_SHIFT from hris_shifts where shift_id=V_SHIFT_ID;
       END IF;
       HRIS_PRELOAD_ATTENDANCE(employee.ATTENDANCE_DT,employee.EMPLOYEE_ID,V_SHIFT_ID);
       --
@@ -396,54 +377,13 @@ BEGIN
           END IF;
         END IF;
         --
-        
-        -- to minus from shift special case for maruti start
-        begin
-        select BREAK_DEDUCT_FLAG into V_BREAK_DEDUCT_FLAG from hris_shifts where shift_id=V_SHIFT_ID;
-        
-        if V_BREAK_DEDUCT_FLAG='Y'
-        then
-        
-        SELECT 
- nvl(
- SUM(ABS(EXTRACT( HOUR FROM middle_diff ))*60 + ABS(EXTRACT( MINUTE FROM middle_diff )))
- ,0) into v_middle_diff
- from(
-select 
-(
-max(attendance_time) - min(attendance_time) ) as middle_diff
-from HRIS_ATTENDANCE where 
-attendance_dt=TO_DATE (employee.ATTENDANCE_DT, 'DD-MON-YY') 
-and 
-employee_id= employee.EMPLOYEE_ID 
-and attendance_time between 
-to_timestamp(V_IN_TIME)  + INTERVAL '1' HOUR and
-to_timestamp(V_OUT_TIME)  - INTERVAL '1' HOUR
-order by attendance_time asc
-);
-
-DBMS_OUTPUT.PUT_LINE('middle diff start');
-DBMS_OUTPUT.PUT_LINE(v_middle_diff);
-DBMS_OUTPUT.PUT_LINE('middle diff end');
-
-       -- V_TOTAL_WORKING_MIN := V_TOTAL_WORKING_MIN -v_middle_diff ;
- 
-        end if;
-        
-        
-        end;
-        -- to minus from shift special case for maruti end
-        
-        
         UPDATE HRIS_ATTENDANCE_DETAIL
         SET IN_TIME         = V_IN_TIME,
           OUT_TIME          =V_OUT_TIME,
           OVERALL_STATUS    = V_OVERALL_STATUS,
           LATE_STATUS       = V_LATE_STATUS,
-          TOTAL_HOUR        = V_DIFF_IN_MIN - v_middle_diff ,
-          OT_MINUTES        = (V_DIFF_IN_MIN - V_TOTAL_WORKING_MIN - v_middle_diff),
-          IN_REMARKS  = (select remarks from HRIS_ATTENDANCE where EMPLOYEE_ID = employee.EMPLOYEE_ID and ATTENDANCE_TIME=V_IN_TIME AND ROWNUM=1),
-          OUT_REMARKS = (select remarks from HRIS_ATTENDANCE where EMPLOYEE_ID = employee.EMPLOYEE_ID and ATTENDANCE_TIME=V_OUT_TIME AND ROWNUM=1)
+          TOTAL_HOUR        = V_DIFF_IN_MIN,
+          OT_MINUTES        = (V_DIFF_IN_MIN - V_TOTAL_WORKING_MIN)
         WHERE ATTENDANCE_DT = TO_DATE (employee.ATTENDANCE_DT, 'DD-MON-YY')
         AND EMPLOYEE_ID     = employee.EMPLOYEE_ID;
         --
@@ -496,8 +436,6 @@ DBMS_OUTPUT.PUT_LINE('middle diff end');
             WHERE
                     ta.employee_id = employee.employee_id
                 AND
-                    t.status = 'E'
-                AND
                     ta.status = 'E'
                 AND
                     p_from_attendance_dt + i BETWEEN t.start_date AND t.end_date;
@@ -508,12 +446,47 @@ DBMS_OUTPUT.PUT_LINE('middle diff end');
 
 
                      IF v_training_id IS NOT NULL
-                     THEN 
+                     THEN
                      HRIS_TRAINING_LEAVE_REWARD(v_employee_id,v_training_id);
                      END IF;
 
-        END;            
-    -- added from trainign assign 
+        END;
+    -- added from trainign assign
+
+
+	-- added from travel assign start
+    BEGIN
+    v_travel_id:=NULL;
+    begin
+            SELECT
+                tr.travel_id
+            INTO
+                v_travel_id
+            FROM
+                HRIS_EMPLOYEE_TRAVEL_REQUEST tr
+            WHERE
+                    tr.employee_id = employee.employee_id
+                AND
+                    tr.status = 'AP'
+                AND
+                    tr.requested_type = 'ad'
+                AND
+                    p_from_attendance_dt + i BETWEEN tr.from_date AND tr.TO_DATE;
+                     EXCEPTION
+                WHEN no_data_found THEN
+                    dbms_output.put('NO travel for the day found');
+                    WHEN too_many_rows THEN
+    dbms_output.put('too many travel id');
+    end;
+
+                     IF v_travel_id IS NOT NULL
+                     THEN
+                     HRIS_TRAVEL_LEAVE_REWARD(v_travel_id);
+                     END IF;
+
+        END;
+    -- added from travel assign
+
 
 
     END LOOP;

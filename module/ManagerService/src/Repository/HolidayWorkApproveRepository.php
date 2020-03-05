@@ -27,6 +27,32 @@ class HolidayWorkApproveRepository {
     public function edit(Model $model, $id) {
         $temp = $model->getArrayCopyForDB();
         $this->tableGateway->update($temp, [WorkOnHoliday::ID => $id]);
+        $sql = "
+            DECLARE
+                  V_ID HRIS_EMPLOYEE_WORK_HOLIDAY.ID%TYPE;
+                  V_STATUS HRIS_EMPLOYEE_WORK_HOLIDAY.STATUS%TYPE;
+                  V_FROM_DATE HRIS_EMPLOYEE_WORK_HOLIDAY.FROM_DATE%TYPE;
+                  V_TO_DATE HRIS_EMPLOYEE_WORK_HOLIDAY.TO_DATE%TYPE;
+                  V_EMPLOYEE_ID HRIS_EMPLOYEE_WORK_HOLIDAY.EMPLOYEE_ID%TYPE;
+                BEGIN
+                  SELECT ID,
+                    STATUS,
+                    FROM_DATE,
+                    TO_DATE,
+                    EMPLOYEE_ID
+                  INTO V_ID,
+                    V_STATUS,
+                    V_FROM_DATE,
+                    V_TO_DATE,
+                    V_EMPLOYEE_ID
+                  FROM HRIS_EMPLOYEE_WORK_DAYOFF
+                  WHERE ID                                    = {$id};
+                  IF(V_STATUS IN ('AP','C','R') and V_FROM_DATE <= trunc(SYSDATE)) THEN
+                    HRIS_REATTENDANCE(V_FROM_DATE,V_EMPLOYEE_ID,V_TO_DATE);
+                  END IF;
+                END;
+            ";
+        EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
     public function fetchById($id) {

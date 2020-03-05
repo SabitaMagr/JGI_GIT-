@@ -52,7 +52,7 @@
             {field: "STATUS_DETAIL", title: "Status"},
             {field: "YOUR_ROLE", title: "Role"},
             {field: ["REQUEST_ID", "ROLE"], title: "Action", template: action}
-        ]);
+        ], null, null, null, 'Training Request List');
 
         $search.on('click', function () {
             app.pullDataById('', {
@@ -92,10 +92,10 @@
             'APPROVED_REMARKS': 'Approver Remarks'
         };
         $('#excelExport').on('click', function () {
-            app.excelExport($table, exportMap, 'Travel Request List.xlsx');
+            app.excelExport($table, exportMap, 'Training Request List.xlsx');
         });
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, exportMap, 'Travel Request List.pdf');
+            app.exportToPDF($table, exportMap, 'Training Request List.pdf');
         });
         
 //        $("#reset").on("click", function () {

@@ -65,7 +65,6 @@ class Whereabouts extends HrisController {
 
             return new JsonModel([
                 "success" => true,
-//                    "data" => $list,
                 "message" => null,
             ]);
         } catch (Exception $e) {

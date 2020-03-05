@@ -34,7 +34,7 @@
             {field: "TERMS", title: "Terms(in month)"},
             {field: "STATUS", title: "Status"},
             {field: ["ADVANCE_REQUEST_ID", "ALLOW_TO_EDIT"], title: "Action", template: action}
-        ]);
+        ], null, null, null, 'Advance Request List');
 
         app.searchTable('advanceTable', ['ADVANCE_NAME', 'REQUESTED_DATE_AD', 'REQUESTED_DATE_BS', 'ADVANCE_DATE_AD', 'ADVANCE_DATE_BS', 'REQUESTED_AMOUNT', 'TERMS', 'STATUS']);
 

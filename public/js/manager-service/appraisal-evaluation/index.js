@@ -111,7 +111,7 @@
             {field: "REVIEWER_NAME", title: "Reviewer Name", width: 150},
             {field: ["APPRAISAL_ID", "EMPLOYEE_ID"], title: "Action", width: 90, template: action}
         ];
-        app.initializeKendoGrid($tableContainer, columns, null, null, null, 'Appraisal Evaluation');
+        app.initializeKendoGrid($tableContainer, columns, null, null, null, 'Appraisal Evaluation List');
         app.searchTable($tableContainer, ['FULL_NAME', 'APPRAISAL_EDESC', 'APPRAISAL_TYPE_EDESC', 'STAGE_EDESC', 'START_DATE', 'END_DATE', 'APPRAISER_NAME', 'REVIEWER_NAME']);
 
         var map = {
@@ -155,9 +155,6 @@
             console.log('test');
         });
         
-//        $('#reset').on('click', function (){
-//            $('.form-control').val("");
-//        });
 
     });
 })(window.jQuery, window.app);

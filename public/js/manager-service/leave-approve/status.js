@@ -44,7 +44,7 @@
                 </a>
             </span>`}
         ];
-        app.initializeKendoGrid($tableContainer, columns);
+        app.initializeKendoGrid($tableContainer, columns, null, null, null, 'Leave Request List');
         app.searchTable($tableContainer, ["FULL_NAME"]);
 
         var map = {
@@ -91,9 +91,5 @@
             app.exportToPDF($tableContainer, map, "Leave Request List.pdf");
         });
 
-//        $("#reset").on("click", function () {
-//            $(".form-control").val("");
-//            $("#fromDate").val("");
-//        });
     });
 })(window.jQuery, window.app);

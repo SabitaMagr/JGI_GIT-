@@ -60,7 +60,7 @@
             'APPROVED_DATE': 'Approved Date'
 
         };
-        app.initializeKendoGrid($tableContainer, columns);
+        app.initializeKendoGrid($tableContainer, columns, null, null, null, 'DayoffWorkRequestList');
         app.searchTable('dayoffWorkRequestStatusTable', ['FULL_NAME', 'EMPLOYEE_CODE', 'REQUESTED_DATE', 'FROM_DATE', 'TO_DATE', 'REQUESTED_DATE_N', 'FROM_DATE_N', 'TO_DATE_N', 'DURATION', 'YOUR_ROLE', 'STATUS']);
 
         $search.on('click', function () {
@@ -84,9 +84,5 @@
             app.exportToPDF($tableContainer, map, "DayoffWorkRequestList.pdf");
         });
         
-//        $("#reset").on("click", function () {
-//            $(".form-control").val("");
-//            $("#fromDate").val("");
-//        });
     });
 })(window.jQuery, window.app);

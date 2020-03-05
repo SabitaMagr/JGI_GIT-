@@ -122,7 +122,7 @@ class TrainingApproveRepository extends HrisRepository {
                         WHERE TRAINING_ID=V_TRAINING_ID AND EMPLOYEE_ID=V_EMPLOYEE_ID;
                     END IF;
 
-                    IF V_STATUS IN ('AP','C') AND V_START_DATE <TRUNC(SYSDATE) THEN
+                    IF V_STATUS IN ('AP','C','R')  THEN
                         HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
                     END IF;
                     
