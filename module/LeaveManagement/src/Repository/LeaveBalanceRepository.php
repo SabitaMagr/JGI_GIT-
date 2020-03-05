@@ -190,6 +190,7 @@ class LeaveBalanceRepository {
         $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId'], $searchQuery['genderId'], $searchQuery['locationId'], $searchQuery['functionalTypeId']);
         $monthlyCondition = $isMonthly ? " AND FISCAL_YEAR_MONTH_NO ={$searchQuery['leaveYearMonthNo']} " : "";
         $leaveArrayDb = $this->fetchLeaveAsDbArray($isMonthly, $leaveId);
+        $includePreviousBalance = $isMonthly ? "0" : " HA.PREVIOUS_YEAR_BAL ";
         
         $sql = "
            SELECT LA.*,E.FULL_NAME, E.EMPLOYEE_CODE AS EMPLOYEE_CODE
@@ -197,7 +198,7 @@ class LeaveBalanceRepository {
     Funt.Functional_Type_Edesc        
     ,BP.PROVINCE_NAME                                 AS BRANCH_PROVINCE,
      BR.BRANCH_NAME
-     ,P.POSITIOIN_NAME
+     ,P.POSITION_NAME
 FROM (SELECT *
             FROM
               (SELECT 
@@ -205,10 +206,10 @@ FROM (SELECT *
                     HA.PREVIOUS_YEAR_BAL,
                     HA.LEAVE_ID,
                     HA.TOTAL_DAYS AS CURR,
-                    HA.PREVIOUS_YEAR_BAL+HA.TOTAL_DAYS AS TOTAL,
+                    {$includePreviousBalance} + HA.TOTAL_DAYS AS TOTAL,
                     HA.BALANCE,
                     HS.ENCASH_DAYS as ENCASHED,
-                    ( HA.PREVIOUS_YEAR_BAL + ha.total_days - ha.balance - (case when
+                    ( {$includePreviousBalance} + ha.total_days - ha.balance - (case when
                     HS.ENCASH_DAYS is null then 0 else HS.ENCASH_DAYS end) - nvl(EPD.penalty_days,0)) AS taken,
                     EPD.penalty_days as DEDUCTED
               FROM 

@@ -8,6 +8,7 @@
         var $status = $('#status');
         var $fromDate = $('#fromDate');
         var $toDate = $('#toDate');
+        var $itnaryId = $('#itnaryId');
         var $bulkActionDiv = $('#bulkActionDiv');
         var $bulkBtns = $(".btnApproveReject");
         var $superpower = $("#super_power");
@@ -22,7 +23,7 @@
                     <i class="fa fa-search"></i>
                 </a>
                 #}#
-                 #if(ALLOW_EDIT=='Y'){#
+                 #if(ALLOW_EDIT=='Y' && ITNARY_CHECK=='N'){#
                 <a class="btn btn-icon-only yellow" href="${document.editLink}/#:TRAVEL_ID#" style="height:17px;" title="View Detail">
                     <i class="fa fa-edit"></i>
                 </a>
@@ -30,7 +31,7 @@
             </div>
         `;
         var columns = [
-            {field: "EMPLOYEE_CODE", title: "Code", width: 100},
+            {field: "EMPLOYEE_CODE", title: "Code", width: 60},
             {field: "EMPLOYEE_NAME", title: "Employee", width: 100},
             {title: "Start Date",
                 columns: [{
@@ -66,6 +67,7 @@
             {field: "DEPARTURE", title: "Departure", width: 100},
             {field: "DESTINATION", title: "Destination", width: 100},
             {field: "REQUESTED_AMOUNT", title: "Request Amt.", width: 100},
+            {field: "TRAVEL_CODE", title: "T Code", width: 100},
             {field: "REQUESTED_TYPE_DETAIL", title: "Request For", width: 100},
             {field: "TRANSPORT_TYPE_DETAIL", title: "Transport", width: 100},
             {field: "STATUS_DETAIL", title: "Status", width: 90},
@@ -86,6 +88,7 @@
             search['status'] = $status.val();
             search['fromDate'] = $fromDate.val();
             search['toDate'] = $toDate.val();
+            search['itnaryId'] = $itnaryId.val();
             app.serverRequest('', search).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($table, response.data);
@@ -96,7 +99,7 @@
                 app.showMessage(error, 'error');
             });
         });
-        app.searchTable($table, ['EMPLOYEE_NAME', 'EMPLOYEE_CODE']);
+        app.searchTable($table, ['EMPLOYEE_NAME', 'EMPLOYEE_CODE','TRAVEL_CODE']);
         var exportMap = {
             'EMPLOYEE_CODE': 'Code',
             'EMPLOYEE_NAME': 'Employee Name',

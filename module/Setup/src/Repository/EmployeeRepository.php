@@ -885,6 +885,9 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function employeeDetailSession($id) {
+        if(!$id){
+            return [];
+        }
         $sql = "
                 SELECT E.EMPLOYEE_ID                                                AS EMPLOYEE_ID,
                   E.COMPANY_ID                                                      AS COMPANY_ID,

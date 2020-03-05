@@ -74,6 +74,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             Controller\AttendanceApiController::class . "-daily",
             AuthController::class . '-changePwd',
             \Setup\Controller\EmployeeController::class . '-contact',
+            Controller\CronBrij::class . "-autoEmailDaily",
         ];
         $app = $event->getApplication();
         $auth = $app->getServiceManager()->get('AuthService');

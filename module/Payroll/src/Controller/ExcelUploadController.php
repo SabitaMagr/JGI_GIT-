@@ -4,7 +4,9 @@ namespace Payroll\Controller;
 
 use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Payroll\Model\FlatValue as FlatValueModel;
+use Payroll\Model\Rules as PaySetupModel;
 use Application\Model\FiscalYear;
 use Payroll\Model\MonthlyValue as MonthlyValueModel;
 use Application\Model\Months;
@@ -29,12 +31,16 @@ class ExcelUploadController extends HrisController {
         $flatValues = EntityHelper::getTableList($this->adapter, FlatValueModel::TABLE_NAME, [FlatValueModel::FLAT_ID, FlatValueModel::FLAT_EDESC], [FlatValueModel::STATUS => EntityHelper::STATUS_ENABLED, FlatValueModel::ASSIGN_TYPE => 'E']);
         $fiscalYears = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
         $monthlyValues = EntityHelper::getTableList($this->adapter, MonthlyValueModel::TABLE_NAME, [MonthlyValueModel::MTH_ID, MonthlyValueModel::MTH_EDESC]);
+        $payValues = EntityHelper::getTableList($this->adapter, PaySetupModel::TABLE_NAME, [PaySetupModel::PAY_ID, PaySetupModel::PAY_EDESC]);
         $months = EntityHelper::getTableList($this->adapter, Months::TABLE_NAME, [Months::MONTH_ID, Months::MONTH_EDESC, Months::FISCAL_YEAR_ID],null,'','FISCAL_YEAR_MONTH_NO');
+        $salaryTypes = Helper::extractDbData($this->repository->getSalaryTypes());
         return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'flatValues' => $flatValues,
                     'fiscalYears' => $fiscalYears,
                     'monthlyValues' => $monthlyValues,
+                    'payValues' => $payValues,
+                    'salaryTypes' => $salaryTypes,
                     'months' => $months,
                     'acl' => $this->acl,
         ]);
@@ -76,6 +82,30 @@ class ExcelUploadController extends HrisController {
                 $item['fiscalYearId'] = $fiscalYearId;
                 $item['monthId'] = $monthId;
                 $detailRepo->postMonthlyValuesDetail($item);
+            }
+        }
+        return new JsonModel(['success' => true, 'error' => '']);
+    }
+    
+    public function updatePayValuesAction(){
+        $excelData = $_POST['data'];
+        $monthId = $_POST['monthId'];
+        $fiscalYearId = $_POST['fiscalYearId'];
+        $salaryTypeId = $_POST['salaryTypeId'];
+        $payValueId = $_POST['payValueId'];
+        $basedOn = $_POST['basedOn'];
+        $detailRepo = new ExcelUploadRepository($this->adapter);
+        foreach($payValueId as $pid){
+            foreach ($excelData as $data) {
+                if($basedOn == 2){ $data['A'] = EntityHelper::getEmployeeIdFromCode($this->adapter, $data['A']); }
+                if($data['A'] == null || $data['A'] == ''){ continue; }
+                $item['employeeId'] = $data['A'];
+                $item['val'] = $data['C'];
+                $item['payId'] = $pid;
+                $item['fiscalYearId'] = $fiscalYearId;
+                $item['monthId'] = $monthId;
+                $item['salaryTypeId'] = $salaryTypeId;
+                $detailRepo->postPayValuesModifiedDetail($item);
             }
         }
         return new JsonModel(['success' => true, 'error' => '']);

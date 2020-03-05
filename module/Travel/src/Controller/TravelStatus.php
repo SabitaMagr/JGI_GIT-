@@ -12,13 +12,14 @@ use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\TravelRequestForm;
 use SelfService\Model\TravelRequest;
+use SelfService\Model\TravelRequest as TravelRequestModel;
 use SelfService\Repository\TravelExpenseDtlRepository;
+use SelfService\Repository\TravelRequestRepository;
+use Travel\Repository\TravelItnaryRepository;
 use Travel\Repository\TravelStatusRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
-use SelfService\Repository\TravelRequestRepository;
-use SelfService\Model\TravelRequest as TravelRequestModel;
 
 class TravelStatus extends HrisController {
 
@@ -56,14 +57,16 @@ class TravelStatus extends HrisController {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
-
+        
         $statusSE = $this->getStatusSelectElement(['name' => 'status', "id" => "status", "class" => "form-control reset-field", 'label' => 'status']);
         return Helper::addFlashMessagesToArray($this, [
                     'travelStatus' => $statusSE,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail'],
-                    'preference' => $this->preference
+                    'preference' => $this->preference,
+//                    'itnaryCodeList'=>[], 
+                    'itnaryCodeList' =>EntityHelper::getTableList($this->adapter, 'HRIS_TRAVEL_ITNARY', ['ITNARY_ID','ITNARY_CODE'], ['STATUS' => "E"]),
         ]);
     }
 
@@ -116,6 +119,14 @@ class TravelStatus extends HrisController {
         $this->form->bind($travelRequestModel);
         $numberInWord = new NumberHelper();
         $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
+        
+         $travelItnaryDet = [];
+        $travelItnaryMemDet = [];
+        if ($detail['ITNARY_ID']) {
+            $travelItnaryRepo = new TravelItnaryRepository($this->adapter);
+            $travelItnaryDet = $travelItnaryRepo->fetchItnaryDetails($detail['ITNARY_ID']);
+            $travelItnaryMemDet = $travelItnaryRepo->fetchItnaryMembers($detail['ITNARY_ID']);
+        }
 
         return Helper::addFlashMessagesToArray($this, [
                     'id' => $id,
@@ -124,7 +135,10 @@ class TravelStatus extends HrisController {
                     'approver' => $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'],
                     'detail' => $detail,
                     'todayDate' => date('d-M-Y'),
-                    'advanceAmount' => $advanceAmount
+                    'advanceAmount' => $advanceAmount,
+                    'itnaryId' => $detail['ITNARY_ID'],
+                    'travelItnaryDet' => $travelItnaryDet,
+                    'travelItnaryMemDet' => $travelItnaryMemDet
                         //'files' => $fileDetails
         ]);
     }

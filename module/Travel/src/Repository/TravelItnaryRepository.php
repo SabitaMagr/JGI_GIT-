@@ -110,6 +110,15 @@ class TravelItnaryRepository extends HrisRepository implements RepositoryInterfa
 //                WHERE 1          =1 {$condition}";
         
         
+         $condition = "";
+        if (isset($search['fromDate']) && $search['fromDate'] != null) {
+            $condition .= " AND TI.FROM_DT>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";
+        }
+        if (isset($search['fromDate']) && $search['toDate'] != null) {
+            $condition .= " AND TI.TO_DT<=TO_DATE('{$search['toDate']}','DD-MM-YYYY') ";
+        }
+        
+        
         $sql="
             select 
 TI.*,IMD.EMPLOYEE_ID_LIST,IMD.FULL_NAME_LIST
@@ -123,8 +132,7 @@ LISTAGG(IME.EMPLOYEE_CODE||'-'||IME.FULL_NAME, ','||rpad(' ',4,' ')) WITHIN GROU
 FROM HRIS_ITNARY_MEMBERS IM
 JOIN HRIS_EMPLOYEES IME ON (IM.EMPLOYEE_ID=IME.EMPLOYEE_ID )
 GROUP BY IM.ITNARY_ID ) IMD ON (IMD.ITNARY_ID=TI.ITNARY_ID)
-WHERE TI.CREATED_BY={$search['employeeId']}
-
+WHERE TI.CREATED_BY={$search['employeeId']} {$condition} 
 ";
 
         $finalSql = $this->getPrefReportQuery($sql);
@@ -280,9 +288,13 @@ WHERE ITNARY_ID={$id}
     
     public function fetchItnaryMembers($id){
         $sql =  "
-             SELECT * FROM 
-HRIS_ITNARY_MEMBERS
-WHERE ITNARY_ID={$id}
+             SELECT IM.*,E. FULL_NAME,
+LEAVE_STATUS_DESC(TR.STATUS) AS ITNARY_STATUS
+FROM 
+HRIS_ITNARY_MEMBERS IM
+LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=IM.EMPLOYEE_ID)
+LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST TR ON (TR.EMPLOYEE_ID=IM.EMPLOYEE_ID AND TR.ITNARY_ID=IM.ITNARY_ID)
+WHERE IM.ITNARY_ID={$id}
                 ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -292,9 +304,15 @@ WHERE ITNARY_ID={$id}
     
     public function fetchItnaryDetails($id){
         $sql = "
-           SELECT * FROM 
-HRIS_ITNARY_DETAILS
-WHERE ITNARY_ID={$id}
+           SELECT 
+ ITD.*,
+ TT.TRANSPORT_NAME
+ ,TO_CHAR(ITD.DEPARTURE_DT,'DD-MON-YYYY') AS DEPARTURE_DT_AD
+ ,TO_CHAR(ITD.ARRIVE_DT,'DD-MON-YYYY') AS ARRIVE_DT_AD
+ FROM 
+HRIS_ITNARY_DETAILS ITD
+LEFT JOIN  HRIS_TRANSPORT_TYPES TT ON (TT.TRANSPORT_CODE=ITD.TRANSPORT_TYPE)
+WHERE ITD.ITNARY_ID={$id} ORDER BY ITD.SNO asc
                 ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

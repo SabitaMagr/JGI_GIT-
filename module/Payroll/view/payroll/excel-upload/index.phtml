@@ -18,7 +18,10 @@ $this->headScript()
 <script>
     document.updateFlatValuesLink = '<?php echo $this->url("excelUpload", ["action" => "updateFlatValues"]); ?>';
     document.updateMonthlyValuesLink = '<?php echo $this->url("excelUpload", ["action" => "updateMonthlyValues"]); ?>';
+    document.updatePayValuesLink = '<?php echo $this->url("excelUpload", ["action" => "updatePayValues"]); ?>';
     document.flatValues =<?php echo json_encode($flatValues); ?>;
+    document.payValues =<?php echo json_encode($payValues); ?>;
+    document.salaryTypes =<?php echo json_encode($salaryTypes); ?>;
     document.monthlyValues =<?php echo json_encode($monthlyValues); ?>;
     document.fiscalYears =<?php echo json_encode($fiscalYears); ?>;
     document.months =<?php echo json_encode($months); ?>;
@@ -67,6 +70,10 @@ $this->headScript()
                                     <label>Monthly Value</label>
                                     <input type="radio" name="valueType" id="monthlyValue">
                                 </div>
+                                <div class="col-sm-12">
+                                    <label>Pay Value Modified</label>
+                                    <input type="radio" name="valueType" id="payValueModified">
+                                </div>
                             </div>
                         </div>
                         <div class="col-sm-2">
@@ -92,8 +99,11 @@ $this->headScript()
                         <div class="col-sm-2">
                             <input type="button" name="submit" id="submit" value="Submit" class="btn btn-primary">
                         </div>
-                        <div class="col-sm-10">
-                            <p>Excel file headings should contain: <span style="color: green;">ID, NAME, AMOUNT </span>as in table below</p>
+                        
+                        <div class="col-sm-2 salary-types">
+                            <label style="width: 100%">Salary Types
+                                <select id="salaryTypeId" class="form-control" name="salaryTypeId"></select>
+                            </label>
                         </div>
                     </div>
                 </div>

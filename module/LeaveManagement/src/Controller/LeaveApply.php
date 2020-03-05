@@ -88,6 +88,10 @@ class LeaveApply extends HrisController {
 
                 if($leaveRequest->status == 'AP'){
                     $leaveRequest->hardcopySignedFlag = 'Y';
+                    $leaveRequest->recommendedBy = $this->employeeId;
+                    $leaveRequest->recommendedDt = Helper::getcurrentExpressionDate();
+                    $leaveRequest->approvedBy = $this->employeeId;
+                    $leaveRequest->approvedDt = Helper::getcurrentExpressionDate();
                 }
 
                 $this->repository->add($leaveRequest);

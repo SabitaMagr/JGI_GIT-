@@ -69,6 +69,10 @@ class AttendanceRequest extends HrisController {
                 $model->inTime = Helper::getExpressionTime($model->inTime);
                 $model->outTime = Helper::getExpressionTime($model->outTime);
                 $model->status = "RQ";
+                $model->createdBy = $this->employeeId;
+                if($request->getPost('nextDay')){
+                    $model->nextDayOut='Y';
+                }
 
                 $this->repository->add($model);
                 $this->flashmessenger()->addMessage("Attendance Request Submitted Successfully!!");
@@ -181,6 +185,7 @@ class AttendanceRequest extends HrisController {
                 $model->id = ((int) Helper::getMaxId($this->adapter, $model::TABLE_NAME, "ID")) + 1;
                 $model->inTime = Helper::getExpressionTime($model->inTime);
                 $model->status = "RQ";
+                $model->createdBy = $this->employeeId;
                 
                 $this->repository->add($model);
                 $this->flashmessenger()->addMessage("Attendance Request Submitted Successfully!!");
@@ -222,6 +227,10 @@ class AttendanceRequest extends HrisController {
                 $model->id = ((int) Helper::getMaxId($this->adapter, $model::TABLE_NAME, "ID")) + 1;
                 $model->outTime = Helper::getExpressionTime($model->outTime);
                 $model->status = "RQ";
+                $model->createdBy = $this->employeeId;
+                if($request->getPost('nextDay')){
+                    $model->nextDayOut='Y';
+                }
 
                 $this->repository->add($model);
                 $this->flashmessenger()->addMessage("Attendance Request Submitted Successfully!!");

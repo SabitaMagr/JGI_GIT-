@@ -13,6 +13,7 @@ use Notification\Model\NotificationEvents;
 use SelfService\Form\TravelRequestForm;
 use SelfService\Model\TravelRequest;
 use SelfService\Repository\TravelExpenseDtlRepository;
+use Travel\Repository\TravelItnaryRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
@@ -61,6 +62,15 @@ class TravelApproveController extends HrisController {
         $detail = $this->repository->fetchById($id);
         $travelRequestModel->exchangeArrayFromDB($detail);
         $this->form->bind($travelRequestModel);
+        
+        $travelItnaryDet = [];
+        $travelItnaryMemDet = [];
+        
+        if ($detail['ITNARY_ID']) {
+            $travelItnaryRepo = new TravelItnaryRepository($this->adapter);
+            $travelItnaryDet = $travelItnaryRepo->fetchItnaryDetails($detail['ITNARY_ID']);
+            $travelItnaryMemDet = $travelItnaryRepo->fetchItnaryMembers($detail['ITNARY_ID']);
+        }
 
         $numberInWord = new NumberHelper();
         $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
@@ -72,8 +82,11 @@ class TravelApproveController extends HrisController {
                     'approver' => $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'],
                     'detail' => $detail,
                     'todayDate' => date('d-M-Y'),
-                    'advanceAmount' => $advanceAmount
-                    //'files' => $filesData
+                    'advanceAmount' => $advanceAmount,
+                    //'files' => $filesData,
+                    'itnaryId' => $detail['ITNARY_ID'],
+                    'travelItnaryDet' => $travelItnaryDet,
+                    'travelItnaryMemDet' => $travelItnaryMemDet
         ]);
     }
 

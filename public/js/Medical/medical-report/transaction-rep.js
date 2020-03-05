@@ -74,7 +74,7 @@
             <td>` + value.DEPARTMENT_NAME + `</td>
             <td>` + value.FUNCTIONAL_TYPE_EDESC + `</td>
             <td>` + value.CLAIM_OF_NAME + `</td>
-            <td>` + value.ID_ACCOUNT_NO + `</td>
+            <td style='mso-number-format:"\@"' >` + value.ID_ACCOUNT_NO + `</td>
             <td>` + value.APPROVED_AMT + `</td>
                 </tr>
             `;
@@ -88,7 +88,7 @@
             <td></td>
             <td></td>
             <td><b>Total</b></td>
-            <td><b>` + total.TOTAL_AMT + `</b></td>
+            <td style='mso-number-format:"\@"' ><b>` + total.TOTAL_AMT + `</b></td>
                 </tr>
             `;
             $('#printTable tbody').append(totalData);
@@ -129,6 +129,10 @@
 //        $("#reset").on("click", function () {
 //            $(".form-control").val("");
 //        });
+
+        $('#printExcel').on('click', function () {
+            app.exportTableToExcel('printDiv', 'MedicalTransaction', 'MedicalTransaction');
+        });
 
 
 

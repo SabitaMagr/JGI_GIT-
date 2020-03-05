@@ -13,7 +13,7 @@ $this->headScript()->appendFile($this->basePath('js/travel/travel-itnary-request
 
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('id', 'travelItnary-form');
+$form->setAttribute('id', 'travelItnaryForm');
 
 $fromDate = $form->get('fromDt');
 $toDate = $form->get('toDt');
@@ -184,8 +184,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <tbody>
                             <tr>
                                 <td>
-                                    <select class="memberSelect" name="employeeId[]">
-                                        <option value="<?= $selfId ?>"><?php echo $selfId . '-' . $selfName; ?></option>
+                                    <select class="memberSelect" name="employeeId[] required="required">
+                                        <option value="<?= $selfId ?>"><?php echo $selfName; ?></option>
                                     </select>
                                 </td>
                             </tr>
@@ -233,7 +233,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </td>
                                 <td>
                                     <div style="overflow:hidden">
-                                        <input style="width:100%" type="text" name="depTime[]" required="required"  class="depTime"  data-format="HH:mm" data-template="HH:mm">       
+                                        <input style="width:100%" type="text" name="depTime[]"   class="depTime"  data-format="HH:mm" data-template="HH:mm">       
                                     </div>
                                 </td>
                                 <td>
@@ -259,7 +259,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </td>
                                 <td>
                                     <div style="overflow:hidden">
-                                        <input style="width:100%" type="text" name="arrTime[]" required="required"  class="arrTime"  data-format="HH:mm" data-template="HH:mm">
+                                        <input style="width:100%" type="text" name="arrTime[]"  class="arrTime"  data-format="HH:mm" data-template="HH:mm">
                                     </div>
                                 </td>       
                                 <td>

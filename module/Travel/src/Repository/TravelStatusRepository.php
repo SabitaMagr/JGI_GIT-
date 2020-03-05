@@ -37,9 +37,15 @@ class TravelStatusRepository extends HrisRepository {
                 $condition .= "AND TR.STATUS IN ('{$search['status']}')";
             }
         }
+        
+        if (isset($search['itnaryId']) && $search['itnaryId'] != null && $search['itnaryId'] != -1) {
+            $condition .= "AND TR.ITNARY_ID IN ({$search['itnaryId']})";
+        }
  
         $sql = "SELECT TR.TRAVEL_ID                        AS TRAVEL_ID,
                   TR.TRAVEL_CODE                           AS TRAVEL_CODE,
+                  TR.ITNARY_ID                           AS ITNARY_ID,
+                  CASE WHEN TR.ITNARY_ID IS  NOT NULL THEN 'Y' ELSE 'N' END AS ITNARY_CHECK,
                   TR.EMPLOYEE_ID                           AS EMPLOYEE_ID,
                   TR.HARDCOPY_SIGNED_FLAG                  AS HARDCOPY_SIGNED_FLAG,
                   (CASE WHEN TR.STATUS = 'RQ' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT,
@@ -100,7 +106,7 @@ class TravelStatusRepository extends HrisRepository {
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
                 WHERE 1          =1 {$condition}";
-
+                
         $finalSql = $this->getPrefReportQuery($sql);
         return $this->rawQuery($finalSql);
     }

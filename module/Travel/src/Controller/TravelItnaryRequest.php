@@ -60,46 +60,6 @@ class TravelItnaryRequest extends HrisController {
         ]);
     }
 
-    /*
-      public function fileUploadAction() {
-      $request = $this->getRequest();
-      $responseData = [];
-      $files = $request->getFiles()->toArray();
-      try {
-      if (sizeof($files) > 0) {
-      $ext = pathinfo($files['file']['name'], PATHINFO_EXTENSION);
-      $fileName = pathinfo($files['file']['name'], PATHINFO_FILENAME);
-      $unique = Helper::generateUniqueName();
-      $newFileName = $unique . "." . $ext;
-      $success = move_uploaded_file($files['file']['tmp_name'], Helper::UPLOAD_DIR . "/travel_documents/" . $newFileName);
-      if (!$success) {
-      throw new Exception("Upload unsuccessful.");
-      }
-      $responseData = ["success" => true, "data" => ["fileName" => $newFileName, "oldFileName" => $fileName . "." . $ext]];
-      }
-      } catch (Exception $e) {
-      $responseData = [
-      "success" => false,
-      "message" => $e->getMessage(),
-      "traceAsString" => $e->getTraceAsString(),
-      "line" => $e->getLine()
-      ];
-      }
-      return new JsonModel($responseData);
-      }
-
-      public function pushTravelFileLinkAction() {
-      try {
-      $newsId = $this->params()->fromRoute('id');
-      $request = $this->getRequest();
-      $data = $request->getPost();
-      $returnData = $this->travelRequesteRepository->pushFileLink($data);
-      return new JsonModel(['success' => true, 'data' => $returnData[0], 'message' => null]);
-      } catch (Exception $e) {
-      return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
-      }
-      }
-     */
 
     public function addAction() {
 //        $this->initializeForm(TravelRequestForm::class);
@@ -129,25 +89,32 @@ class TravelItnaryRequest extends HrisController {
              $itnaryMemberModel->itnaryId=$model->itnaryId;
              $itnaryMemberModel->status='E';
              
-             $travelRequest=new TravelRequest();
-             $travelRequest->itnaryId=$model->itnaryId;
-             $travelRequest->requestedDate=$model->createdDt;
-             $travelRequest->fromDate=$model->fromDt;
-             $travelRequest->toDate=$model->toDt;
-             $travelRequest->destination='ITNARY';
-             $travelRequest->purpose=$model->purpose;
-             $travelRequest->requestedType='ad';
-             $travelRequest->requestedAmount=$model->floatMoney;
-             $travelRequest->remarks=$model->remarks;
-             $travelRequest->status='E';
-             $travelRequest->transportType=$model->transportType;
+             $travelRequestModel=new TravelRequest();
+             $travelRequestModel->itnaryId=$model->itnaryId;
+             $travelRequestModel->requestedDate=$model->createdDt;
+             $travelRequestModel->fromDate=$model->fromDt;
+             $travelRequestModel->toDate=$model->toDt;
+             $travelRequestModel->departure='ITNARY';
+             $travelRequestModel->destination=$model->purpose;
+             $travelRequestModel->purpose=$model->purpose;
+             $travelRequestModel->requestedType='ad';
+             $travelRequestModel->requestedAmount=$model->floatMoney;
+             $travelRequestModel->remarks=$model->remarks;
+             $travelRequestModel->status='RQ';
+             $travelRequestModel->transportType=$model->transportType;
              
-             $travelRequestRepo=new TravelRequestRepository($this->adapter);
+            $travelRequestRepo=new TravelRequestRepository($this->adapter);
+             
             foreach($postData['employeeId'] as $empList){
              $itnaryMemberModel->employeeId=$empList;
                 $this->repository->addItnaryMembers($itnaryMemberModel);
+                
 //             for tavel request
-             $travelRequest->employeeId;
+            $travelRequestModel->travelId = ((int) Helper::getMaxId($this->adapter, TravelRequest::TABLE_NAME, TravelRequest::TRAVEL_ID)) + 1; 
+            $travelRequestModel->travelCode = $model->itnaryCode;
+            $travelRequestModel->employeeId= $empList;
+            
+            $travelRequestRepo->add($travelRequestModel);
             }
             
 //            to add itnary details
@@ -164,6 +131,7 @@ class TravelItnaryRequest extends HrisController {
                 $itnaryDetailModel->arriveDt=Helper::getExpressionDate($postData['arrDate'][$i]);
                 $itnaryDetailModel->arriveTime=$postData['arrTime'][$i];
                 $itnaryDetailModel->remarks=$postData['detRemarks'][$i];
+                $itnaryDetailModel->sno=($i+1);
                 
                 $this->repository->addItnaryDetails($itnaryDetailModel);
             }
@@ -243,7 +211,7 @@ class TravelItnaryRequest extends HrisController {
 
         return Helper::addFlashMessagesToArray($this, [
                     'selfId' => $this->employeeId,
-                    'selfName' => $this->storageData['employee_detail']['FULL_NAME'],
+                    'selfName' => $this->storageData['employee_detail']['EMPLOYEE_CODE']. '-' . $this->storageData['employee_detail']['FULL_NAME'],
                     'form' => $this->form,
                     'requestTypes' => $requestType,
                     'transportTypes' => $transportTypes,

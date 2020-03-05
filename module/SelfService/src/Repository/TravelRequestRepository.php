@@ -143,6 +143,7 @@ class TravelRequestRepository implements RepositoryInterface {
             new Expression("INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
             new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("TR.REFERENCE_TRAVEL_ID AS REFERENCE_TRAVEL_ID"),
+            new Expression("TR.ITNARY_ID AS ITNARY_ID"),
             ], true);
 
         $select->from(['TR' => TravelRequest::TABLE_NAME])

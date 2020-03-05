@@ -174,64 +174,24 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                 </div>
             </div>
-
-            <!--member addition-->
+            
+            
             <div class="row">
-                <div class="col-sm-6">
-                    <table id="memberDetails" class="table">
-                        <thead>
-                            <tr>
-                                <th>Member</th>       
-                            </tr>
-                        </thead>
-                        <tbody>
-                           
-                        </tbody>
-                        <!--<tfoot></tfoot>-->
-                    </table>
+                    <div class="col-md-12">
+                        <?php
+                            echo $this->partial('itnaryPartialView.phtml', [
+                                'itnaryId' => $itnaryDtl['ITNARY_ID'],
+                                'travelItnaryDet' => $itnaryTravelDtl,
+                                'travelItnaryMemDet' => $itnaryMembersDtl
+                            ]);
+                        ?>
 
+                    </div>
                 </div>
-<!--                <div class="col-sm-1">
-                    <input class="memberAddBtn btn btn-default" type="button" value="Add +">
-                </div>-->
-
-            </div>
 
 
-            <!--itnary details addition-->
 
-            <div class="row" >
-                <div class="col-md-12" >
-                    <table id="itnaryDetails" class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th colspan="2">Departure</th>       
-                                <th colspan="2">Location</th>       
-                                <th rowspan="2">Means of TPT</th>       
-                                <th colspan="2">Arrives</th>       
-                                <th rowspan="2">Remarks</th>       
-                                <!--<th rowspan="2">Action</th>-->       
-                            </tr>
-                            <tr>
-                                <th>Date</th>       
-                                <th>Time</th>       
-                                <th>From</th>       
-                                <th>To</th>       
-                                <th>Date</th>       
-                                <th>Time</th>       
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                        <!--<tfoot></tfoot>-->
-                    </table>
 
-                </div>
-<!--                <div class="col-md-1">
-                    <input class="deatilAddBtn btn btn-default" type="button" value="Add +">
-                </div>-->
-
-            </div>
 
             <?php
 //            print $this->formSubmit($submit);

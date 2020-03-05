@@ -2,7 +2,6 @@
     'use strict';
     $(document).ready(function () {
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'fromDt', 'nepaliEndDate1', 'toDt')
-        app.setLoadingOnSubmit("travelItnary-form");
         $('select#form-transportType').select2();
         $('select#travelSubstitute').select2();
         $('select#form-employeeId').select2();
@@ -52,11 +51,10 @@
         
         
         $memberAddBtn.on('click', function () {
-            console.log('clciked');
             var appendData = `
             <tr>
 //                <td>
-                                        <select class="memberSelect" name="employeeId[]">
+                                        <select class="memberSelect" name="employeeId[]" required="required">
                                             
                                         </select>
                                     </td>
@@ -103,7 +101,7 @@
                                 </td>
                                 <td>
                                     <div style="overflow:hidden">
-                                        <input style="width:100%" type="text" name="depTime[]" required="required"  class="depTime"  data-format="HH:mm" data-template="HH:mm">       
+                                        <input style="width:100%" type="text" name="depTime[]"   class="depTime"  data-format="HH:mm" data-template="HH:mm">       
                                     </div>
                                 </td>
                                 <td>
@@ -129,7 +127,7 @@
                                 </td>
                                 <td>
                                     <div style="overflow:hidden">
-                                        <input style="width:100%" type="text" name="arrTime[]" required="required"  class="arrTime"  data-format="HH:mm" data-template="HH:mm">
+                                        <input style="width:100%" type="text" name="arrTime[]"   class="arrTime"  data-format="HH:mm" data-template="HH:mm">
                                     </div>
                                 </td>       
                                 <td>
@@ -174,6 +172,69 @@
         app.addDatePicker($('.depDate:last'),$('.arrDate:last'));
         
         // to add itranary details end
+        
+        
+        
+        var displayErrorMsg = function (object) {
+            var selectedVal = object.val()
+            var $parent = object.parent();
+            if (selectedVal == "") {
+                var $errorElement = $('</br><span class="errorMsg" aria-required="true">Field is Required</span>');
+                if (!($parent.find('span.errorMsg').length > 0)) {
+                    $parent.append($errorElement);
+                }
+                return 'error';
+            } else {
+                if ($parent.find('span.errorMsg').length > 0) {
+                    $parent.find('span.errorMsg').remove();
+                    $parent.find('br').remove();
+                }
+                return 'no error';
+            }
+        }
+        
+        
+        $('#travelItnaryForm').submit(function () {
+            var error = [];
+
+            $('.depTime').each(function (index) {
+                var errorResult = displayErrorMsg($(this));
+                if (errorResult == 'error') {
+                    error.push('error');
+                }
+            });
+
+            $('.arrTime').each(function (index) {
+                var errorResult = displayErrorMsg($(this));
+                if (errorResult == 'error') {
+                    error.push('error');
+                }
+            });
+            
+            
+            var empList = [];
+            $('.memberSelect').each(function (index) {
+                let selectedVal = $(this).val();
+                let intSelectedVal = (selectedVal > 0) ? parseInt(selectedVal) : 0;
+                console.log($.inArray(intSelectedVal, empList));
+                if ($.inArray(intSelectedVal, empList) >= 0 || intSelectedVal == 0) {
+                    app.errorMessage("Same Member For Travel Selected", "error");
+                    error.push('error');
+                } else {
+                    empList.push(intSelectedVal);
+                }
+            });
+            
+            
+            if (error.length > 0) {
+                return false;
+            } else {
+                App.blockUI({target: "#hris-page-content"});
+                return true;
+            }
+
+        });
+        
         
         
 

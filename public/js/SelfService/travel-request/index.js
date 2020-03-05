@@ -15,7 +15,7 @@
                     <i class="fa fa-edit"></i>
                 </a>
                 #}#
-                #if(ALLOW_DELETE=='Y'){#
+                #if(ALLOW_DELETE=='Y' && STATUS!='AP'){#
                 <a  class="btn btn-icon-only red confirmation" href="${document.deleteLink}/#:TRAVEL_ID#" style="height:17px;" title="Cancel">
                     <i class="fa fa-times"></i>
                 </a>

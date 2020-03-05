@@ -61,7 +61,7 @@
         // to view itnary member start
 //        console.log(document.itnaryMembersDtl);
         
-        $.each(document.itnaryMembersDtl, function (key, value) {
+        $.each([], function (key, value) {
 //            console.log(value);
 var appendData = `
             <tr>
@@ -84,7 +84,7 @@ var appendData = `
         
         // to view itnary dtl start
          
-        $.each(document.itnaryTravelDtl, function (key, value) {
+        $.each([], function (key, value) {
             
             var appendData = `
                             <tr>

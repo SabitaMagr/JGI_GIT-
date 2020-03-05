@@ -14,6 +14,7 @@ class ItnaryDetails extends Model{
     const ARRIVE_DT = "ARRIVE_DT";
     const ARRIVE_TIME = "ARRIVE_TIME";
     const REMARKS = "REMARKS";
+    const SNO = "SNO";
     
     
     public $itnaryId;
@@ -25,6 +26,7 @@ class ItnaryDetails extends Model{
     public $arriveDt;
     public $arriveTime;
     public $remarks;
+    public $sno;
 
     public $mappings= [
         'itnaryId'=>self::ITNARY_ID,
@@ -36,5 +38,6 @@ class ItnaryDetails extends Model{
         'arriveDt'=>self::ARRIVE_DT,
         'arriveTime'=>self::ARRIVE_TIME,
         'remarks'=>self::REMARKS,
+        'sno'=>self::SNO,
     ];   
 }

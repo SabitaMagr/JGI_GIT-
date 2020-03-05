@@ -161,6 +161,16 @@ return [
                     ],
                 ],
             ],
+            'cronBrij' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/cronBrij[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => Controller\CronBrij::class,
+                        'action' => 'index',
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation' => [
@@ -216,6 +226,7 @@ return [
             Controller\ChangePassword::class => Controller\ControllerFactory::class,
             Controller\ApiController::class => Controller\ControllerFactory::class,
             Controller\ApiAttendanceController::class => Controller\ControllerFactory::class,
+            Controller\CronBrij::class => Controller\ControllerFactory::class,
         ],
     ],
     'view_manager' => [

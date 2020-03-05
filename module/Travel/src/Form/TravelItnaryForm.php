@@ -46,7 +46,7 @@ class TravelItnaryForm{
     
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Purpose"})
      * @Annotation\Attributes({"id":"form-purpose","class":"form-purpose form-control","style":"    height: 50px; font-size:12px"})
@@ -58,7 +58,7 @@ class TravelItnaryForm{
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Request Amount"})
+     * @Annotation\Options({"label":"Float Money"})
      * @Annotation\Attributes({ "id":"floatMoney", "class":"floatMoney form-control","min":"0","step":"0.01" })
      */
     public $floatMoney;

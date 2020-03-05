@@ -2530,11 +2530,10 @@ between  '{$fromDate}' and '{$toDate}'
     }
 
     public function getLeaveCodePivot($leave) {
-       $leave=$this->getLeaveList();
        $resultSize = sizeof($leave);
-
+       
         $pivotString = '';
-        for ($i = 0; $i <= $resultSize; $i++) {
+        for ($i = 0; $i < $resultSize; $i++) {
             if (($i + 1) < $resultSize) {
                 $pivotString .= $leave[$i]['PIVOT_STRING'] . ', ';
             } else {

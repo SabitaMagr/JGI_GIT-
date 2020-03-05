@@ -278,6 +278,23 @@ print $this->form()->openTag($form);
                         </textarea>
                     </div>
                 <?php } ?>
+                
+                <div class="row">
+                        <div class="col-md-12">
+                            <?php
+                             if ($itnaryId) {
+                            echo $this->partial('travel/travel-itnary-request/itnaryPartialView.phtml', [
+                                'itnaryId' => $itnaryId,
+                                'travelItnaryDet' => $travelItnaryDet,
+                                'travelItnaryMemDet' => $travelItnaryMemDet
+                            ]);
+                             }
+                            ?>
+
+                        </div>
+                    </div>
+                
+                
             </div>
             <?php if ($detail['SUB_APPROVED_FLAG'] == 'Y') { ?>
                 <div

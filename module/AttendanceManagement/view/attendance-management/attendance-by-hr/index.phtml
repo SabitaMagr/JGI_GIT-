@@ -204,7 +204,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </select>
             </div>
         </div>
-        <?php if($preference['provinceWiseBranchFilter'] == 'Y') {?>
+        <?php if($preference['provinceWiseBranchFilter'] == 'Y' && $acl['CONTROL'] == 'F') {?>
             <div class="row margin-top-10">
                 <div class="col-sm-2">
                     <label>Province</label>

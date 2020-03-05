@@ -153,6 +153,26 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <input type="text" id="nepaliToDate" name="nepaliToDate" class="form-control reset-field" placeholder="To Date Nepali"/>
                 </div>
             </div>
+            <?php
+//                    echo '<pre>';
+//        print_r($itnaryCodeList);
+//        die();
+            if(!empty($itnaryCodeList)){
+            ?>
+            <div class="col-sm-2">
+                <select  class="form-control" name="itnaryId" id="itnaryId">
+                    <option value="-1">Travel Code</option>
+                        <?php
+                        foreach ($itnaryCodeList as $codeList) {
+                            echo '<option value="'.$codeList['ITNARY_ID'].'">'.$codeList['ITNARY_CODE'].'</option>';
+                        }
+                        ?>
+                </select>
+            </div>
+            <?php
+            
+            }
+            ?>
         </div>
 
             <div class="row margin-top-10">

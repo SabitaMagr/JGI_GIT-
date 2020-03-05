@@ -1656,3 +1656,8 @@ insert into HRIS_BANKS (bank_id, bank_name, status) values ((select nvl(max(bank
 
 alter table HRIS_TRAINING_MASTER_SETUP add show_as_training varchar2(2) default 'Y';
 
+ALTER TABLE HRIS_ATTENDANCE_REQUEST 
+ADD CREATED_BY NUMBER(7,0);
+
+ALTER TABLE HRIS_ATTENDANCE_REQUEST 
+ADD NEXT_DAY_OUT CHAR (1 BYTE) DEFAULT 'N' NOT NULL CHECK (NEXT_DAY_OUT IN ('Y', 'N')) ;

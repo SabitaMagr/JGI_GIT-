@@ -114,6 +114,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formElement($outRemarks); ?>
                         </div>
                         <?php print $this->formElementErrors()->render($outRemarks, ['class' => 'help-block error']); ?>
+                        <label><input type="checkbox" value="Y" name='nextDay'>Next Day</label>
                     </div>
                 </div>
 

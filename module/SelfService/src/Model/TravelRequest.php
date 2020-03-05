@@ -29,6 +29,7 @@ class TravelRequest extends Model{
     const RETURNED_DATE = "RETURNED_DATE";
     const TRANSPORT_TYPE = "TRANSPORT_TYPE";
     const HARDCOPY_SIGNED_FLAG = "HARDCOPY_SIGNED_FLAG";
+    const ITNARY_ID = "ITNARY_ID";
     
     public $travelId;
     public $employeeId;
@@ -54,6 +55,7 @@ class TravelRequest extends Model{
     public $returnedDate;
     public $transportType;
     public $hardcopySignedFlag;
+    public $itnaryId;
 
     public $mappings= [
         'travelId'=>self::TRAVEL_ID,
@@ -79,6 +81,7 @@ class TravelRequest extends Model{
         'departureDate'=>self::DEPARTURE_DATE,
         'returnedDate'=>self::RETURNED_DATE,
         'transportType'=>self::TRANSPORT_TYPE,
-        'hardcopySignedFlag' => self::HARDCOPY_SIGNED_FLAG
+        'hardcopySignedFlag' => self::HARDCOPY_SIGNED_FLAG,
+        'itnaryId' => self::ITNARY_ID
     ];   
 }

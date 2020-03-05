@@ -18,6 +18,7 @@ use SelfService\Repository\TravelExpenseDtlRepository;
 use SelfService\Repository\TravelRequestRepository;
 use SelfService\Repository\TravelSubstituteRepository;
 use Setup\Model\HrEmployees;
+use Travel\Repository\TravelItnaryRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
@@ -274,14 +275,25 @@ class TravelRequest extends HrisController {
         $numberInWord = new NumberHelper();
         $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
         
+        $travelItnaryDet = [];
+        $travelItnaryMemDet = [];
+        if ($detail['ITNARY_ID']) {
+            $travelItnaryRepo = new TravelItnaryRepository($this->adapter);
+            $travelItnaryDet = $travelItnaryRepo->fetchItnaryDetails($detail['ITNARY_ID']);
+            $travelItnaryMemDet = $travelItnaryRepo->fetchItnaryMembers($detail['ITNARY_ID']);
+        }
+        
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'recommender' => $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'],
                     'approver' => $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'],
                     'detail' => $detail,
                     'todayDate' => date('d-M-Y'),
-                    'advanceAmount' => $advanceAmount
+                    'advanceAmount' => $advanceAmount,
                         //'files' => $fileDetails
+                    'itnaryId' => $detail['ITNARY_ID'],
+                    'travelItnaryDet' => $travelItnaryDet,
+                    'travelItnaryMemDet' => $travelItnaryMemDet
         ]);
     }
 

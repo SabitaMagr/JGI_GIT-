@@ -9,6 +9,9 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Http\Request;
 use Zend\Mail\Headers;
 use Zend\Mail\Message;
+use Zend\Mime\Message as MimeMessage;
+use Zend\Mime\Mime;
+use Zend\Mime\Part as MimePart;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
@@ -18,7 +21,6 @@ class Cron extends AbstractActionController {
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-
     }
 
     public function indexAction() {
@@ -135,7 +137,7 @@ class Cron extends AbstractActionController {
             $cc = $early[$i]['MANAGER_MAIL'];
             $date = $early[$i]['ATTENDANCE_DT'];
             $body = '<p>Dear Sir/Madam,</p>
-<p><span style="color: red;">'.$early[$i]['EMPLOYEE_NAME'].'</span> You have left office early at <span style="color: red;">' . $early[$i]['OUT_TIME'] . '</span> on <span style="color: red;">' . $date . '</span>.</p>
+<p><span style="color: red;">' . $early[$i]['EMPLOYEE_NAME'] . '</span> You have left office early at <span style="color: red;">' . $early[$i]['OUT_TIME'] . '</span> on <span style="color: red;">' . $date . '</span>.</p>
 <p>Thank You.</p>
 <p>Human Resource Department <br>
 Nepal Bangladesh Bank Ltd.<br>
@@ -152,7 +154,7 @@ Head Office, Kamaladi</p>';
             $cc = $missed[$i]['MANAGER_MAIL'];
             $date = (string) $missed[$i]['ATTENDANCE_DT'];
             $body = '<p>Dear Sir/Madam,</p>
-<p><span style="color: red;">'.$missed[$i]['EMPLOYEE_NAME'].'</span>  have missed punch on departure from office on <span style="color: red;">' . $date . '</span>. Kindly remember to punch to mark your presence.</p>
+<p><span style="color: red;">' . $missed[$i]['EMPLOYEE_NAME'] . '</span>  have missed punch on departure from office on <span style="color: red;">' . $date . '</span>. Kindly remember to punch to mark your presence.</p>
 <p>Thank You.</p>
 <p>Human Resource Department <br>
 Nepal Bangladesh Bank Ltd.<br>
@@ -169,7 +171,7 @@ Head Office, Kamaladi</p>';
             $cc = $late[$i]['MANAGER_MAIL'];
 
             $body = '<p>Dear Sir/Madam,</p>
-<p><span style="color: red;">'.$late[$i]['EMPLOYEE_NAME'].'</span>  have arrived office late today at <span style="color: red;">' . $late[$i]['IN_TIME'] . '</span>.</p>
+<p><span style="color: red;">' . $late[$i]['EMPLOYEE_NAME'] . '</span>  have arrived office late today at <span style="color: red;">' . $late[$i]['IN_TIME'] . '</span>.</p>
 <p>Thank You.</p>
 <p>Human Resource Department <br>
 Nepal Bangladesh Bank Ltd.<br>
@@ -187,7 +189,7 @@ Head Office, Kamaladi</p>';
             $cc = $absent[$i]['MANAGER_MAIL'];
             $date = (string) $absent[$i]['ATTENDANCE_DT'];
             $body = '<p>Dear Sir/Madam,</p>
-<p><span style="color: red;">'.$absent[$i]['EMPLOYEE_NAME'].'</span>  have been marked absent on <span style="color: red;">' . $date . '</span>. Kindly apply for leave.</p>
+<p><span style="color: red;">' . $absent[$i]['EMPLOYEE_NAME'] . '</span>  have been marked absent on <span style="color: red;">' . $date . '</span>. Kindly apply for leave.</p>
 <p>Thank You.</p>
 <p>Human Resource Department <br>
 Nepal Bangladesh Bank Ltd.<br>
@@ -220,6 +222,119 @@ Head Office, Kamaladi</p>';
             }
         } catch (Exception $ex) {
             return $ex;
+        }
+    }
+
+    public function autoEmailDailyAction() {
+        $directory = 'E:/test';
+
+        if (file_exists($directory)) {
+//            $allFiels = array_diff(scandir($directory), array('.', '..'));
+            $allFiels = array_diff(glob($directory.'/*.{jpg}', GLOB_BRACE), array('.', '..'));
+            
+            print_r($allFiels);
+            die();
+            $fileToday = [];
+            $dateToday = date("F d Y", strtotime("today"));
+            foreach ($allFiels as $fileList) {
+                $fileFullPath = addslashes($directory . '\\' . $fileList);
+                if (file_exists($fileFullPath)) {
+                    $fileModifiedDate = date("F d Y", filemtime($fileFullPath));
+                    if ($fileModifiedDate == $dateToday) {
+                        array_push($fileToday, array('filename' => $fileList, 'filePath' => $fileFullPath));
+                    }
+                }
+            }
+
+            $to=['prabin.maharjan@itnepal.com','shijan.shrestha@itnepal.com'] ;
+            $cc = ['mhrpravin@gmail.com'];
+
+            $subject = "testing";
+            
+            $body = '<p>Dear Sir/Madam,</p>
+                <p>This is Auto Generated Message</p>';
+
+
+            try {
+                $this->sendEmailWithAttachment($to, $body, $subject, $cc, $fileToday);
+            } catch (Exception $ex) {
+                echo $ex;
+            }
+
+            echo "Email has beeen sent";
+
+        } else {
+            echo "The file $directory does not exists";
+        }
+
+        die();
+    }
+
+    public function sendEmailWithAttachment($to, $html, $subject, $cc, $attachments) {
+
+        if ($to != null) {
+            
+            $message = new Message();
+            $body = new MimeMessage();
+            if ($to != null) {
+                $message->addTo($to);
+            }
+            if ($cc != null) {
+                $message->addCc($cc);
+            }
+            $message->setSubject($subject);
+
+            // HTML part
+            $htmlPart = new MimePart($html);
+            $htmlPart->encoding = Mime::ENCODING_QUOTEDPRINTABLE;
+            $htmlPart->type = "text/html; charset=UTF-8";
+
+            // Plain text part
+            $textPart = new MimePart('');
+            $textPart->encoding = Mime::ENCODING_QUOTEDPRINTABLE;
+            $textPart->type = "text/plain; charset=UTF-8";
+
+
+            if ($attachments) {
+                // With attachments, we need a multipart/related email. First part
+                // is itself a multipart/alternative message        
+                $content = new MimeMessage();
+                $content->addPart($textPart);
+                $content->addPart($htmlPart);
+
+                $contentPart = new MimePart($content->generateMessage());
+                $contentPart->type = "multipart/alternative;\n boundary=\"" .
+                        $content->getMime()->boundary() . '"';
+
+                $body->addPart($contentPart);
+
+                $messageType = 'multipart/related';
+
+                // Add each attachment
+                foreach ($attachments as $thisAttachment) {
+                    $Sfile = fopen($thisAttachment['filePath'], "rd");
+                    $data = fread($Sfile, filesize($thisAttachment['filePath']));
+                    fclose($Sfile);
+
+                    $attachment = new MimePart($data);
+                    $attachment->filename = $thisAttachment['filename'];
+                    $attachment->type = Mime::TYPE_OCTETSTREAM;
+                    $attachment->encoding = Mime::ENCODING_BASE64;
+                    $attachment->disposition = Mime::DISPOSITION_ATTACHMENT;
+                    $body->addPart($attachment);
+                }
+            } else {
+                // No attachments, just add the two textual parts to the body
+                $body->setParts(array($textPart, $htmlPart));
+                $messageType = 'multipart/alternative';
+            }
+            $message->setBody($body);
+            $message->getHeaders()->get('content-type')->setType($messageType);
+            $message->setEncoding('UTF-8');
+            return EmailHelper::sendEmail($message);
+            
+        } else {
+            return;
         }
     }
 

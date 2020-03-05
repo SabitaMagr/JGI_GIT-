@@ -7,6 +7,7 @@
     	let $employeeCodeBased = $("#employeeCodeBased");
     	let $fiscalYearId = $("#fiscalYearId");
     	let $monthId = $("#monthId");
+        let $salaryTypeId = $("#salaryTypeId");
     	let $payHeads = $("#payHeads");
     	let $table = $("#table");
     	var excelData;
@@ -14,17 +15,27 @@
         let basedOnFlag = 1;
     	$("select").select2();
     	$(".months").hide();
+        $(".salary-types").hide();
     	app.populateSelect($payHeads, document.flatValues, "FLAT_ID", "FLAT_EDESC", "Select One");
     	app.populateSelect($fiscalYearId, document.fiscalYears, "FISCAL_YEAR_ID", "FISCAL_YEAR_NAME", "Select Fiscal Year");
+        app.populateSelect($salaryTypeId, document.salaryTypes, "SALARY_TYPE_ID", "SALARY_TYPE_NAME", "Select One");
     	$("#flatValue").click(function(){
     		app.populateSelect($payHeads, document.flatValues, "FLAT_ID", "FLAT_EDESC", "Select One");
     		$(".months").hide();
+                $(".salary-types").hide();
     		typeFlag = 1;
     	});
     	$("#monthlyValue").click(function(){
     		app.populateSelect($payHeads, document.monthlyValues, "MTH_ID", "MTH_EDESC", "Select One");
     		$(".months").show();
+                $(".salary-types").hide();
     		typeFlag = 2;
+    	});
+        $("#payValueModified").click(function(){
+    		app.populateSelect($payHeads, document.payValues, "PAY_ID", "PAY_EDESC", "Select One");
+    		$(".months").show();
+                $(".salary-types").show();
+    		typeFlag = 3;
     	});
 
         $("#employeeIdBased").click(function(){ basedOnFlag = 1; });
@@ -43,7 +54,7 @@
     	app.initializeKendoGrid($table, columns);
 
     	$("#submit").on('click', function(){
-			if(prompt("Make sure all options are correctly selected. Type CONFIRM to proceed.") !== "CONFIRM"){ return; }
+	if(prompt("Make sure all options are correctly selected. Type CONFIRM to proceed.") !== "CONFIRM"){ return; }
             var valueType = $payHeads.val();
             var fileUploadedFlag = document.getElementById("excelImport").files.length;
             var fiscalYearId = $fiscalYearId.val();
@@ -64,6 +75,21 @@
 	                return;
 	            }
             	app.serverRequest(document.updateMonthlyValuesLink, {data : excelData, fiscalYearId: $fiscalYearId.val(), monthId: $monthId.val(), monthlyValueId: valueType, basedOn: basedOnFlag}).then(function(){
+	                app.showMessage('Operation successfull', 'success');
+	            }, function (error) {
+	                console.log(error);
+	            });
+            }
+            if(typeFlag == 3){
+                if($monthId.val() == -1){
+                    app.showMessage('Month not selected', 'warning');
+                    return;
+                }
+                if($salaryTypeId.val() == -1){
+                    app.showMessage('Salary type not selected', 'warning');
+                    return;
+                }
+            	app.serverRequest(document.updatePayValuesLink, {data : excelData, fiscalYearId: $fiscalYearId.val(), monthId: $monthId.val(), payValueId: valueType, salaryTypeId: $salaryTypeId.val(), basedOn: basedOnFlag}).then(function(){
 	                app.showMessage('Operation successfull', 'success');
 	            }, function (error) {
 	                console.log(error);
