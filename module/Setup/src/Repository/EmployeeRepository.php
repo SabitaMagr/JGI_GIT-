@@ -666,7 +666,8 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                   E.SALARY                                                          AS SALARY,
                   E.SALARY_PF                                                       AS SALARY_PF,
                   E.REMARKS                                                         AS REMARKS,
-                  E.Allowance                                                       AS ALLOWANACE
+                  E.Allowance                                                       AS ALLOWANACE,
+                  EF.FILE_PATH
                 FROM HRIS_EMPLOYEES E
                 LEFT JOIN HRIS_COMPANY C
                 ON E.COMPANY_ID=C.COMPANY_ID
@@ -710,6 +711,8 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 ON E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID
                 LEFT JOIN HRIS_FUNCTIONAL_LEVELS FUNL
                 ON E.FUNCTIONAL_LEVEL_ID=FUNL.FUNCTIONAL_LEVEL_ID
+                LEFT JOIN HRIS_EMPLOYEE_FILE EF 
+                ON (EF.FILE_CODE=E.PROFILE_PICTURE_ID)
                 {$joinIfSyngery}
                 WHERE 1                 =1 AND E.STATUS='E' 
                 {$condition}

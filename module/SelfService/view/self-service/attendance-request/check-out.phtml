@@ -17,6 +17,7 @@ $form->setAttribute('class', 'attendanceByHr-form');
 $attendanceDt = $form->get('attendanceDt');
 $outTime = $form->get('outTime');
 $outRemarks = $form->get('outRemarks');
+$outRemarks->setAttributes(['required' => 'true']);
 $totalHour = $form->get('totalHour');
 $totalHour->setAttributes(['readonly' => "readonly"]);
 
@@ -111,6 +112,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($outRemarks->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($outRemarks); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($outRemarks); ?>
                         </div>
                         <?php print $this->formElementErrors()->render($outRemarks, ['class' => 'help-block error']); ?>

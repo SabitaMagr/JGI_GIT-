@@ -33,6 +33,7 @@
                                 EMPLOYEE_CODE: rawData[i].EMPLOYEE_CODE,
                                 HOLIDAY: rawData[i].HOLIDAY,
                                 DEPARTMENT_NAME: rawData[i].DEPARTMENT_NAME,
+                                TRAVEL: rawData[i].TRAVEL,
                             });
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_ABSENT = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_ABSENT + parseFloat(rawData[i].IS_ABSENT);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_PRESENT = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_PRESENT + parseFloat(rawData[i].IS_PRESENT);
@@ -40,6 +41,7 @@
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_DAYOFF = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_DAYOFF + parseFloat(rawData[i].IS_DAYOFF);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY_WORK = data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY_WORK + parseFloat(rawData[i].HOLIDAY_WORK);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY = data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY + parseFloat(rawData[i].HOLIDAY);
+                    data[rawData[i].EMPLOYEE_ID].TOTAL.TRAVEL = data[rawData[i].EMPLOYEE_ID].TOTAL.TRAVEL + parseFloat(rawData[i].TRAVEL);
 
                     if(isNaN(data[rawData[i].EMPLOYEE_ID].TOTAL.TOTAL_HOUR)) 
                     {
@@ -65,6 +67,7 @@
                             HOLIDAY_WORK: parseFloat(rawData[i].HOLIDAY_WORK),
                             TOTAL_HOUR: parseFloat(rawData[i].TOTAL_HOUR),
                             HOLIDAY: parseFloat(rawData[i].HOLIDAY),
+                            TRAVEL: parseFloat(rawData[i].TRAVEL),
                         }
                     };
                     data[rawData[i].EMPLOYEE_ID].DAYS['C' + rawData[i].DAY_COUNT] =
@@ -78,7 +81,8 @@
                                 OUT_TIME: rawData[i].OUT_TIME,
                                 TOTAL_HOUR: rawData[i].TOTAL_HOUR,
                                 EMPLOYEE_CODE: rawData[i].EMPLOYEE_CODE,
-                                HOLIDAY: rawData[i].HOLIDAY
+                                HOLIDAY: rawData[i].HOLIDAY,
+                                TRAVEL: rawData[i].TRAVEL,
 
                             });
 
@@ -180,6 +184,7 @@
                 row['total'] = JSON.stringify(data[k].TOTAL);
                 row['totalhour'] = JSON.stringify(data[k].TOTAL_HOUR);
                 row['holiday'] = JSON.stringify(data[k].HOLIDAY);
+                row['travel'] = JSON.stringify(data[k].TRAVEL);
             }
             return returnData;
         };
@@ -192,7 +197,8 @@
                 var $childrens = $group.children();
                 var $data = $($childrens[0]);
 
-                var presentDays = parseFloat(data['IS_PRESENT']);
+                var travelDays = parseFloat(data['TRAVEL']);
+                var presentDays = parseFloat(data['IS_PRESENT']) + travelDays;
                 var absentDays = parseFloat(data['IS_ABSENT']);
                 var leaveDays =  parseFloat(data['ON_LEAVE']) + parseFloat(data['IS_DAYOFF']) + parseFloat(data['HOLIDAY']);
                 var holidayWork = parseFloat(data['HOLIDAY_WORK']);
@@ -279,6 +285,9 @@
                                             $group.html('L');
                                             $group.parent().addClass('bg-blue1 textcolor2 text-center');
 
+                                        }else if (data.TRAVEL == 1) {
+                                            $group.html('T');
+                                            $group.parent().addClass('bg-white1 textcolor3 ');
                                         } else {
                                             $group.html('H');
                                             $group.parent().addClass('bg-white1 textcolor3 text-center');

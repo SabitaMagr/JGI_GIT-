@@ -52,7 +52,11 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/whereabouts
                         </a>
                         <ul class="dropdown-menu pull-right">
                             <li >
-                                <a id="pdfExport" href="javascript:;"  >
+                                <a id="exportExcel" href="javascript:;"  >
+                                    <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                            </li>
+                            <li >
+                                <a id="exportPDF" href="javascript:;"  >
                                     <i class="fa fa-file-excel-o" ></i> Export to PDF </a>
                             </li>
                         </ul>
@@ -150,23 +154,26 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/whereabouts
                 </div>
             </div>
         </div>
-        <div class="portlet box " id="fullReport">
+        <div class="portlet box kendo-report" id="fullReport">
             <div style="margin-left: 20px" class='my-legend' >
+                <div style="text-align: center"><h5><strong>Gorkha Welfare Trust Nepal</strong></h5></div>
                 <div  class='legend-title'>Legend</div>
-                <div class='legend-scale'>
+                <div class='legend-scale col-sm-6' >
                     <ul class='legend-labels col-sm-3' >
-                        <li><span align="center" style='background:#e7505a; border-color:#e7505a'>AB</span>Absent</li>
-                        <li><span align="center" style='background:#3598dc; border-color:#3598dc'>PR</span>Present</li>
-                        <li><span align="center" style='background:#63AB6A; border-color:#63AB6A'>L-*</span>Leave-*</li>
-                        <li><span align="center" style='background:#F0F0F0; color: black !important; border-color:#F0F0F0'>O</span>Office</li>
+                        <li><span align="center" style='background:#e7505a; border-color:#e7505a'>AB</span> : Absent</li>
+                        <li><span align="center" style='background:#3598dc; border-color:#3598dc'>PR</span> : Present</li>
+                        <li><span align="center" style='background:#63AB6A; border-color:#63AB6A'>L-*</span> : Leave-*</li>
+                        <li><span align="center" style='background:#E5E5E5; color: black !important; border-color:#E5E5E5'>O</span> : Office</li>
+                        <li><span align="center" style='background:#36D7B7; border-color:#36D7B7'>TV</span> : Travel</li>
                     </ul>
                     <ul class='legend-labels col-sm-6'>
-                        <li><span align="center" style='background:#c49f47; border-color:#c49f47'>DO</span>Day off</li>
-                        <li><span align="center" style='background:yellowgreen; border-color:yellowgreen'>WD</span>Work On DayOff</li>
-                        <li><span align="center" style='background:#8E44AD; border-color:#8E44AD'>HD</span>Holiday</li>
-                        <li><span align="center" style='background:yellowgreen; border-color:yellowgreen'>WH</span>Work On Holiday</li>
+                        <li><span align="center" style='background:#C49F47; border-color:#C49F47'>DO</span> : Day off</li>
+                        <li><span align="center" style='background:#8E44AD; border-color:#8E44AD'>HD</span> : Holiday</li>
+                        <li><span align="center" style='background:#c8d046; border-color:#c8d046'>WH</span> : Work On Holiday</li>
+                        <li><span align="center" style='background:#8877A9; border-color:#8877A9'>WD</span> : Work On DayOff</li>
                     </ul>
                 </div>
+                <div id="date" ></div>
             </div>
 
             <style type='text/css'>
@@ -212,7 +219,7 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/whereabouts
             <div class="portlet-body">
                 <div class="row">
                     <div class="col-sm-12">
-                        <div id="report">
+                        <div id="report" style="overflow-x: auto; ">
                         </div>
                     </div>
                 </div>

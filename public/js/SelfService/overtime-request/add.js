@@ -36,6 +36,26 @@
         });
 
         function validateAttendance(employeeId, date){
+            app.serverRequest(document.showAttendanceDetail, {
+                employeeId: employeeId,
+                date: date
+            }).then(function (response) {
+                const div = document.getElementById('attdDetail');
+                div.innerHTML = `
+                        <div class="col-sm-3">
+                        <label><strong>In Time:</strong></label>
+                        <div>`+response.data[0]['IN_TIME']+`</div></div>
+                        <div class="col-sm-3">
+                        <label><strong>Out Time:</strong></label>
+                        <div>`+response.data[0]['OUT_TIME']+`</div></div>
+                        <div class="col-sm-3">
+                        <label><strong>Working Minutes:</strong></label>
+                        <div>`+response.data[0]['TOTAL_HOUR']+`</div></div>
+                        <div class="col-sm-3">
+                        <label><strong>OT Minutes:</strong></label>
+                        <div>`+response.data[0]['OT_MINUTES']+`</div></div>` ;
+            });
+
             app.serverRequest(document.validateAttendanceLink, {
                 employeeId: employeeId,
                 date: date

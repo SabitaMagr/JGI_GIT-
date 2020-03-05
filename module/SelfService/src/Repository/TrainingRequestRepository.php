@@ -25,6 +25,14 @@ class TrainingRequestRepository implements RepositoryInterface {
 
     public function add(Model $model) {
         $this->tableGateway->insert($model->getArrayCopyForDB());
+        $new = $model->getArrayCopyForDB();
+        if($model->status == 'AP') {
+            EntityHelper::rawQueryResult($this->adapter, "
+                BEGIN
+                    HRIS_REATTENDANCE({$new['START_DATE']->getExpression()},{$new['EMPLOYEE_ID']},{$new['END_DATE']->getExpression()});
+                END;
+                ");
+        }
     }
 
     public function delete($id) {

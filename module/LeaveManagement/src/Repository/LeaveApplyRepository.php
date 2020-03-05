@@ -9,6 +9,7 @@
  
 namespace LeaveManagement\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
@@ -53,6 +54,14 @@ class LeaveApplyRepository implements RepositoryInterface {
     public function add(Model $model) {
         $this->tableGateway->insert($model->getArrayCopyForDB());
         $this->linkLeaveWithFiles();
+        $new = $model->getArrayCopyForDB();
+        if($model->status == 'AP') {
+            EntityHelper::rawQueryResult($this->adapter, "
+                BEGIN
+                    HRIS_REATTENDANCE({$new['START_DATE']->getExpression()},{$new['EMPLOYEE_ID']},{$new['END_DATE']->getExpression()});
+                END;
+                ");
+        }
     }
 
     public function edit(Model $model, $id) { 

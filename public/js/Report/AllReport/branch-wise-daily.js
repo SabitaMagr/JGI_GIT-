@@ -33,6 +33,7 @@
                                 EMPLOYEE_CODE: rawData[i].EMPLOYEE_CODE,
                                 DEPARTMENT_NAME: rawData[i].DEPARTMENT_NAME,
                                 HOLIDAY: rawData[i].HOLIDAY,
+                                TRAVEL: rawData[i].TRAVEL,
                             });
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_ABSENT = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_ABSENT + parseFloat(rawData[i].IS_ABSENT);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_PRESENT = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_PRESENT + parseFloat(rawData[i].IS_PRESENT);
@@ -40,6 +41,7 @@
                     data[rawData[i].EMPLOYEE_ID].TOTAL.IS_DAYOFF = data[rawData[i].EMPLOYEE_ID].TOTAL.IS_DAYOFF + parseFloat(rawData[i].IS_DAYOFF);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY_WORK = data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY_WORK + parseFloat(rawData[i].HOLIDAY_WORK);
                     data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY = data[rawData[i].EMPLOYEE_ID].TOTAL.HOLIDAY + parseFloat(rawData[i].HOLIDAY);
+                    data[rawData[i].EMPLOYEE_ID].TOTAL.TRAVEL = data[rawData[i].EMPLOYEE_ID].TOTAL.TRAVEL + parseFloat(rawData[i].TRAVEL);
                 } else {
                     data[rawData[i].EMPLOYEE_ID] = {
                         EMPLOYEE_CODE: rawData[i].EMPLOYEE_CODE,
@@ -54,6 +56,7 @@
                             IS_DAYOFF: parseFloat(rawData[i].IS_DAYOFF),
                             HOLIDAY_WORK: parseFloat(rawData[i].HOLIDAY_WORK),
                             HOLIDAY: parseFloat(rawData[i].HOLIDAY),
+                            TRAVEL: parseFloat(rawData[i].TRAVEL),
                         }
                     };
                     data[rawData[i].EMPLOYEE_ID].DAYS['C' + rawData[i].DAY_COUNT] =
@@ -64,6 +67,7 @@
                                 IS_DAYOFF: rawData[i].IS_DAYOFF,
                                 HOLIDAY_WORK: rawData[i].HOLIDAY_WORK,
                                 HOLIDAY: rawData[i].HOLIDAY,
+                                TRAVEL: rawData[i].TRAVEL,
                             });
 
                 }
@@ -122,7 +126,7 @@
                 field: 'leave',
                 title: 'L/H',
                 template: '<div data="#: total #" class="btn-group widget-btn-list leave-attendance">' +
-                    '<a class="btn widget-btn custom-btn-absent totalbtn"></a>' +
+                    '<a class="btn widget-btn custom-btn-present totalbtn"></a>' +
                     '</div>'});
 
             returnData.cols.push({
@@ -140,6 +144,8 @@
                     '</div>'});
 
             for (var k in data) {
+                console.log(data);
+                // debugger;
                 var row = data[k].DAYS;
                 for (var i = 1; i <= days[0].TOTAL_DAYS; i++) {
                     if (typeof row['C' + i] === 'undefined') {
@@ -157,6 +163,7 @@
                 row['holidaywork'] = JSON.stringify(data[k].TOTAL.HOLIDAY_WORK);
                 row['total'] = JSON.stringify(data[k].TOTAL);
                 row['holiday'] = JSON.stringify(data[k].HOLIDAY);
+                row['travel'] = JSON.stringify(data[k].TRAVEL);
             }
             return returnData;
         };
@@ -188,6 +195,9 @@
                             } else if (data.HOLIDAY == 1 || data.IS_DAYOFF == 1){
                                 $group.html('H');
                                 $group.parent().addClass('bg-white1 textcolor3 ');
+                            } else if (data.TRAVEL == 1){
+                                $group.html('T');
+                                $group.parent().addClass('bg-white1 textcolor3 ');
                             } else {
 
                             }
@@ -209,7 +219,8 @@
                 var $childrens = $group.children();
                 var $data = $($childrens[0]);
 
-                var presentDays = parseFloat(data['IS_PRESENT']);
+                var travelDays = parseFloat(data['TRAVEL']);
+                var presentDays = parseFloat(data['IS_PRESENT']) + travelDays;
                 var absentDays = parseFloat(data['IS_ABSENT']);
                 var leaveDayoffHoliday =  parseFloat(data['ON_LEAVE']) + parseFloat(data['IS_DAYOFF']) + parseFloat(data['HOLIDAY']);
                 var holidayWork = parseFloat(data['HOLIDAY_WORK']);
@@ -222,7 +233,7 @@
                     actualLeaves = 0;
                 }
 
-                var totalPresent = presentDays + actualLeaves + holidayWork;
+                var totalPresent = presentDays + actualLeaves + holidayWork ;
                 var actualPresent = (presentDays>0)? totalPresent : presentDays + actualLeaves;
 
                 var total = presentDays + absentDays + leaveDayoffHoliday;

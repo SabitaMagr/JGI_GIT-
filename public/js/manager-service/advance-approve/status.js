@@ -51,7 +51,7 @@
             'APPROVED_REMARKS': 'Approver Remarks',
             'APPROVED_DATE': 'Approved Date'
         };
-        app.initializeKendoGrid($tableContainer, columns);
+        app.initializeKendoGrid($tableContainer, columns, null, null, null, "AdvanceRequestList.xlsx");
         app.searchTable('advanceRequestStatusTable', ['FULL_NAME', 'ADVANCE_NAME', 'REQUESTED_DATE', 'ADVANCE_DATE', 'REQUESTED_DATE_N', 'ADVANCE_DATE_N', 'REQUESTED_AMOUNT', 'TERMS', 'YOUR_ROLE', 'STATUS']);
 
         $search.on('click', function () {
@@ -64,7 +64,7 @@
             App.blockUI({target: "#hris-page-content"});
             app.pullDataById(document.pullAdvanceRequestStatusListLink, q).then(function (success) {
                 App.unblockUI("#hris-page-content");
-                app.renderKendoGrid($tableContainer, success.data, "AdvanceRequestList.xlsx");
+                app.renderKendoGrid($tableContainer, success.data);
             }, function (failure) {
                 App.unblockUI("#hris-page-content");
             });

@@ -62,7 +62,7 @@
             'APPROVED_DATE': 'Approved Date'
 
         };
-        app.initializeKendoGrid($tableContainer, columns);
+        app.initializeKendoGrid($tableContainer, columns, null, null, null, 'OT Request List');
         app.searchTable($tableContainer, ["FULL_NAME"]);
 
         $('#excelExport').on('click', function () {

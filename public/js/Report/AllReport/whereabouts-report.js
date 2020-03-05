@@ -21,6 +21,10 @@ function setTemplate(temp) {
         returnvalue = 'purple-soft';
     } else if (temp == 'WH') {
         returnvalue = 'yellow-soft';
+    } else if (temp == 'TV') {
+        returnvalue = 'green-turquoise';
+    } else if (temp == 'O') {
+        returnvalue = 'grey';
     }
     return returnvalue;
 }
@@ -54,7 +58,6 @@ function setAbbr(temp){
     return returnvalue;
 }
 
-
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
@@ -72,145 +75,130 @@ function setAbbr(temp){
             var days =  Math.floor(( Date.parse(data['toDate']) - Date.parse(data['fromDate']) ) / 86400000) + 1;
             data['days'] = days;
 
+            const div = document.getElementById('date');
+            div.innerHTML = `
+            From : `+ data['fromDate'] + `</br>
+            To   ` + `  : `+ data['toDate'] + `
+            `;
+
             app.serverRequest('', data).then(function (response) {
                 var leaveDetails=response.data.leaveDetails;
-                var columns=generateColsForKendo(days,leaveDetails);
 
                 $table.empty();
 
-                $table.kendoGrid({
-                    toolbar: ["excel"],
-                    excel: {
-                        fileName: 'Whereabout Report',
-                        filterable: false,
-                        allPages: true
-                    },
-                    height: 450,
-                    scrollable: true,
-                    columns: columns,
-                    dataBound: function (e) {
-                        var grid = e.sender;
-                        if (grid.dataSource.total() === 0) {
-                            var colCount = grid.columns.length;
-                            $(e.sender.wrapper)
-                                .find('tbody')
-                                .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
-                        }
-                    },
-                    pageable: {
-                        refresh: true,
-                        pageSizes: true,
-                        buttonCount: 5
-                    },
+                var colsss=[];
+
+                colsss.push({
+                    field: 'EMPLOYEE_CODE',
+                    title: 'Code',
+                    template: '<span><b>#=EMPLOYEE_CODE#</b></span>'
                 });
 
-                app.renderKendoGrid($table, response.data.data);
+                colsss.push({
+                    field: 'FULL_NAME',
+                    title: 'Employees',
+                    template: '<span style="text-align: left">#=FULL_NAME#</span>'
+                });
+
+                for (var i = 1; i <= days; i++) {
+                    var temp = 'D' + i;
+                    colsss.push({
+                        field: temp,
+                        title: "" + i,
+                        template: '<abbr title="#:setAbbr('+temp+')#"><button type="button" style="padding: 8px 0px 7px;" class="btn btn-block #:setTemplate('+temp+')#">#:(' + temp + ' == null) ? " " :'+temp+'#</button></abbr>'
+                    });
+                }
+
+                // colsss.push({
+                //     field: 'IS_PRESENT',
+                //     title: 'PR',
+                //     template: '<span style="text-align: left">#=IS_PRESENT#</span>'
+                // });
+                //
+                // colsss.push({
+                //     field: 'IS_ABSENT',
+                //     title: 'AB',
+                //     template: '<span style="text-align: left">#=IS_ABSENT#</span>'
+                // });
+                //
+                // colsss.push({
+                //     field: 'ON_LEAVE',
+                //     title: 'L',
+                //     template: '<span style="text-align: left">#=ON_LEAVE#</span>'
+                // });
+                //
+                // colsss.push({
+                //     field: 'HOLIDAY',
+                //     title: 'HD',
+                //     template: '<span style="text-align: left">#=HOLIDAY#</span>'
+                // });
+                // colsss.push({
+                //     field: 'DAYOFF',
+                //     title: 'DO',
+                //     template: '<span style="text-align: left">#=IS_DAYOFF#</span>'
+                // });
+                // colsss.push({
+                //     field: 'TRAVEL',
+                //     title: 'T',
+                //     template: '<span style="text-align: left">#=TRAVEL#</span>'
+                // });
+                //
+                // colsss.push({
+                //     field: 'TOTAL',
+                //     title: 'Total',
+                //     template: '<span style="text-align: left">#=TOTAL#</span>'
+                // });
+
+                $table.kendoGrid({
+                    dataSource: {
+                        data: response.data.data,
+                        pageSize: 500
+                    },
+                    scrollable: false,
+                    sortable: false,
+                    pageable: false,
+                    columns: colsss
+                });
+
 
             }, function (error) {
 
             });
         });
 
+        $("#exportPDF").click(function (e) {
+            $('#report').css({'overflow-x' : 'visible'});
+            kendo.drawing.drawDOM($("#fullReport")).then(function (group) {
+                kendo.drawing.pdf.saveAs(group, "Whereabout report.pdf");
+            });
+            $('#report').css({'overflow-x' : 'auto'});
+        });
 
-        function generateColsForKendo(dayCount,leaveDetails) {
-            exportVals={
-                'FULL_NAME': 'Employee Name',
-                'PRESENT': 'Present',
-                'ABSENT': 'Absent',
-                'LEAVE': 'Leave',
-                'DAYOFF': 'Day Off',
-                'HOLIDAY': 'Holiday',
-                'WORK_DAYOFF': 'Work on Dayoff',
-                'WORK_HOLIDAY': 'Work On Holiday',
-            };
-            var cols = [];
-            cols.push({
-                field: 'EMPLOYEE_CODE',
-                title: "Code",
-                locked: true,
-                width: 70
-            })
-            cols.push({
-                field: 'FULL_NAME',
-                title: "Name",
-                locked: true,
-                template: '<span>#:FULL_NAME#</span>',
-                width: 130
-            });
-            for (var i = 1; i <= dayCount; i++) {
-                var temp = 'D' + i;
-                exportVals[temp]=i;
-                cols.push({
-                    field: temp,
-                    title: "" + i,
-                    width: 70,
-                    template: '<abbr title="#:setAbbr('+temp+')#"><button type="button" style="padding: 8px 0px 7px;" class="btn btn-block #:setTemplate('+temp+')#">#:(' + temp + ' == null) ? " " :'+temp+'#</button></abbr>',
-//                     template: '<span  class="#: setTemplate(' + temp + ') #">#:(' + temp + ' == null) ? " " :'+temp+'#</span>',
-                });
-            }
+        $("#exportExcel").click(function (e) {
+            exportTableToExcel('fullReport','Whereabout report', 'Whereabout report');
+        });
 
-            cols.push({
-                field: 'PRESENT',
-                title: "Present",
-                template: '<span>#:PRESENT#</span>',
-                width: 100
-            });
-            cols.push({
-                field: 'ABSENT',
-                title: "Absent",
-                template: '<span>#:ABSENT#</span>',
-                width: 100
-            });
-            cols.push({
-                field: 'LEAVE',
-                title: "Leave",
-                template: '<span>#:LEAVE#</span>',
-                width: 100
-            });
-            cols.push({
-                field: 'DAYOFF',
-                title: "Dayoff",
-                template: '<span>#:DAYOFF#</span>',
-                width: 100
-            });
-            cols.push({
-                field: 'HOLIDAY',
-                title: "Holiday",
-                template: '<span>#:HOLIDAY#</span>',
-                width: 100
-            });
-            cols.push({
-                field: 'WORK_DAYOFF',
-                title: "Work Dayoff",
-                template: '<span>#:WORK_DAYOFF#</span>',
-                width: 100
-            });
-            cols.push({
-                field: 'WORK_HOLIDAY',
-                title: "Work Holiday",
-                template: '<span>#:WORK_HOLIDAY#</span>',
-                width: 100
-            });
+        var exportTableToExcel = function (table, name, filename) {
+            let uri = 'data:application/vnd.ms-excel;base64,',
+                template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><title></title><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>',
+                base64 = function (s) {
+                    return window.btoa(decodeURIComponent(encodeURIComponent(s)))
+                }, format = function (s, c) {
+                    return s.replace(/{(\w+)}/g, function (m, p) {
+                        return c[p];
+                    })
+                }
 
-            $.each(leaveDetails, function (index, value) {
-                exportVals[value.LEAVE_STRING]=value.LEAVE_ENAME;
-                cols.push({
-                    field: value.LEAVE_STRING,
-                    title: value.LEAVE_ENAME,
-                    width: 100
-                });
-            });
-//            console.log(exportVals);
-            return cols;
+            if (!table.nodeType)
+                table = document.getElementById(table)
+            var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+
+            var link = document.createElement('a');
+            link.download = filename;
+            link.href = uri + base64(format(template, ctx));
+            link.click();
+
         }
-
-
-        $('#excelExport').on('click', function () {
-            app.excelExport($table, exportVals, 'Whereabouts Report');
-        });
-        $('#pdfExport').on('click', function () {
-            // app.exportToPDF($table, exportVals, 'Whereabouts Report','A1');
-        });
 
 
     });

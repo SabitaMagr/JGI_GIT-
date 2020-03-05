@@ -140,7 +140,7 @@ class LeaveApproveRepository implements RepositoryInterface {
                         V_EMPLOYEE_ID
                       FROM HRIS_EMPLOYEE_LEAVE_REQUEST
                       WHERE ID                                    = {$id};
-                      IF(V_STATUS IN ('AP','C') AND V_START_DATE <=TRUNC(SYSDATE)) THEN
+                      IF(V_STATUS IN ('AP','C','R') THEN
                         HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
                       END IF;
                     END;
