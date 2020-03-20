@@ -177,7 +177,11 @@
                         let tempTotal = 0;
                         $.each(document.incomes, function (i, v) {
                             let tempName = v['TEMPLATE_NAME'];
-                            tempTotal += parseFloat(value[tempName]);
+							
+							if(typeof value[tempName] != 'object'){
+							tempTotal += parseFloat(value[tempName]);
+							}
+                            
 
                         });
 

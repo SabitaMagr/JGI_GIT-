@@ -189,7 +189,7 @@ class SalarySheetController extends HrisController {
             
             foreach ($returnData['ruleValueKV'] as $key => $value) {
                 $salarySheetDetail->payId = $key;
-                $salarySheetDetail->val =($value>0)?$value:0;
+                $salarySheetDetail->val =($value)?$value:0;
                 $salarySheetDetailRepo->add($salarySheetDetail);
             }
 

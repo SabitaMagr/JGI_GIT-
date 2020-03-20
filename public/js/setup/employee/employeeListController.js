@@ -141,9 +141,11 @@
         });
 
         $('#excelExportWithImage').on('click', function () {
+            let searchData = document.searchManager.getSearchValues();
             var data = {
-                exportData : exportData,
-                map : map
+                searchData : searchData,
+//                exportData : exportData,
+                map : map,
             };
             app.serverRequest(document.excelExportWithImageLink, data).then(function(response){
                 window.open(document.excelExportWithImageDownload);

@@ -656,6 +656,12 @@ console.log(data['ruleList']);
 
             });
         });
+        
+        
+        $('#hideEmpSheet').on('click',function(){
+           $("#employeeTableDiv").toggle(); 
+        });
+        
 
     });
 })(window.jQuery, window.app);

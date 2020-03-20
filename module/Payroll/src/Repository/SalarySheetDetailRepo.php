@@ -250,15 +250,18 @@ class SalarySheetDetailRepo extends HrisRepository {
     public function fetchEmployeeGrade($monthId,$employeeId){
         $sql="select 
                     aa.*
-                    ,case when new_Grade=0 
+                    ,case when (new_Grade=0  and aa.MONTH_CHECK=0 )
                     then 
                     aa.month_days
+                    when aa.MONTH_CHECK=2 then 0
                     else
                     aa.month_days - (aa.to_date - aa.grade_date) - 1
                     end as cur_Grade_days
                     ,case when new_Grade=0 
                     then 
                     0
+                    when aa.MONTH_CHECK=2 then 
+                    aa.month_days
                     else
                     (aa.to_date - aa.grade_date) + 1
                     end as new_Grade_days
@@ -269,13 +272,19 @@ class SalarySheetDetailRepo extends HrisRepository {
                     ,mc.FROM_DATE,mc.TO_DATE
                     ,eg.OPENING_GRADE+eg.additional_grade as cur_grade
                     ,case when
-                    eg.grade_date between mc.from_date and mc.to_date
+                    (eg.grade_date between mc.from_date and mc.to_date ) or  ( mc.from_date > eg.grade_date )
                     then
                     eg.OPENING_GRADE+eg.additional_grade +eg.GRADE_VALUE
                     else
                     0
                     end as new_Grade,
-                    (mc.to_date-mc.from_date +1) as month_days
+                    (mc.to_date-mc.from_date +1) as month_days,
+                     case 
+                    when eg.grade_date between mc.from_date and mc.to_date  THEN 1
+                    when mc.from_date > eg.grade_date then 2
+                    ELSE
+                    0
+                    end as MONTH_CHECK
                     from HR_EMPLOYEE_GRADE_INFO eg
                     left join HRIS_MONTH_CODE mc on (mc.month_id={$monthId})
                     where employee_code='{$employeeId}') aa";

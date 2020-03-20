@@ -124,7 +124,7 @@ BEGIN
       --
       IF (V_IGNORE_TIME         ='Y') THEN
         IF V_TWO_DAY_SHIFT_AUTO ='Y' THEN
-          HRIS_ATTD_IN_OUT(employee.EMPLOYEE_ID,TRUNC(employee.ATTENDANCE_DT),TRUNC(employee.ATTENDANCE_DT+2),V_IN_TIME,V_OUT_TIME,V_TWO_DAY_SHIFT_AUTO);
+          HRIS_ATTD_IN_OUT(employee.EMPLOYEE_ID,TRUNC(employee.ATTENDANCE_DT),case when V_IN_TIME is not null then ( V_IN_TIME + interval '1' day ) else TRUNC(employee.ATTENDANCE_DT+2) end,V_IN_TIME,V_OUT_TIME,V_TWO_DAY_SHIFT_AUTO);
         END IF;
         IF V_IN_TIME IS NOT NULL THEN
           --

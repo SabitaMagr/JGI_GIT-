@@ -1275,44 +1275,150 @@ class EmployeeController extends HrisController {
         $data = $request->getPost();
         $columns = $data['map'];
         $columns['PROFILE_PICTURE'] = 'Profile Picture';
-        $employeeData = $data['exportData'];
-
+        
+        $employeeData = $this->repository->fetchBy($data['searchData']);
         unlink(realpath(Helper::UPLOAD_DIR . "/Employees_List.xlsx"));
+        
 
         $spreadsheet = new Spreadsheet();
         $writer = new Xlsx($spreadsheet);
         $writer->setPreCalculateFormulas(false);
         $this->employeeFileRepo = new EmployeeFile($this->adapter);
+        
+//        $spreadsheet->getActiveSheet()->getRowDimension($row)->setRowHeight(100);
+//        $spreadsheet->getActiveSheet()->getColumnDimension($currentColumn)->setWidth(40);
+        
+//        for heading row1 start
+        $headerRow=1;
+        $currentColumn = Coordinate::stringFromColumnIndex(1);
+        $cell = $currentColumn.'1';
+        $spreadsheet->getActiveSheet()->setCellValue($cell, 'Photo');
+        $spreadsheet->getActiveSheet()->getRowDimension($headerRow)->setRowHeight(100);
+        $spreadsheet->getActiveSheet()->getColumnDimension($currentColumn)->setWidth(20);
+        $column = 2;
+        
+        foreach($columns as $key => $value){
+        
+        
+        $currentColumn = Coordinate::stringFromColumnIndex($column);
+        $cell = $currentColumn.''.$headerRow;
+        $spreadsheet->getActiveSheet()->getColumnDimension($currentColumn)->setWidth(40);
+        $spreadsheet->getActiveSheet()->setCellValue($cell, $value);
+        $column++;
+        }
+//        for heading row2 end
+        
+        
+        
         $row = 2;
         foreach($employeeData as $employee){
-            $column = 1;
-            foreach($employee as $key => $value){
-                if(array_key_exists($key, $columns)){
+//            $column = 1;
+//            echo Helper::UPLOAD_DIR.'/1584077606.jpg';
+//            print_r($employee);
+//            die();
+//            foreach($employee as $key => $value){
+                
+                
+//                    $currentColumn = Coordinate::stringFromColumnIndex($column);
+                    $cell = 'A'.$row;
+                    $spreadsheet->getActiveSheet()->getRowDimension($row)->setRowHeight(100);
+//                    $spreadsheet->getActiveSheet()->getColumnDimension($cell)->setWidth(40);
+                    
+                    $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+                    $drawing->setName('Paid');
+                    $drawing->setDescription('Paid');
+                    
+                    $noProfileImg=Helper::UPLOAD_DIR.'/default-profile-picture.jpg';
+                    
+            if ($employee['FILE_PATH']) {
+                $userImg = Helper::UPLOAD_DIR .'/'. $employee['FILE_PATH'];
+                if (file_exists($userImg)) {
+                    $drawing->setPath($userImg); // put your path and image here
+                } else {
+                    $drawing->setPath($noProfileImg); // put your path and image here
+                }
+            } else {
+                $drawing->setPath($noProfileImg); // put your path and image here
+            }
+
+            $drawing->setCoordinates($cell);
+                    $drawing->setHeight(100);
+                    $drawing->setWidth(100);
+                    $drawing->setResizeProportional(true);
+                            
+                    $drawing->setOffsetX(10);
+//                    $drawing->setRotation(25);
+                    $drawing->getShadow()->setVisible(true);
+                    $drawing->getShadow()->setDirection(45);
+                    $drawing->setWorksheet($spreadsheet->getActiveSheet());
+                    
+                    
+                    
+//                    $gdImage = imagecreatefromjpeg('C:\xampp\htdocs\neo-hris\public\uploads\1513750732.png');
+////                    $gdImage = imagecreatefromjpeg('https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png');
+////                    $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
+//                    $objDrawing = new \PhpOffice\PhpSpreadsheet\Worksheet\MemoryDrawing();
+//$objDrawing->setName('Sample image');
+//$objDrawing->setDescription('Sample image');
+//$objDrawing->setImageResource($gdImage);
+//$objDrawing->setRenderingFunction(\PhpOffice\PhpSpreadsheet\Worksheet\MemoryDrawing::RENDERING_JPEG);
+//$objDrawing->setMimeType(\PhpOffice\PhpSpreadsheet\Worksheet\MemoryDrawing::MIMETYPE_DEFAULT);
+//$objDrawing->setHeight(150);
+//$objDrawing->setCoordinates($cell);
+//$objDrawing->setWorksheet($spreadsheet->getActiveSheet());
+                    
+                    
+                    
+//                    
+//                    
+//                    
+//                    
+                    
+                    
+//                    if($column == 1){
+//                        $drawing = new Drawing();
+//                        $drawing->setName('Profile Picture');
+//                        $drawing->setDescription('Profile Picture');
+//                        $drawing->setWidthAndHeight(40, 40);
+////                        $profile = $this->employeeFileRepo->fetchByEmpId($employee['EMPLOYEE_ID']);
+//                        
+////                        print_r($profile);
+////                        die();
+//                        $drawing->setPath('C:/xampp/htdocs/neo-hris/public/uploads/1584077606.jpg'); 
+////                        $drawing->setPath(Helper::UPLOAD_DIR.'/1584077606.jpg'); 
+//                        $drawing->setCoordinates($cell);
+//                        //$drawing->setOffsetX(110);
+//                        //$drawing->setRotation(25);
+//                        $drawing->getShadow()->setVisible(true);
+//                        $drawing->getShadow()->setDirection(45);
+//                        $drawing->setWorksheet($spreadsheet->getActiveSheet());
+            
+            
+//                    $spreadsheet->getActiveSheet()->setCellValue($cell, $value);
+//                    $spreadsheet->getActiveSheet()->setCellValue($cell, 'photo');
+//                        $column++;
+//                        continue;
+//                    }
+                
+                    
+                $column = 2;
+                     foreach($columns as $key => $value){
+                    
                     $currentColumn = Coordinate::stringFromColumnIndex($column);
                     $cell = $currentColumn.''.$row;
-                    $spreadsheet->getActiveSheet()->getRowDimension($row)->setRowHeight(40);
-                    $spreadsheet->getActiveSheet()->getColumnDimension($currentColumn)->setWidth(40);
-                    if($column == 1){
-                        $drawing = new Drawing();
-                        $drawing->setName('Profile Picture');
-                        $drawing->setDescription('Profile Picture');
-                        $drawing->setWidthAndHeight(40, 40);
-                        $profile = $this->employeeFileRepo->fetchByEmpId($employee['EMPLOYEE_ID']);
-                        $drawing->setPath(Helper::UPLOAD_DIR . '/1516775880.jpg'); 
-                        $drawing->setCoordinates($cell);
-                        //$drawing->setOffsetX(110);
-                        //$drawing->setRotation(25);
-                        $drawing->getShadow()->setVisible(true);
-                        $drawing->getShadow()->setDirection(45);
-                        $drawing->setWorksheet($spreadsheet->getActiveSheet());
-                        $column++;
-                        continue;
-                    }
-                    $spreadsheet->getActiveSheet()->setCellValue($cell, $value);
+//                    $spreadsheet->getActiveSheet()->getRowDimension($row)->setRowHeight(40);
+//                    $spreadsheet->getActiveSheet()->getColumnDimension($currentColumn)->setWidth(40);
+//                    $spreadsheet->getActiveSheet()->setCellValue($cell, $value);
+                    $spreadsheet->getActiveSheet()->setCellValue($cell, $employee[$key]);
                     $column++;
                 } 
-            } 
+                
+                
+//            } 
+                $row++;
         } 
+        
+        ($spreadsheet->getActiveSheet()->set);
         $writer->save(Helper::UPLOAD_DIR . "/Employees_List.xlsx");
         return new JsonModel(['success' => true, 'message' => null]);
     }
