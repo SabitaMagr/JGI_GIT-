@@ -61,13 +61,18 @@ class LeaveApproveRepository implements RepositoryInterface {
                   INITCAP(TO_CHAR(LS.APPROVED_DATE, 'DD-MON-YYYY'))       AS SUB_APPROVED_DATE,
                   LS.EMPLOYEE_ID                                          AS SUB_EMPLOYEE_ID,
                   REC_APP_ROLE(U.EMPLOYEE_ID,
-                  CASE WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
-                  CASE WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
+                  CASE WHEN L.ENABLE_OVERRIDE='Y'  THEN RAO.RECOMMENDER
+                  WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
+                  CASE WHEN L.ENABLE_OVERRIDE='Y'  THEN RAO.APPROVER
+                  WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
                   )      AS ROLE,
                   REC_APP_ROLE_NAME(U.EMPLOYEE_ID,
-                  CASE WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
-                  CASE WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
-                  ) AS YOUR_ROLE
+                  CASE WHEN L.ENABLE_OVERRIDE='Y'  THEN RAO.RECOMMENDER
+                  WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
+                  CASE WHEN L.ENABLE_OVERRIDE='Y'  THEN RAO.APPROVER
+                  WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
+                  ) AS YOUR_ROLE,
+                  CASE WHEN ( ALR.R_A_ID IS NOT NULL OR ALA.R_A_ID  IS NOT NULL ) THEN 'SECONDARY' ELSE 'PRIMARY' END AS PRI_SEC
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON L.LEAVE_ID=LA.LEAVE_ID
@@ -85,22 +90,47 @@ class LeaveApproveRepository implements RepositoryInterface {
                 ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALR.R_A_ID={$id})
                 LEFT JOIN HRIS_ALTERNATE_R_A ALA
                 ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALA.R_A_ID={$id})
+                -- CHANGES
+                LEFT JOIN hris_rec_app_override RAO ON E.EMPLOYEE_ID=RAO.EMPLOYEE_ID
                 LEFT JOIN HRIS_EMPLOYEES U
-                ON(U.EMPLOYEE_ID   = RA.RECOMMEND_BY
+                ON(
+                (
+                (U.EMPLOYEE_ID   = RA.RECOMMEND_BY
                 OR U.EMPLOYEE_ID   =RA.APPROVED_BY
                 OR U.EMPLOYEE_ID   =ALR.R_A_ID
                 OR U.EMPLOYEE_ID   =ALA.R_A_ID)
+               AND L.ENABLE_OVERRIDE='N' )
+               OR
+               (
+                (U.EMPLOYEE_ID   = RAO.recommender
+                OR U.EMPLOYEE_ID   =RAO.approver
+               ) AND L.ENABLE_OVERRIDE='Y' 
+               )
+               
+                )
+                
+             -- CHANGES
+                
+                
                 WHERE E.STATUS        ='E'
                 AND E.RETIRED_FLAG    ='N'
                 AND ((
                 (
+                (
                 (RA.RECOMMEND_BY= U.EMPLOYEE_ID)
                 OR(ALR.R_A_ID= U.EMPLOYEE_ID)
+                AND L.ENABLE_OVERRIDE='N'
+                ) OR (RAO.recommender=U.EMPLOYEE_ID AND L.ENABLE_OVERRIDE='Y' )
                 )
                 AND LA.STATUS IN ('RQ')) 
                 OR (
-                ((RA.APPROVED_BY= U.EMPLOYEE_ID)
+                (
+                (
+                (RA.APPROVED_BY= U.EMPLOYEE_ID)
                 OR(ALA.R_A_ID= U.EMPLOYEE_ID)
+                AND L.ENABLE_OVERRIDE='N'
+                )
+                OR ( RAO.APPROVER=U.EMPLOYEE_ID AND L.ENABLE_OVERRIDE='N' )
                 )
                 AND LA.STATUS IN ('RC')) )
                 AND U.EMPLOYEE_ID={$id}
@@ -140,7 +170,7 @@ class LeaveApproveRepository implements RepositoryInterface {
                         V_EMPLOYEE_ID
                       FROM HRIS_EMPLOYEE_LEAVE_REQUEST
                       WHERE ID                                    = {$id};
-                      IF(V_STATUS IN ('AP','C','R') THEN
+                      IF(V_STATUS IN ('AP','C','R')) THEN
                         HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
                       END IF;
                     END;
@@ -365,10 +395,14 @@ class LeaveApproveRepository implements RepositoryInterface {
                   INITCAP(E.FULL_NAME)                                AS FULL_NAME,
                   INITCAP(E1.FULL_NAME)                               AS RECOMMENDED_BY_NAME,
                   INITCAP(E2.FULL_NAME)                               AS APPROVED_BY_NAME,
-                  CASE WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE  ra.recommend_by END AS recommender_id,
-    CASE WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE  ra.approved_by END AS approver_id,
-    CASE WHEN ALR_E.FULL_NAME IS NOT NULL THEN ALR_E.FULL_NAME ELSE  recm.full_name END AS recommender_name,
-    CASE WHEN ALA_E.FULL_NAME IS NOT NULL THEN ALA_E.FULL_NAME ELSE  aprv.full_name END AS approver_name,
+                  CASE when L.ENABLE_OVERRIDE = 'Y' then RAO.RECOMMENDER 
+                  WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE  ra.recommend_by END AS recommender_id,
+                  CASE when L.ENABLE_OVERRIDE = 'Y' then RAO.RECOMMENDER 
+                  WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE  ra.approved_by END AS approver_id,
+                  CASE when L.ENABLE_OVERRIDE = 'Y' then RAOR.FULL_NAME
+                  WHEN ALR_E.FULL_NAME IS NOT NULL THEN ALR_E.FULL_NAME ELSE  recm.full_name END AS recommender_name,
+                  CASE when L.ENABLE_OVERRIDE = 'Y' then RAOR.FULL_NAME
+                  WHEN ALA_E.FULL_NAME IS NOT NULL THEN ALA_E.FULL_NAME ELSE  aprv.full_name END AS approver_name,
                   ELA.TOTAL_DAYS                                      AS TOTAL_DAYS,
                   ELA.BALANCE                                         AS BALANCE
                   ,CASE WHEN SUB_REF_ID IS NOT NULL THEN 
@@ -394,6 +428,9 @@ INITCAP(L.LEAVE_ENAME)||'('||SLR.SUB_NAME||')' END AS LEAVE_ENAME
                 LEFT JOIN HRIS_ALTERNATE_R_A ALA ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALA.R_A_ID={$employeeId})
                 LEFT JOIN HRIS_EMPLOYEES ALR_E ON(ALR.R_A_ID=ALR_E.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES ALA_E ON(ALA.R_A_ID=ALA_E.EMPLOYEE_ID)
+                LEFT JOIN hris_rec_app_override RAO ON E.EMPLOYEE_ID = RAO.EMPLOYEE_ID
+                LEFT JOIN HRIS_EMPLOYEES RAOR ON (RAO.RECOMMENDER = RAOR.EMPLOYEE_ID)
+                LEFT JOIN HRIS_EMPLOYEES RAOA ON (RAO.RECOMMENDER = RAOA.EMPLOYEE_ID)
                 LEFT JOIN 
                 (SELECT 
                 WOD_ID AS ID
@@ -427,7 +464,6 @@ INITCAP(L.LEAVE_ENAME)||'('||SLR.SUB_NAME||')' END AS LEAVE_ENAME
                     WHERE TRUNC(SYSDATE)BETWEEN FROM_DATE AND TO_DATE)
                   END
                 OR ELA.FISCAL_YEAR_MONTH_NO IS NULL)";
-                
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();

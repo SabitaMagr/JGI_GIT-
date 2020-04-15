@@ -124,13 +124,18 @@ class LeaveStatusRepository extends HrisRepository {
                   BS_DATE(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY'))                AS APPLIED_DATE_BS,
                   LEAVE_STATUS_DESC(LA.STATUS)                                    AS STATUS,
                   REC_APP_ROLE(U.EMPLOYEE_ID,
-                  CASE WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
-                  CASE WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
+                  CASE WHEN L.ENABLE_OVERRIDE='Y'  THEN RAO.RECOMMENDER
+                  WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
+                  CASE WHEN L.ENABLE_OVERRIDE='Y'  THEN RAO.APPROVER
+                  WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
                   )      AS ROLE,
                   REC_APP_ROLE_NAME(U.EMPLOYEE_ID,
-                  CASE WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
-                  CASE WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
+                  CASE WHEN L.ENABLE_OVERRIDE='Y'  THEN RAO.RECOMMENDER
+                  WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
+                  CASE WHEN L.ENABLE_OVERRIDE='Y'  THEN RAO.APPROVER
+                  WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
                   ) AS YOUR_ROLE,
+                  CASE WHEN ( ALR.R_A_ID IS NOT NULL OR ALA.R_A_ID  IS NOT NULL ) THEN 'SECONDARY' ELSE 'PRIMARY' END AS PRI_SEC,
                   LA.ID                                                           AS ID,
                   LA.EMPLOYEE_ID                                                  AS EMPLOYEE_ID,
                   INITCAP(TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY'))              AS RECOMMENDED_DT,
@@ -171,14 +176,24 @@ class LeaveStatusRepository extends HrisRepository {
                 ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALR.R_A_ID={$recomApproveId})
                 LEFT OUTER JOIN HRIS_ALTERNATE_R_A ALA
                 ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALA.R_A_ID={$recomApproveId})
+                LEFT JOIN hris_rec_app_override RAO ON E.EMPLOYEE_ID=RAO.EMPLOYEE_ID
                 LEFT JOIN HRIS_EMPLOYEES ALR_E ON(ALR.R_A_ID=ALR_E.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES ALA_E ON(ALA.R_A_ID=ALA_E.EMPLOYEE_ID)
                 LEFT OUTER JOIN HRIS_EMPLOYEES U
-                ON (U.EMPLOYEE_ID=RA.RECOMMEND_BY
+                ON (
+                (
+                (U.EMPLOYEE_ID=RA.RECOMMEND_BY
                 OR U.EMPLOYEE_ID =RA.APPROVED_BY
                 OR U.EMPLOYEE_ID   =ALR.R_A_ID
-                OR U.EMPLOYEE_ID   =ALA.R_A_ID
-                )
+                OR U.EMPLOYEE_ID   =ALA.R_A_ID)
+                AND L.ENABLE_OVERRIDE='N' )
+                OR
+               (
+                (U.EMPLOYEE_ID   = RAO.recommender
+                OR U.EMPLOYEE_ID   =RAO.approver
+               ) AND L.ENABLE_OVERRIDE='Y' 
+               )
+               )
                 WHERE L.STATUS   ='E'
                 AND E.STATUS     ='E'
                 AND (LS.APPROVED_FLAG =
@@ -189,7 +204,7 @@ class LeaveStatusRepository extends HrisRepository {
                 OR LS.EMPLOYEE_ID IS NULL)
                 AND U.EMPLOYEE_ID  ={$recomApproveId} {$searchCondition} {$statusCondition} {$leaveCondition} {$fromDateCondition} {$toDateCondition}
                 ORDER BY LA.REQUESTED_DT DESC";
-                
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
@@ -244,6 +259,8 @@ INITCAP(L.LEAVE_ENAME)||'('||SLR.SUB_NAME||')'
 END
 AS LEAVE_ENAME,
                   L.LEAVE_CODE,
+                  L.SHOW_LEAVE_FORM,
+                  L.LEAVE_ID,
                   LA.NO_OF_DAYS,
                   case when L.ALLOW_HALFDAY = 'Y'
                   then LA.NO_OF_DAYS/2
@@ -337,6 +354,37 @@ LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
+    }
+
+    public function getLfcData($id) {
+        $leaveId = "SELECT LEAVE_ID FROM  HRIS_EMPLOYEE_LEAVE_REQUEST where id = {$id}";
+        $employeeId = "SELECT EMPLOYEE_ID FROM  HRIS_EMPLOYEE_LEAVE_REQUEST where id = {$id}";
+
+        $sql = "SELECT L.*, 
+                BS_DATE(TO_CHAR(L.START_DATE, 'DD-MON-YYYY')) as START_DATE_BS,
+                BS_DATE(TO_CHAR(L.END_DATE, 'DD-MON-YYYY')) as END_DATE_BS,
+                BS_DATE(TO_CHAR(TRUNC(SYSDATE), 'DD-MON-YYYY')) as CURRENT_DATE 
+                from (SELECT LR.*,
+                E.FULL_NAME as EMPLOYEE,
+                B.BRANCH_NAME as BRANCH,
+                D.DEPARTMENT_NAME as DEPARTMENT,
+                DE.DESIGNATION_TITLE as DESIGNATION,
+                E1.FULL_NAME as RECOMMENDER,
+                E2.FULL_NAME as APPROVER
+                from HRIS_EMPLOYEE_LEAVE_REQUEST LR 
+                left join HRIS_EMPLOYEES E on (LR.EMPLOYEE_ID = E.EMPLOYEE_ID)
+                left join HRIS_EMPLOYEES E1 on (LR.RECOMMENDED_BY = E1.EMPLOYEE_ID)
+                left join HRIS_EMPLOYEES E2 on (LR.APPROVED_BY = E2.EMPLOYEE_ID)
+                left join HRIS_DEPARTMENTS D on (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
+                left join HRIS_DESIGNATIONS DE on (E.DESIGNATION_ID = DE.DESIGNATION_ID)
+                left join HRIS_BRANCHES B on (E.BRANCH_ID = B.BRANCH_ID)
+                where LR.EMPLOYEE_ID = ({$employeeId})
+                and LR.LEAVE_ID = ({$leaveId}) 
+                and LR.STATUS = 'AP') L";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result;
     }
     
     

@@ -1,7 +1,7 @@
 (function ($, app) {
     'use strict';
     angular.module('hris', [])
-            .controller('detailController', function ($scope, $http, $window) {
+            .controller('detailControllerRad', function ($scope, $http, $window) {
                 $scope.overtimeDetailList = [];
                 $scope.calculateHour = function (startTime, endTime) {
                     var tim_i = new Date("01/01/2007 " + startTime);
@@ -19,26 +19,29 @@
                     return total_tim;
                 }
 
-                $scope.totalCalculateHour = function (startTime, endTime) {
+               $scope.totalCalculateHour = function (totalHour) {
+                   var hour = 0;
+                   var minute = 0;
+                   if (totalHour != null) {
+                       if (totalHour.includes(":")){
+                           hour = Number(totalHour.split(":")[0]);
+                           minute = Number(totalHour.split(":")[1]);
+                       } else {
+                           hour = Number(totalHour);
 
-                    var tim_i = new Date("01/01/2007 " + startTime);
-                    var tim_o = new Date("01/01/2007 " + endTime);
+                       }
+                   }
 
-                    var diff1 = (tim_i - tim_o) / 60000; //dividing by seconds and milliseconds
-                    if (startTime.includes('PM') && endTime.includes('AM')) {
-                     diff1=1440-diff1;
-                    }
-                    var diff = Math.abs(diff1);
-                    return diff;
-                }
-                
+                   var totalMinutes = (hour * 60) + minute;
+                   return totalMinutes;
+               }
 
                 $scope.sumAllTotalHour = function (list) {
                     var total = 0;
                     angular.forEach(list, function (item) {
 //                        console.log($('#totalHour'));
-//                        var total1 = $scope.totalCalculateHour(item.totalHour); //FOR SHIVAM CEMENT TO ENTER OVERTIME MANUALLY
-                        var total1 = $scope.totalCalculateHour(item.startTime, item.endTime);
+                       var total1 = $scope.totalCalculateHour(item.totalHour); //FOR SHIVAM CEMENT TO ENTER OVERTIME MANUALLY
+                        // var total1 = $scope.totalCalculateHour(item.startTime, item.endTime);
                         total += parseFloat(total1);
                     });
                     var minutes = total % 60;
@@ -95,6 +98,9 @@
                     }));
                     $scope.counter++;
                 }
+
+                // console.log($scope.overtimeDetailList);
+                
 
                 $scope.delete = function (index) {
                     console.log(index);

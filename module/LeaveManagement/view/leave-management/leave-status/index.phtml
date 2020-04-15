@@ -21,6 +21,7 @@ $this->headScript()
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
     document.viewLink = '<?= $this->url("leavestatus", ["action" => "view"]) ?>';
     document.pullLeaveRequestStatusListLink = '<?= $this->url("leavestatus", ["action" => "pullLeaveRequestStatusList"]) ?>';
+    document.lfcLink = '<?= $this->url("leavestatus", ["action" => "applyLFC"]) ?>';
     document.bulkLink = '<?php echo $this->url('leavestatus', ['action' => 'bulk']); ?>';
     document.preference =<?php echo json_encode($preference) ?>;
 </script>

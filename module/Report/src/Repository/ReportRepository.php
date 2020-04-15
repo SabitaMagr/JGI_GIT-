@@ -719,9 +719,9 @@ EOT;
                       END) AS IS_PRESENT,
                       (
                       CASE
-                        WHEN AD.DAYOFF_FLAG ='N'
+                        WHEN (AD.DAYOFF_FLAG ='N' OR (AD.DAYOFF_FLAG = 'Y' AND C.HD_DO_CHECK = 1))
                         AND AD.LEAVE_ID   IS NULL
-                        AND AD.HOLIDAY_ID  IS NULL
+                        AND (AD.HOLIDAY_ID  IS NULL OR (AD.HOLIDAY_ID IS NOT NULL AND C.HD_DO_CHECK = 1))
                         AND AD.TRAINING_ID IS NULL
                         AND AD.TRAVEL_ID   IS NULL
                         AND AD.IN_TIME     IS NULL
@@ -735,18 +735,19 @@ EOT;
                         AND AD.TRAINING_ID IS NULL
                         AND AD.TRAVEL_ID   IS NULL
                         AND AD.IN_TIME     IS NULL 
-                          AND  AD.DAYOFF_FLAG='Y'
+                        AND AD.DAYOFF_FLAG='Y'
+                        AND (C.HD_DO_CHECK = 0)
                         THEN 1
                         ELSE 0
                       END) AS IS_DAYOFF,
                       (
                       CASE
                         WHEN AD.LEAVE_ID   IS NULL
-                        AND AD.HOLIDAY_ID  IS NULL
                         AND AD.TRAINING_ID IS NULL
                         AND AD.TRAVEL_ID   IS NULL
                         AND AD.IN_TIME     IS NOT NULL 
-                          AND  AD.DAYOFF_FLAG='Y'
+                        AND (AD.DAYOFF_FLAG='Y'
+                        OR AD.HOLIDAY_ID  IS NOT NULL)
                         THEN 1
                         ELSE 0
                       END) AS HOLIDAY_WORK,
@@ -757,11 +758,12 @@ EOT;
                         AND AD.TRAINING_ID IS NULL
                         AND AD.TRAVEL_ID   IS NULL
                         AND AD.IN_TIME     IS NULL 
-                          AND  AD.DAYOFF_FLAG='N'
+                        AND  AD.DAYOFF_FLAG='N'
+                        AND (C.HD_DO_CHECK = 0)
                         THEN 1
                         ELSE 0
                       END) AS HOLIDAY,
-                      (
+                      (``
                       CASE
                         WHEN AD.LEAVE_ID   IS NULL
                         AND AD.HOLIDAY_ID  IS NULL
@@ -775,6 +777,8 @@ EOT;
                       TO_CHAR(AD.OUT_TIME, 'HH24:mi') as OUT_TIME,
                       MIN_TO_HOUR(AD.TOTAL_HOUR)      AS TOTAL_HOUR
                     FROM HRIS_ATTENDANCE_DETAIL AD
+                    LEFT JOIN (select HRIS_CHECK_HOLIDAY_INBETWN(employee_id, attendance_dt) as HD_DO_CHECK,EMPLOYEE_ID,ATTENDANCE_DT from HRIS_ATTENDANCE_DETAIL) C 
+                    ON (AD.EMPLOYEE_ID = C.EMPLOYEE_ID AND AD.ATTENDANCE_DT = C.ATTENDANCE_DT)
                     JOIN HRIS_EMPLOYEES E
                     ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID)
                     LEFT JOIN HRIS_DEPARTMENTS HD 
@@ -784,7 +788,7 @@ EOT;
                     WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
                     and E.EMPLOYEE_ID not in (select employee_id from hris_job_history where RETIRED_FLAG = 'Y' or DISABLED_FLAG = 'Y')
                     {$searchCondition}
-                    ORDER BY 
+                    ORDER BY DAY_COUNT asc,
                       TO_NUMBER(NVL(E.EMPLOYEE_CODE,'0'),'9999D99','nls_numeric_characters=,.') asc
 EOT;
         $statement = $this->adapter->query($sql);
@@ -2775,6 +2779,8 @@ FROM
   FROM
     (
     SELECT 
+ FIT.BRANCH_NAME,
+ FIT.DESIGNATION_TITLE,   
  FIT.FULL_NAME,
  FIT.EMPLOYEE_ID,
  FIT.EMPLOYEE_CODE,
@@ -2803,6 +2809,8 @@ END as do_status
 
 ,E.FULL_NAME,
       E.EMPLOYEE_CODE,
+      B.BRANCH_NAME,
+      D.DESIGNATION_TITLE,
       CASE
         WHEN AD.OVERALL_STATUS IN ('TN','PR','BA','LA','LP','VP')
         THEN 'PR'
@@ -2843,11 +2851,14 @@ FROM dual d
   LEFT JOIN HRIS_EMPLOYEE_SHIFT_ROASTER ER ON (ER.FOR_DATE=AD.DATES AND ER.EMPLOYEE_ID=EWA.EMPLOYEE_ID)
   LEFT JOIN HRIS_EMPLOYEE_SHIFT_ASSIGN ESA ON (ER.EMPLOYEE_ID=ESA.EMPLOYEE_ID AND AD.DATES BETWEEN START_DATE AND END_DATE )
   LEFT JOIN (SELECT SHIFT_ID FROM HRIS_SHIFTS WHERE DEFAULT_SHIFT='Y' AND ROWNUM=1) DS ON (1=1)
+  WHERE EWA.STATUS = 'E'
   ) ASS
   LEFT JOIN HRIS_SHIFTS S ON (S.SHIFT_ID=ASS.ASSUMED_SHIFT_ID)
   LEFT JOIN HRIS_ATTENDANCE_DETAIL AD ON (AD.ATTENDANCE_DT=ASS.DATES and AD.EMPLOYEE_ID=ASS.EMPLOYEE_ID)
   LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS ON (AD.LEAVE_ID=LMS.LEAVE_ID)
   left JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID       =ASS.EMPLOYEE_ID)
+  left JOIN HRIS_BRANCHES B ON (E.BRANCH_ID = B.BRANCH_ID)
+  left JOIN HRIS_DESIGNATIONS D ON (E.DESIGNATION_ID = D.DESIGNATION_ID)
   
   )
   FIT
@@ -2920,8 +2931,6 @@ LEFT JOIN HRIS_EMP_WHEREABOUT_ASN W
 ON (PL.EMPLOYEE_ID = W.EMPLOYEE_ID)
 ORDER BY W.ORDER_BY
 EOT;
-//        print_r($sql);
-//        die();
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return ['leaveDetails'=>$leaveDetails, 'data' => Helper::extractDbData($result)];

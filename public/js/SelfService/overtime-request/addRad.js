@@ -1,6 +1,4 @@
-/**
- * Created by punam on 9/28/16.
- */
+
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
@@ -36,6 +34,47 @@
         });
 
         function validateAttendance(employeeId, date){
+            app.serverRequest(document.showAttendanceDetail, {
+                employeeId: employeeId,
+                date: date
+            }).then(function (response) {
+                const div = document.getElementById('attdDetail');
+                div.innerHTML = `
+                        <div class="col-sm-3">
+                        <div>
+                        <label><strong>In Time:</strong></label>
+                        <div>`+response.data[0]['IN_TIME']+`</div></div>
+                        <div>
+                        <label><strong>Out Time:</strong></label>
+                        <div>`+response.data[0]['OUT_TIME']+`</div></div>
+                        </div>
+                        <div class="col-sm-3">
+                        <div >
+                        <label><strong>Working Minutes:</strong></label>
+                        <div>`+response.data[0]['TOTAL_HOUR']+`</div></div>
+                        <div>
+                        <label><strong>OT Minutes:</strong></label>
+                        <div>`+response.data[0]['OT_MINUTES']+`</div></div>
+                        </div>` ;
+
+                if(response.data[0]['OT_MINUTES'] > 0){
+                    var num = response.data[0]['OT_MINUTES'];
+                    var hours = (num / 60);
+                    var rhours = Math.floor(hours);
+                    var minutes = (hours - rhours) * 60;
+                    var rminutes = Math.round(minutes);
+                    var overtime = rhours + ':'+ rminutes
+                    console.log(overtime);
+                // document.getElementById('overtimeHour').val(overtime);
+                $("#overtimeHour").val(overtime);
+                // document.getElementById('sumAllTotal').setAttribute('value', overtime);
+                // $("#sumAllTotal").val(overtime);
+                } else {
+                    $("#overtimeHour").val('');
+                    $("#sumAllTotal").val('');
+                }
+            });
+
             app.serverRequest(document.validateAttendanceLink, {
                 employeeId: employeeId,
                 date: date
@@ -63,6 +102,7 @@
         });
         app.setLoadingOnSubmit("overtimeRequest-form", function ($form) {
             var formData = new FormData($form[0]);
+            formData.set('startTime[]','13')
             if (formData.getAll('startTime[]').length == 0) {
                 app.showMessage("Minimum One Start time and End time is required.", 'error');
                 return false;

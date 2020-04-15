@@ -1,4 +1,4 @@
-w(function ($, app) {
+(function ($, app) {
     'use strict';
     $(document).ready(function () {
         $('select').select2();

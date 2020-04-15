@@ -73,24 +73,25 @@
         app.searchTable($table, ['EMPLOYEE_NAME', 'EMPLOYEE_CODE']);
         var exportMap = {
             'EMPLOYEE_CODE': 'Code',
-            'EMPLOYEE_NAME': 'Employee Name',
+            'FULL_NAME': 'Employee Name',
             'LEAVE_ENAME': 'Leave',
-            'REQUESTED_DT_AD': 'Requested Date(AD)',
-            'REQUESTED_DT_BS': 'Requested Date(BS)',
-            'FROM_DATE_AD': 'Start Date(AD)',
-            'FROM_DATE_BS': 'Start Date(BS)',
-            'TO_DATE_AD': 'End Date(AD)',
-            'TO_DATE_BS': 'End Date(BS)',
+            'APPLIED_DATE_AD': 'Requested Date(AD)',
+            'APPLIED_DATE_BS': 'Requested Date(BS)',
+            'START_DATE_AD': 'Start Date(AD)',
+            'START_DATE_BS': 'Start Date(BS)',
+            'END_DATE_AD': 'End Date(AD)',
+            'END_DATE_BS': 'End Date(BS)',
             'HALF_DAY_DETAIL': 'Day Interval',
             'GRACE_PERIOD_DETAIL': 'Grace',
             'STATUS_DETAIL': 'Status',
             'REMARKS': 'Remarks',
-            'RECOMMENDER_NAME': 'Recommender',
+            'RECOMMENDED_BY': 'Recommended By',
             'RECOMMENDED_DT': 'Recommended Date',
             'RECOMMENDED_REMARKS': 'Recommender Remarks',
-            'APPROVER_NAME': 'Approver',
-            'APPROVED_DT': 'Aprroved Date',
-            'APPROVED_REMARKS': 'Approver Remarks'
+            'YOUR_ROLE': 'Your Role'
+            // 'APPROVED_BY': 'Approver By',
+            // 'APPROVED_DT': 'Aprroved Date',
+            // 'APPROVED_REMARKS': 'Approver Remarks'
         };
         $('#excelExport').on('click', function () {
             app.excelExport($table, exportMap, 'Leave Request List');
@@ -149,9 +150,5 @@
             });
         });
 
-//        $("#reset").on("click", function () {
-//            $(".form-control").val("");
-//            $("#fromDate").val("");
-//        });
     });
 })(window.jQuery, window.app);

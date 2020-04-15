@@ -23,7 +23,7 @@ class WhereaboutsAssignRepository {
         $sql = "SELECT 
                   E.FULL_NAME,
                   EWA.ORDER_BY,
-                  case when EWA.ORDER_BY IS NOT NULL then 'Y'
+                  case when EWA.STATUS = 'E' then 'Y'
                   else 'N' END AS ASSIGNED,
                   C.COMPANY_NAME,
                   B.BRANCH_NAME,
@@ -57,12 +57,17 @@ class WhereaboutsAssignRepository {
         return $result;
     }
 
+    public function updateStatus($employeeId){
+        $updateSql = "UPDATE HRIS_EMP_WHEREABOUT_ASN SET STATUS = 'D' where employee_id = {$employeeId}";
+        EntityHelper::rawQueryResult($this->adapter, $updateSql);
+        return;
+    }
+
     public function updateWhereabouts($employeeId, $updateData){
-        $checkSql = '';
         $sql = '';
 
         if($updateData['orderBy'] == null){
-            $sql = "delete from HRIS_EMP_WHEREABOUT_ASN where EMPLOYEE_ID = {$employeeId}";
+            $sql = "DELETE from HRIS_EMP_WHEREABOUT_ASN where EMPLOYEE_ID= {$employeeId}";
         }
         else {
             $sql = "
@@ -80,13 +85,13 @@ class WhereaboutsAssignRepository {
                   EXCEPTION
                   WHEN no_data_found THEN
                     INSERT INTO HRIS_EMP_WHEREABOUT_ASN VALUES
-                      ( p_employee_id, p_order_by
+                      ( p_employee_id, p_order_by, 'E'
                       );
                     v_update := 0;
                   END;
                   IF ( v_update = 1 ) THEN
                     UPDATE HRIS_EMP_WHEREABOUT_ASN
-                    SET ORDER_BY      = p_order_by
+                    SET ORDER_BY      = p_order_by, status = 'E'
                     WHERE employee_id = p_employee_id;
                   END IF;
                   COMMIT;

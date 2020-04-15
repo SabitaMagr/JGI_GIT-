@@ -24,8 +24,7 @@ class KioskPrintRepo {
         If($data['PrintType'] == 'PS'){
             //$salaryTypeCondition = " AND SALARY_TYPE_ID = {$data['SalaryTypeId']}";
         }
-//        print_r($data);
-//        die();
+
         $sql = "
             SELECT COUNT(*) AS COUNT
             FROM HRIS_KIOSK_PRINT_STAT
@@ -36,8 +35,6 @@ class KioskPrintRepo {
             {$loanCondition}
             ";
 
-//        print_r($sql);
-//        die();
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDBData($result);

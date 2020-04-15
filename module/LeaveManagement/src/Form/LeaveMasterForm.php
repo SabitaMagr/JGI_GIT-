@@ -194,7 +194,16 @@ class LeaveMasterForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"HR only"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"hrOnly","value":"Y"})
+     * @Annotation\Attributes({ "id":"hrOnly","value":"N"})
      */
     public $hrOnly;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Enable Override"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"enableOverride","value":"N"})
+     */
+    public $enableOverride;
 }

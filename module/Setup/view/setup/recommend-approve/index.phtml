@@ -37,6 +37,10 @@ $this->headScript()
             <a href="" class="fullscreen" data-original-title="" title=""> </a>
         </div>
         <div class="actions">
+            <a href="<?= $this->url('recommendapprove', ['action' => 'override']) ?>" class="btn default btn-sm">
+                <i class="fa fa-plus-square icon-black"></i>
+                Override
+            </a>
             <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
                 <a href="<?= $this->url('recommendapprove', ['action' => 'groupAssign']) ?>" class="btn default btn-sm">
                     <i class="fa fa-plus-square icon-black"></i>

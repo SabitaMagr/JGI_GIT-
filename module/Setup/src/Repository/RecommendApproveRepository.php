@@ -30,8 +30,7 @@ class RecommendApproveRepository implements RepositoryInterface {
                 CONNECT BY PRIOR  PARENT_DESIGNATION=DESIGNATION_ID";
 
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
+        return $statement->execute();
     }
 
     //to get recommender and approver based on designation and branch id
@@ -47,9 +46,7 @@ class RecommendApproveRepository implements RepositoryInterface {
         }
 
         $statement = $this->adapter->query($sql);
-        $resultset = $statement->execute();
-
-        return $resultset;
+        return $statement->execute();
     }
 
     public function add(Model $model) {
@@ -104,8 +101,7 @@ class RecommendApproveRepository implements RepositoryInterface {
         ]);
         $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        return $result;
+        return $statement->execute();
     }
 
     //to get the employee list for select option
@@ -290,7 +286,141 @@ GROUP BY IARA.EMPLOYEE_ID) AA ON (AA.EMPLOYEE_ID=E.EMPLOYEE_ID)
             SELECT R_A_ID FROM HRIS_ALTERNATE_R_A WHERE R_A_FLAG='{$rA}' and employee_id={$employee_id}";
         return Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, $sql));
     }
-    
-    
 
+    public function getEmployeeForOverride($data) {
+        $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId']);
+
+
+        $typeCondition = "";
+        if($data['type'] != null || $data['type'] != ""){
+            $typeCondition = "AND TYPE = '{$data['type']}'";
+        }
+
+        $leaveTypeCondition = "";
+        if ($data['type'] == 'LV' && ($data['typeId'] != null || $data['typeId'] != -1)) {
+            $leaveTypeCondition = "AND TYPE_ID = {$data['typeId']}";
+        }
+
+        if ($typeCondition == "" || $typeCondition == null){
+            $sql = "";
+        } else {
+
+            $sql = "SELECT E.EMPLOYEE_CODE AS EMPLOYEE_CODE, 
+                E.FULL_NAME AS EMPLOYEE_NAME,
+                E.EMPLOYEE_ID AS EMPLOYEE_ID,
+                NN.* FROM 
+                (SELECT RAO.EMPLOYEE_ID AS EMPLOYEE_ID1,
+                E1.FULL_NAME AS RECOMMENDER,
+                E2.FULL_NAME AS APPROVER,
+                RAO.TYPE AS TYPE,
+                RAO.TYPE_ID AS TYPE_ID,
+                case when RAO.STATUS = 'E' then 'Y'
+                  else 'N' END AS ASSIGNED,
+                CASE 
+                when RAO.TYPE = 'LV'
+                then LMS.LEAVE_ENAME
+                when RAO.TYPE = 'TR'
+                then TMS.TRAINING_NAME
+                END as TYPE_NAME 
+                from HRIS_REC_APP_OVERRIDE RAO 
+                LEFT JOIN HRIS_EMPLOYEES E1
+                ON (E1.EMPLOYEE_ID = RAO.RECOMMENDER)
+                LEFT JOIN HRIS_EMPLOYEES E2
+                ON (E2.EMPLOYEE_ID = RAO.APPROVER)
+                LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS 
+                ON (RAO.TYPE = 'LV' AND RAO.TYPE_ID = LMS.LEAVE_ID)
+                LEFT JOIN HRIS_TRAINING_MASTER_SETUP TMS 
+                ON (RAO.TYPE = 'TR' AND RAO.TYPE_ID = TMS.TRAINING_ID)
+                where RAO.STATUS = 'E'
+                {$typeCondition} {$leaveTypeCondition}
+                ) NN
+                RIGHT JOIN HRIS_EMPLOYEES E
+                ON (E.EMPLOYEE_ID = NN.EMPLOYEE_ID1) 
+                where 1=1 AND E.STATUS = 'E'
+                {$condition} order by type_id
+                ";
+        }
+//        print_r($sql);
+//        die();
+        $statement = $this->adapter->query($sql);
+        return $statement->execute();
+    }
+
+    public function updateStatus($employeeId, $updateData) {
+        $leaveTypeCheck = "";
+        if($updateData['type'] == 'LV') {
+            $leaveTypeCheck = "AND TYPE_ID = {$updateData['leaveType']}";
+        }
+        $updateSql = "UPDATE HRIS_REC_APP_OVERRIDE SET STATUS = 'D' where employee_id = {$employeeId} and TYPE = '{$updateData['type']}' {$leaveTypeCheck}";
+        EntityHelper::rawQueryResult($this->adapter, $updateSql);
+        return;
+    }
+
+    public function updateOverride($employeeId, $updateData) {
+        $sql = '';
+
+        $leaveTypeCheck = "";
+        if($updateData['type'] == 'LV') {
+            $leaveTypeCheck = "AND TYPE_ID = {$updateData['leaveType']}";
+        }
+
+        if ($updateData['recommender'] == "NULL" && $updateData['approver'] == "NULL") {
+            $sql = "DELETE FROM HRIS_REC_APP_OVERRIDE WHERE EMPLOYEE_ID = {$employeeId} and TYPE = '{$updateData['type']}' {$leaveTypeCheck}";
+        } else {
+            $sql = "
+            DECLARE
+                  p_employee_id   NUMBER := {$employeeId};
+                  p_type          VARCHAR2(5) := '{$updateData['type']}';
+                  p_type_id       NUMBER := {$updateData['leaveType']};
+                  p_recommender   NUMBER := {$updateData['recommender']};  
+                  p_approver      NUMBER := {$updateData['approver']};
+                  v_update        NUMBER := 1;
+                  v_employee_id   NUMBER;
+                BEGIN
+                  BEGIN
+                    SELECT employee_id
+                    INTO v_employee_id
+                    FROM HRIS_REC_APP_OVERRIDE
+                    WHERE employee_id = p_employee_id 
+                    AND TYPE = p_type {$leaveTypeCheck};
+                  EXCEPTION
+                  WHEN no_data_found THEN
+                    INSERT INTO hris_rec_app_override (
+                        employee_id,
+                        recommender,
+                        approver,
+                        type,
+                        type_id,
+                        status,
+                        created_dt,
+                        modified_dt,
+                        created_by,
+                        modified_by
+                    ) VALUES (
+                        p_employee_id,
+                        p_recommender,
+                        p_approver,
+                        p_type,
+                        p_type_id,
+                        'E',
+                        trunc(sysdate),
+                        trunc(sysdate),
+                        NULL,
+                        NULL
+                    );
+                    v_update := 0;
+                  END;
+                  IF ( v_update = 1 ) THEN
+                    UPDATE HRIS_REC_APP_OVERRIDE
+                    SET recommender      = p_recommender, 
+                    approver = p_approver, status = 'E'
+                    WHERE employee_id = p_employee_id and TYPE = p_type {$leaveTypeCheck};
+                  END IF;
+                  COMMIT;
+                END;
+            ";
+        }
+        EntityHelper::rawQueryResult($this->adapter, $sql);
+        return;
+    }
 }

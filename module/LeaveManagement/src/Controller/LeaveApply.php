@@ -131,7 +131,7 @@ class LeaveApply extends HrisController {
             }
         }
 
-        if ($this->acl['HR_APPROVE'] == Y) {
+        if ($this->acl['HR_APPROVE'] == 'Y') {
             $applyOptionValues = [
                 'RQ' => 'Pending',
                 'AP' => 'Approved'
@@ -248,6 +248,6 @@ class LeaveApply extends HrisController {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-    
+
 
 }

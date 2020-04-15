@@ -149,7 +149,7 @@ class OvertimeRepository implements RepositoryInterface {
         TO_CHAR(IN_TIME, 'HH:MI AM')   AS IN_TIME,
         TO_CHAR(OUT_TIME, 'HH:MI AM')  AS OUT_TIME,
         TOTAL_HOUR,
-        OT_MINUTES
+        TOTAL_HOUR - 480 as OT_MINUTES
         FROM HRIS_ATTENDANCE_DETAIL 
         WHERE EMPLOYEE_ID = {$employeeId} 
         and ATTENDANCE_DT = TO_DATE('{$date}', 'DD-MON-YY')";

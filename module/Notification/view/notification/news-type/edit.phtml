@@ -31,6 +31,7 @@ $form->setAttribute('role', 'form');
 
 $newsTypeDesc = $form->get('newsTypeDesc');
 $uploadFlag = $form->get('uploadFlag');
+$downloadFlag = $form->get('downloadFlag');
 
 
 
@@ -72,6 +73,12 @@ print $this->form()->openTag($form);
                             <?php print $this->formLabel($uploadFlag); ?>
                             <div class="md-radio-inline">
                                 <?php $customRenderer($uploadFlag); ?>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($downloadFlag); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($downloadFlag); ?>
                             </div>
                         </div>
                     </div>
