@@ -141,14 +141,14 @@
                 field: 'leave',
                 title: 'L/H',
                 template: '<div data="#: total #" class="btn-group widget-btn-list leave-attendance">' +
-                    '<a class="btn widget-btn custom-btn-absent totalbtn"></a>' +
+                    '<a class="btn widget-btn custom-btn-present totalbtn"></a>' +
                     '</div>'});
 
             returnData.cols.push({
                 field: 'holidaywork',
                 title: 'WH',
                 template: '<div data="#: total #" class="btn-group widget-btn-list holidaywork-attendance">' +
-                    '<a class="btn widget-btn custom-btn-absent totalbtn"></a>' +
+                    '<a class="btn widget-btn custom-btn-present totalbtn"></a>' +
                     '</div>'});
 
             returnData.cols.push({

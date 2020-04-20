@@ -38,7 +38,8 @@
                             <tr>
                                 <td><?= $i ?></td>
                                 <td><?= $fileData['FILE_NAME'] ?></td>
-                                <td><a href="<?= $this->basePath() ?>/uploads/news/<?= $fileData['FILE_PATH'] ?>"><i class="fa fa-download"></i></a></td>
+                                <td><a href="<?= $this->basePath() ?>/uploads/news/<?= $fileData['FILE_PATH'] ?>" target="_blank"><i class="fas fa-file></i></a></td>
+                                <td><?= print($this->basePath())?></td>
                             </tr>
 
                             <?php

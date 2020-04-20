@@ -89,6 +89,18 @@ function setAbbr(temp){
                 var colsss=[];
 
                 colsss.push({
+                    field: 'BRANCH_NAME',
+                    title: 'Location',
+                    template: '<span><b>#=BRANCH_NAME#</b></span>'
+                });
+
+                colsss.push({
+                    field: 'DESIGNATION_TITLE',
+                    title: 'Designation',
+                    template: '<span><b>#=DESIGNATION_TITLE#</b></span>'
+                });
+
+                colsss.push({
                     field: 'EMPLOYEE_CODE',
                     title: 'Code',
                     template: '<span><b>#=EMPLOYEE_CODE#</b></span>'
@@ -96,7 +108,7 @@ function setAbbr(temp){
 
                 colsss.push({
                     field: 'FULL_NAME',
-                    title: 'Employees',
+                    title: 'Employee',
                     template: '<span style="text-align: left">#=FULL_NAME#</span>'
                 });
 

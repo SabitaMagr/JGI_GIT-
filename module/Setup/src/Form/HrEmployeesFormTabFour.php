@@ -210,6 +210,15 @@ class HrEmployeesFormTabFour extends Model {
      */
     public $allowance ;
 
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Tax Base","value_options":{"U":"Unmarried","M":"Married"}})
+     * @Annotation\Attributes({ "id":"taxBase","class":"form-control"})
+     */
+    public $taxBase;
+
     public $mappings = [
         'joinDate' => 'JOIN_DATE',
         'salary' => 'SALARY',
@@ -231,6 +240,7 @@ class HrEmployeesFormTabFour extends Model {
         'overtimeEligible' => 'OVERTIME_ELIGIBLE',
         'groupId' => 'GROUP_ID',
         'allowance' => 'ALLOWANCE',
+        'taxBase' => 'TAX_BASE',
     ];
 
 }

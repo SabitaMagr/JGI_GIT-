@@ -28,6 +28,7 @@ $applyLimit = $form->get('applyLimit');
 $remarks = $form->get('remarks');
 $fiscalYear->setValueOptions($fiscalYears);
 $hrOnly = $form->get('hrOnly');
+$enableOverride = $form->get('enableOverride');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -238,6 +239,15 @@ print $this->form()->openTag($form);
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($hrOnly, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($enableOverride); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($enableOverride); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($enableOverride, ['class' => 'help-block error']); ?>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">

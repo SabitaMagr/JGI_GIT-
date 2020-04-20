@@ -587,6 +587,11 @@ return [
                         'route' => 'recommendapprove',
                         'action' => 'groupAssign',
                     ],
+                    [
+                        'label' => 'Override',
+                        'route' => 'recommendapprove',
+                        'action' => 'override',
+                    ],
                 ]
             ]
         ],

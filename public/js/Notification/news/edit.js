@@ -24,6 +24,7 @@
             autoProcessQueue: false,
             maxFiles: 1,
             addRemoveLinks: true,
+            dictDefaultMessage: 'Click / Drop files here to upload',
             init: function () {
                 this.on("success", function (file, success) {
                     if (success.success) {

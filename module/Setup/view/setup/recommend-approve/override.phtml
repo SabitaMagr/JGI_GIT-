@@ -1,38 +1,27 @@
 <?php
 $this->headLink()
-    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
+    ->appendStylesheet($this->basePath('assets/global/plugins/ladda/ladda-themeless.min.css'));
 
-
-$this->headScript()
-    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/spin.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/ladda.min.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'))
     ->appendFile($this->basePath('js/search.js'))
-    ->appendFile($this->basePath('js/AttendanceManagement/whereabouts/index.js'));
+    ->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'));
+$this->headScript()
+    ->appendFile($this->basePath('js/setup/recommend-approve/override.js'));
 ?>
 
 <script>
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.searchLink = '<?php echo $this->url('recommendapprove', ["action" => "pullEmployeeForRecAppAssign"]); ?>';
+    document.assignReportingHierarchyOverride = '<?php echo $this->url('recommendapprove', ["action" => "overrideAssign"]); ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
-    document.assignSubMandatory = '<?php echo $this->url('whereabouts', ['action' => 'assign']); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
 </script>
-
-<?php
-if ($this->messages && (sizeof($this->messages) > 1)) {
-    print '<div class="alert alert-warning alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-    <strong>Warning!</strong> ';
-    print $this->messages[1];
-    print '</div>';
-}
-?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
-
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\recommendapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
 <div class="portlet light bg-inverse">
     <div class="portlet-title">
         <div class="caption">
@@ -43,7 +32,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <a href="" class="collapse" data-original-title="" title=""> </a>
             <a href="" class="fullscreen" data-original-title="" title=""> </a>
         </div>
-
+        <div class="actions">
+        </div>
     </div>
     <div class="portlet-body">
         <div class="row">
@@ -85,7 +75,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </select>
             </div>
             <div class="col-sm-2">
-                <label>Service Event Type</label>
+                <label>Employee Type</label>
                 <select multiple class="form-control" name="employeeType" id="employeeTypeId">
                 </select>
             </div>
@@ -94,14 +84,33 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <select multiple class="form-control" name="employee" id="employeeId">
                 </select>
             </div>
-        </div>
-        <div class="row margin-top-10">
-            <div class="col-sm-10">
+
+            <div class="col-sm-2">
+                <label>Type</label>
+                <select class="form-control" name="type" id="type">
+                    <option value="">----</option>
+                    <option value="LV">LEAVE</option>
+                    <option value="TV">TRAVEL</option>
+                    <option value="TR">TRAINING</option>
+                </select>
+            </div>
+
+            <div id="leaveTypeDiv" class="col-sm-2" style="display: none">
+                <label for="leaveType">Leave type</label>
+                <select class="form-control" name="leaveType[]" id="leaveType">
+                    <?php foreach($leaveList as $key => $value ){?>
+                        <option value='<?=$key?>'><?=$value?></option>
+                    <?php  }?>
+                </select>
+            </div>
+
+            <div class="col-sm-2">
+                <label height="45"></label>
                 <button id="reset" class="btn default btn-sm pull-right hris-reset-btn">
                     Reset
                     <i class="fa fa-refresh"></i>
                 </button>
-                <button id="search" class="btn btn-default btn-sm pull-right">
+                <button  id="search" class="btn btn-default btn-sm pull-right">
                     Search
                     <i class="fa fa-search"></i>
                 </button>
@@ -110,8 +119,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </div>
 </div>
 
-<div class="scroller"  style="min-height:300px;height: 400px;" id="loadingDiv">
-    <table id="employeeTable" class="table table-striped table-bordered table-hover no-footer customtabletwo">
+<div class="scroller" style="min-height:300px;height: 400px;" id="loadingDiv">
+    <table id="employeeTable" class="table table-striped table-bordered table-hover no-footer ">
         <thead>
         <tr>
             <th>
@@ -121,24 +130,21 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 Employee
             </th>
             <th>
-                Branch
+                Recommender
             </th>
             <th>
-                Department
+                Approver
             </th>
             <th>
-                Designation
+                TYPE
             </th>
             <th>
-                Position
-            </th>
-            <th>
-                Order
+                NAME
             </th>
             <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                 <div class="th-inner ">
                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                        <input id="masterCheckElement" class="" type="checkbox" />
+                        <input id="masterCheckElement" class="" type="checkbox"/>
                         <span></span>
                     </label>
                 </div>
@@ -146,14 +152,39 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </th>
         </tr>
         </thead>
-
     </table>
-
 </div>
 
-<div class="row margin-top-30" >
-    <div class="col-sm-6">
-        <a id="assignBtn" class="btn btn-primary pull-right">Assign</a>
-        </button>
+<div class="row margin-top-20" id = "assign">
+
+    <div class='col-sm-2'>
+        <div class="form-group">
+            <label for="recomender">Recommender</label>
+            <select class="form-control" name="recomender[]" id="recomender">
+                <?php foreach($employeeList as $key => $value ){?>
+                    <option value='<?=$key?>'><?=$value?></option>
+                <?php  }?>
+            </select>
+        </div>
     </div>
+
+    <div class='col-sm-2'>
+        <div class="form-group">
+            <label for="approver">Approver</label>
+            <select class="form-control" name="approver[]" id="approver">
+                <?php foreach($employeeList as $key => $value ){?>
+                    <option value='<?=$key?>'><?=$value?></option>
+                <?php  }?>
+            </select>
+        </div>
+    </div>
+
+    <div class="row margin-top-30">
+        <div class="col-sm-4">
+            <a id="assignBtn" class="btn btn-primary pull-right">Assign</a>
+            </button>
+        </div>
+    </div>
+
 </div>
+

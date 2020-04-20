@@ -203,13 +203,13 @@ FROM (SELECT *
             FROM
               (SELECT 
               HA.EMPLOYEE_ID,
-                    HA.PREVIOUS_YEAR_BAL,
+                    NVL(HA.PREVIOUS_YEAR_BAL,0) as PREVIOUS_YEAR_BAL,
                     HA.LEAVE_ID,
                     HA.TOTAL_DAYS AS CURR,
-                    {$includePreviousBalance} + HA.TOTAL_DAYS AS TOTAL,
+                    NVL({$includePreviousBalance}, 0) + HA.TOTAL_DAYS AS TOTAL,
                     HA.BALANCE,
                     HS.ENCASH_DAYS as ENCASHED,
-                    ( {$includePreviousBalance} + ha.total_days - ha.balance - (case when
+                    ( NVL({$includePreviousBalance}, 0) + ha.total_days - ha.balance - (case when
                     HS.ENCASH_DAYS is null then 0 else HS.ENCASH_DAYS end) - nvl(EPD.penalty_days,0)) AS taken,
                     EPD.penalty_days as DEDUCTED
               FROM 
@@ -237,6 +237,8 @@ FROM (SELECT *
     LEFT JOIN HRIS_BRANCHES BR ON (E.BRANCH_ID = BR.BRANCH_ID)
     LEFT JOIN HRIS_PROVINCES BP on (BP.PROVINCE_ID=BR.PROVINCE_ID)
 ";
+//        print_r($sql);
+//        die();
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 

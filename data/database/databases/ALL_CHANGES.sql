@@ -1599,10 +1599,12 @@ alter table hris_employee_leave_request add HARDCOPY_SIGNED_FLAG
 char(1) default 'N'
 check (HARDCOPY_SIGNED_FLAG IN ('N', 'Y'));
 
-create table HRIS_EMP_WHEREABOUT_ASN(
-EMPLOYEE_ID NUMBER(7) NOT NULL,
-ORDER_BY NUMBER(4) NOT NULL
-);
+create table HRIS_EMP_WHEREABOUT_ASN
+(
+    EMPLOYEE_ID NUMBER(7) not null,
+    ORDER_BY    NUMBER(4) not null,
+    STATUS      CHAR(1)
+)
 
 alter table hris_employee_travel_request add HARDCOPY_SIGNED_FLAG
 char(1) default 'N'
@@ -1644,7 +1646,7 @@ CREATE TABLE HRIS_BANKS (
 BANK_ID number(7) PRIMARY KEY,
 BANK_NAME VARCHAR2(255),
 COMPANY_ACC_NO VARCHAR2(25),
-BRANCH_NAME VARCHAR2(255),lo
+BRANCH_NAME VARCHAR2(255),
 CREATED_BY NUMBER(7),
 CREATED_DT DATE,
 STATUS char(1) default 'E'
@@ -1665,3 +1667,34 @@ ADD NEXT_DAY_OUT CHAR (1 BYTE) DEFAULT 'N' NOT NULL CHECK (NEXT_DAY_OUT IN ('Y',
 
 alter table hris_employees
 add TAX_BASE CHAR (1 BYTE) CHECK ( TAX_BASE IN ('M','U') );
+
+
+create table HRIS_REC_APP_OVERRIDE
+(
+    EMPLOYEE_ID  NUMBER(7) not null
+        constraint FK_REC_APP_EMPLOYEE_EMP_ID
+            references HRIS_EMPLOYEES,
+    RECOMMENDER NUMBER(7)
+        constraint FK_REC_APP_EMPLOYEE_EMP_ID2
+            references HRIS_EMPLOYEES,
+    APPROVER  NUMBER(7)
+        constraint FK_REC_APP_EMPLOYEE_EMP_ID3
+            references HRIS_EMPLOYEES,
+    TYPE VARCHAR2(5) NOT NULL ,
+    TYPE_ID NUMBER(7) NOT NULL ,
+    STATUS       CHAR(2) NOT NULL,
+    CREATED_DT   DATE default SYSDATE,
+    MODIFIED_DT  DATE,
+    CREATED_BY   NUMBER(7),
+    MODIFIED_BY  NUMBER(7)
+);
+
+alter table HRIS_NEWS_TYPE add DOWNLOAD_FLAG CHAR(1);
+
+
+alter table HRIS_LEAVE_MASTER_SETUP add
+(leave_year VARCHAR2(2) ,
+old_leave char(1) DEFAULT 'N' ,
+enable_override char(1) DEFAULT 'N',
+show_leave_form char(1) default 'N'
+);

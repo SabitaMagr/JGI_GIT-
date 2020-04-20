@@ -71,15 +71,6 @@
                             });
 
                 }
-//                if (typeof column['C' + rawData[i].DAY_COUNT] === 'undefined') {
-//                    var temp = 'C' + rawData[i].DAY_COUNT;
-//                    column[temp] = {
-//                        field: temp,
-//                        title: "" + rawData[i].DAY_COUNT,
-//                        template: '<span data="#: ' + temp + ' #" class="daily-attendance"></span>'
-//                    }
-//
-//                }
             }
             var returnData = {rows: [], cols: []};
 
@@ -133,7 +124,7 @@
                 field: 'holidaywork',
                 title: 'WH',
                 template: '<div data="#: total #" class="btn-group widget-btn-list holidaywork-attendance">' +
-                    '<a class="btn widget-btn custom-btn-absent totalbtn"></a>' +
+                    '<a class="btn widget-btn custom-btn-present totalbtn"></a>' +
                     '</div>'});
 
             returnData.cols.push({
@@ -386,14 +377,6 @@
             branchName = 'ALL';
         });
 
-        var weekday = new Array(7);
-        weekday[0] = "Sun";
-        weekday[1] = "Mon";
-        weekday[2] = "Tue";
-        weekday[3] = "Wed";
-        weekday[4] = "Thu";
-        weekday[5] = "Fri";
-        weekday[6] = "Sat";
 
 
     });

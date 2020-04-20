@@ -49,10 +49,15 @@
             {field: "HALF_DAY_DETAIL", title: "Type"},
             {field: "STATUS", title: "Status"},
             {field: "ID", title: "Action", template: `
-            <span>                                  
+            <span class="clearfix">                             
                 <a class="btn  btn-icon-only btn-success" href="${document.viewLink}/#: ID #" style="height:17px; width:13px" title="view">
                 <i class="fa fa-search-plus"></i>
+                </a> 
+                #if(SHOW_LEAVE_FORM =='Y'){#
+                <a class="btn  btn-icon-only btn-success" href="${document.lfcLink}/#: ID #" style="height:17px; width:13px" title="view">
+                <i class="fa fa-search"></i>
                 </a>
+                #}# 
             </span>`}
         ];
         columns = app.prependPrefColumns(columns);

@@ -28,6 +28,15 @@ class NewsTypeForm {
      */
     public $uploadFlag;
 
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Download"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({"id":"downloadFlag"})
+     */
+    public $downloadFlag;
+
     
 
     /**

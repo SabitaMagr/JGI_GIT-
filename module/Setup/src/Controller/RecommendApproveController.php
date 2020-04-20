@@ -289,4 +289,58 @@ class RecommendApproveController extends HrisController {
         }
     }
 
+    public function overrideAction() {
+
+        $request = $this->getRequest();
+        $employeeList = EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::EMPLOYEE_CODE, HrEmployees::FULL_NAME], [HrEmployees::STATUS => 'E', HrEmployees::RETIRED_FLAG => 'N'], "FIRST_NAME", "ASC", " - ", true, true);
+        $leaveList = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_LEAVE_MASTER_SETUP", "LEAVE_ID", ["LEAVE_ENAME"],["STATUS" => 'E'],"LEAVE_ENAME","ASC", null, true, true);
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $rawList = $this->repository->getEmployeeForOverride($data['data']);
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel([
+                    "success" => true,
+                    "data" => $list,
+                    "message" => null,
+                ]);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+            }
+        }
+
+        return Helper::addFlashMessagesToArray($this, [
+            'searchValues' => EntityHelper::getSearchData($this->adapter),
+            'acl' => $this->acl,
+            'employeeDetail' => $this->storageData['employee_detail'],
+            'employeeList' => $employeeList,
+            'leaveList' => $leaveList
+        ]);
+    }
+
+    public function overrideAssignAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $empList = $data['data'];
+
+            foreach ($empList as $list) {
+                $employeeId=$list['employeeId'];
+                $updateData = array();
+                $updateData['isChecked'] = $list['isChecked'];
+                $updateData['recommender'] = ($list['recommender'] == null)? 'NULL':$list['recommender'];
+                $updateData['approver'] = ($list['approver'] == null)? 'NULL':$list['approver'];
+                $updateData['type'] = $list['type'];
+                $updateData['leaveType'] = ($list['leaveType'] == null)? 'NULL': $list['leaveType'];
+                $this->repository->updateStatus($employeeId, $updateData);
+                if($updateData['isChecked'] == 'true'){
+                    $this->repository->updateOverride($employeeId, $updateData);
+                }
+            }
+
+            return new JsonModel(['success' => true, 'data' => $data, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
 }

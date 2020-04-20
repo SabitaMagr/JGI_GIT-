@@ -60,6 +60,8 @@ $groupId->setValueOptions($group);
 
 $allowance = $formFour->get('allowance');
 
+$taxBase = $formFour->get('taxBase');
+
 $formFour->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 4]));
 $formFour->setAttribute("name", "employeeForm");
 $formFour->prepare();
@@ -341,6 +343,18 @@ $formFour->prepare();
 
                                 <?php print $this->formElement($groupId); ?></div>
                             <?php print $this->formElementErrors()->render($groupId, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="row bottomgap">
+                        <div class="form-group<?= empty($taxBase->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                <?php print $this->formLabel($taxBase); ?></div>
+                            <div class="col-xs-6 col-sm-6 cgap-4">
+                                <?php print $this->formElement($taxBase); ?></div>
+                            <?php print $this->formElementErrors()->render($taxBase, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
                 </div>

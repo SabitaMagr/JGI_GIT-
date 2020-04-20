@@ -290,4 +290,24 @@ class LeaveStatus extends HrisController {
         }
     }
 
+    public function applyLFCAction() {
+        $id =  $this->params()->fromRoute('id');
+
+        if ($id === 0) {
+            return $this->redirect()->toRoute("leavestatus");
+        }
+
+        $request = $this->getRequest();
+
+        $data = $this->repository->getLfcData($id);
+
+
+        return $this->stickFlashMessagesTo([
+            'acl' => $this->acl,
+            'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["EMPLOYEE_CODE", "FULL_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N', 'IS_ADMIN' => "N"], "FULL_NAME", "ASC", "-", FALSE, TRUE),
+            'preference' => $this->preference,
+            'data' => $data
+        ]);
+    }
+
 }
