@@ -161,7 +161,7 @@ class EntityHelper {
 
     public static function formatColumn($columnName, $shortForm = null, $format) {
         $pre = "";
-        if ($shortForm != null && sizeof($shortForm) != 0) {
+        if ($shortForm != null && strlen($shortForm) != 0) {
             $pre = $shortForm . ".";
         }
         return "INITCAP(TO_CHAR({$pre}{$columnName}, '{$format}')) AS {$columnName}";
@@ -169,7 +169,7 @@ class EntityHelper {
 
     public static function minuteToHourColumn($columnName, $shortForm = null) {
         $pre = "";
-        if ($shortForm != null && sizeof($shortForm) != 0) {
+        if ($shortForm != null && strlen($shortForm) != 0) {
             $pre = $shortForm . ".";
         }
         return "NVL2({$pre}{$columnName},LPAD(TRUNC({$pre}{$columnName}/60,0),2, 0)||':'||LPAD(MOD({$pre}{$columnName},60),2, 0),null) AS {$columnName}";

@@ -9,6 +9,25 @@
                 </a>
             </div>
         `;
+        
+         var rowTemplateString = "<tr  class='#: (PRI_SEC=='SECONDARY')  ? 'bg-primary' : '' #' data-uid='#: uid #'>" +
+          "<td><input type='checkbox' id='#:ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label></td>" +
+          "<td>#: EMPLOYEE_CODE #</td>" +
+          "<td>#: FULL_NAME #</td>" +
+          "<td>#: LEAVE_ENAME #</td>" +
+          "<td>#: APPLIED_DATE_AD #</td>" +
+          "<td>#: APPLIED_DATE_BS #</td>" +
+          "<td>#: START_DATE_AD #</td>" +
+          "<td>#: START_DATE_BS #</td>" +
+          "<td>#: END_DATE_AD #</td>" +
+          "<td>#: END_DATE_BS #</td>" +
+          "<td>#: HALF_DAY_DETAIL #</td>" +
+          "<td>#: GRACE_PERIOD_DETAIL #</td>" +
+          "<td>#: NO_OF_DAYS #</td>" +
+          "<td>#: STATUS_DETAIL #</td>" +
+          "<td>"+action+"</td>" +
+          "</tr>";
+        
         app.initializeKendoGrid($table, [
             {
                 title: 'Select All',
@@ -52,7 +71,7 @@
             {field: "NO_OF_DAYS", title: "Duration"},
             {field: "STATUS_DETAIL", title: "Status"},
             {field: ["ID", "ROLE"], title: "Action", template: action}
-        ], null, null, null, 'Leave Request');
+        ], null, null, {rowTemplate : rowTemplateString}, 'Leave Request');
 
 
         app.pullDataById('', {}).then(function (response) {

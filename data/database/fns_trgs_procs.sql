@@ -142,7 +142,10 @@ BEGIN
 
 
 begin
-select out_time
+select 
+case when
+out_time is null then in_time else out_time + interval '3' minute
+end 
 INTO V_YESTERDAY_OUT_TIME
 from Hris_Attendance_Detail
 where Attendance_Dt=trunc(P_FROM_ATTENDANCE_TIME)-1 and employee_id=P_EMPLOYEE_ID;
@@ -574,35 +577,9 @@ BEGIN
     WHERE ID_THUMB_ID=P_THUMB_ID;
   EXCEPTION
   WHEN NO_DATA_FOUND THEN
-    INSERT
-    INTO HRIS_ATTENDANCE_DATA_LOG
-      (
-        THUMB_ID,
-        STATUS,
-        CREATED_DATE
-      )
-      VALUES
-      (
-        P_THUMB_ID,
-        'NO EMPLOYEE ASSIGNED FOR THIS THUMB_ID : '
-        ||P_THUMB_ID,
-        SYSDATE
-      );
+    NULL;
   WHEN too_many_rows THEN
-    INSERT
-    INTO HRIS_ATTENDANCE_DATA_LOG
-      (
-        THUMB_ID,
-        STATUS,
-        CREATED_DATE
-      )
-      VALUES
-      (
-        P_THUMB_ID,
-        'MULTIPLE EMPLOYEE ASSIGNED FOR THIS THUMB_ID : '
-        ||P_THUMB_ID,
-        SYSDATE
-      );
+    NULL;
   END;
   INSERT
   INTO HRIS_ATTENDANCE
@@ -679,6 +656,7 @@ END;
     p_status          hris_attendance_request.status%TYPE;
     p_in_remarks      hris_attendance_request.in_remarks%TYPE;
     p_out_remarks      hris_attendance_request.out_remarks%TYPE;
+    p_next_day_out char(1 BYTE);
 BEGIN
     SELECT
         attendance_dt,
@@ -687,9 +665,10 @@ BEGIN
         out_time,
         status,
         in_remarks,
-        out_remarks
+        out_remarks,
+        NEXT_DAY_OUT
     INTO
-        p_attendance_dt,p_employee_id,p_in_time,p_out_time,p_status,p_in_remarks,p_out_remarks
+        p_attendance_dt,p_employee_id,p_in_time,p_out_time,p_status,p_in_remarks,p_out_remarks,p_next_day_out
     FROM
         hris_attendance_request
     WHERE
@@ -708,7 +687,8 @@ BEGIN
             employee_id,
             attendance_time,
             attendance_from,
-            remarks
+            remarks,
+            IP_ADDRESS
         ) VALUES (
             p_attendance_dt,
             p_employee_id,
@@ -717,7 +697,8 @@ BEGIN
                 'DD-MON-YYYY HH:MI AM'
             ),
             'SYSTEM',
-            p_in_remarks
+            p_in_remarks,
+            'IN'
         );
 
         hris_attendance_after_insert(
@@ -736,17 +717,26 @@ BEGIN
             employee_id,
             attendance_time,
             attendance_from,
-            remarks
+            remarks,
+            IP_ADDRESS
         ) VALUES (
             p_attendance_dt,
             p_employee_id,
+            case when p_next_day_out = 'Y'
+            then
+            TO_DATE(
+                TO_CHAR((p_attendance_dt+1),'DD-MON-YYYY') || ' ' || TO_CHAR(p_out_time,'HH:MI AM'),
+                'DD-MON-YYYY HH:MI AM'
+            )
+            else
             TO_DATE(
                 TO_CHAR(p_attendance_dt,'DD-MON-YYYY') || ' ' || TO_CHAR(p_out_time,'HH:MI AM'),
                 'DD-MON-YYYY HH:MI AM'
-            ),
+            )
+            end,
             'SYSTEM',
-            p_out_remarks
-            
+            p_out_remarks,
+            'OUT'
         );
 
         hris_attendance_after_insert(
@@ -758,7 +748,7 @@ BEGIN
     END IF;
 
     IF
-        ( trunc(p_attendance_dt) < trunc(SYSDATE) )
+        ( trunc(p_attendance_dt) <= trunc(SYSDATE) )
     THEN
         hris_queue_reattendance(
             trunc(p_attendance_dt),
@@ -1500,7 +1490,9 @@ ELSE EHM.SALARY
 END),
 (
 CASE
-WHEN EHM.MARITAL_STATUS IS NULL
+WHEN ( EHM.MARITAL_STATUS IS NULL AND E.TAX_BASE IS NOT NULL )
+THEN E.TAX_BASE
+WHEN ( EHM.MARITAL_STATUS IS NULL AND E.TAX_BASE IS  NULL )
 THEN E.MARITAL_STATUS
 ELSE EHM.MARITAL_STATUS
 END) ,
@@ -1508,7 +1500,9 @@ END) ,
 CASE
 WHEN (
 CASE
-WHEN EHM.MARITAL_STATUS IS NULL
+WHEN ( EHM.MARITAL_STATUS IS NULL AND E.TAX_BASE IS NOT NULL )
+THEN E.TAX_BASE
+WHEN ( EHM.MARITAL_STATUS IS NULL AND E.TAX_BASE IS  NULL )
 THEN E.MARITAL_STATUS
 ELSE EHM.MARITAL_STATUS
 END) ='M'
@@ -4320,7 +4314,7 @@ BEGIN
       --
       IF (V_IGNORE_TIME         ='Y') THEN
         IF V_TWO_DAY_SHIFT_AUTO ='Y' THEN
-          HRIS_ATTD_IN_OUT(employee.EMPLOYEE_ID,TRUNC(employee.ATTENDANCE_DT),TRUNC(employee.ATTENDANCE_DT+2),V_IN_TIME,V_OUT_TIME,V_TWO_DAY_SHIFT_AUTO);
+          HRIS_ATTD_IN_OUT(employee.EMPLOYEE_ID,TRUNC(employee.ATTENDANCE_DT),case when V_IN_TIME is not null then ( V_IN_TIME + interval '1' day ) else TRUNC(employee.ATTENDANCE_DT+2) end,V_IN_TIME,V_OUT_TIME,V_TWO_DAY_SHIFT_AUTO);
         END IF;
         IF V_IN_TIME IS NOT NULL THEN
           --
@@ -4691,6 +4685,8 @@ DBMS_OUTPUT.PUT_LINE('middle diff end');
                 INNER JOIN hris_training_master_setup t ON ta.training_id = t.training_id
             WHERE
                     ta.employee_id = employee.employee_id
+                AND
+                    t.status = 'E'
                 AND
                     ta.status = 'E'
                 AND
@@ -6899,6 +6895,38 @@ IF DELETING THEN
   AND LEAVE_ID      = :old.LEAVE_ID;
 END IF;
 END;/
+            CREATE OR REPLACE TRIGGER HRIS_AFTER_LEAVE_DEDUCTION
+AFTER INSERT OR UPDATE OR DELETE ON HRIS_EMPLOYEE_LEAVE_DEDUCTION
+
+FOR EACH ROW
+
+BEGIN
+    IF
+        INSERTING
+    THEN
+        INSERT INTO HRIS_EMPLOYEE_PENALTY_DAYS (EMPLOYEE_ID, ATTENDANCE_DT, LEAVE_ID, NO_OF_DAYS, REMARKS, CREATED_DATE, LD_ID)
+        values (:new.employee_id, :new.DEDUCTION_DT, :new.LEAVE_ID, :new.NO_OF_DAYS, :new.REMARKS, :new.CREATED_DT, :new.ID);
+
+    END IF;
+
+    IF
+        DELETING
+    THEN
+        DELETE FROM HRIS_EMPLOYEE_PENALTY_DAYS WHERE LD_ID = :old.ID;
+
+    END IF;
+    
+    IF
+        UPDATING
+    THEN
+        IF :new.status not in ('AP')
+        THEN
+        DELETE FROM HRIS_EMPLOYEE_PENALTY_DAYS WHERE LD_ID = :old.ID;
+    END IF;
+    END IF;
+
+END;
+/
             DROP TRIGGER APPRAISAL_STATUS_TRIGGER;
 
 CREATE OR REPLACE TRIGGER HRIS_APPRAISAL_STAT_TRG AFTER

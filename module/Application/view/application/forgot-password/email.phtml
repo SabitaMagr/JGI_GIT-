@@ -7,8 +7,8 @@ $this->headScript()
         ->appendFile($this->basePath('js/application/forgot-password/checkUsername.js'))
 ?>
 <script>
-    document.userList =<?= json_encode($userList) ?>;
-</script>
+    document.userList ='';
+</script>;
 <?php
 if ($this->messages) {
     foreach ($this->messages as $message) {

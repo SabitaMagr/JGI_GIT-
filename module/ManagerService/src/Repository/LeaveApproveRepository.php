@@ -67,7 +67,11 @@ class LeaveApproveRepository implements RepositoryInterface {
                   REC_APP_ROLE_NAME(U.EMPLOYEE_ID,
                   CASE WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
                   CASE WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
-                  ) AS YOUR_ROLE
+                  ) AS YOUR_ROLE,
+                  CASE WHEN ( ALR.R_A_ID IS NOT NULL OR ALA.R_A_ID  IS NOT NULL ) 
+                  THEN 'SECONDARY'
+                  ELSE 'PRIMARY' 
+                  END AS PRI_SEC
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON L.LEAVE_ID=LA.LEAVE_ID
@@ -140,7 +144,7 @@ class LeaveApproveRepository implements RepositoryInterface {
                         V_EMPLOYEE_ID
                       FROM HRIS_EMPLOYEE_LEAVE_REQUEST
                       WHERE ID                                    = {$id};
-                      IF(V_STATUS IN ('AP','C','R') THEN
+                      IF(V_STATUS IN ('AP','C','R')) THEN
                         HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
                       END IF;
                     END;

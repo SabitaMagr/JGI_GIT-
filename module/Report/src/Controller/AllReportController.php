@@ -855,5 +855,13 @@ left join HRIS_EMPLOYEE_FILE ef on (ef.file_code=e.PROFILE_PICTURE_ID)");
             'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
+    
+    public function workForceAction(){
+       return $this->stickFlashMessagesTo([
+            'preference' => $this->preference,
+            'acl' => $this->acl,
+            'employeeDetail' => $this->storageData['employee_detail']
+        ]);
+    }
 
 }

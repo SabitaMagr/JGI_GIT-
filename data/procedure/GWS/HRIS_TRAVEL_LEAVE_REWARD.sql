@@ -12,7 +12,7 @@ v_total_increment NUMBER :=0;
 
 BEGIN
 
-
+begin
 select employee_id,ROUND((SUM(TO_DATE-FROM_DATE+1)/15),0) AS TOTAL_TRAVEL 
 into
 v_employee_id,v_increment_day
@@ -25,13 +25,27 @@ travel_id = p_travel_id)
 and STATUS='AP' AND TO_DATE < '01-JAN-20'
 GROUP BY EMPLOYEE_ID;
 
+exception when no_data_found then
+null; 
+end;
+
  -- TO GIVE 2 DAYS FOR 15 DAY TRAVEL FROM JAN 1 2020 START
-select ROUND((SUM(TO_DATE-FROM_DATE+1)/15),0)*2 AS TOTAL_TRAVEL 
+begin
+select employee_id, ROUND((SUM(TO_DATE-FROM_DATE+1)/15),0)*2 AS TOTAL_TRAVEL 
 into
-v_increment_day_new
-from hris_employee_travel_request where employee_id=v_employee_id
+v_employee_id, v_increment_day_new
+from hris_employee_travel_request where employee_id=(SELECT
+employee_id
+from 
+hris_employee_travel_request
+WHERE
+travel_id = p_travel_id)
 and STATUS='AP' AND TO_DATE >= '01-JAN-20'
 GROUP BY EMPLOYEE_ID;
+
+exception when no_data_found then
+null; 
+end;
  -- TO GIVE 2 DAYS FOR 15 DAY TRAVEL FROM JAN 1 2020 END
 
 v_total_increment:=v_increment_day+v_increment_day_new;

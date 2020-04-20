@@ -33,6 +33,7 @@ class ApiController extends AbstractRestfulController {
     private $repository;
 
     public function __construct(AdapterInterface $adapter) {
+		die();
         $this->adapter = $adapter;
         $this->repository = new ApiRepository($adapter);
     }

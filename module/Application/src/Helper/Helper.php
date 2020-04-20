@@ -101,7 +101,7 @@ class Helper {
 
     public static function appendDateFormat($adapter, $columnName, $format, $shortForm = null) {
         $pre = "";
-        if ($shortForm != null && sizeof($shortForm) != 0) {
+        if ($shortForm != null && strlen($shortForm) != 0) {
             $pre = $shortForm . ".";
         }
         $tempStr = "";
@@ -120,7 +120,7 @@ class Helper {
     public static function dateExpression($columnName, $shortForm = null) {
         $format = Helper::ORACLE_DATE_FORMAT;
         $pre = "";
-        if ($shortForm != null && sizeof($shortForm) != 0) {
+        if ($shortForm != null && strlen($shortForm) != 0) {
             $pre = $shortForm . ".";
         }
         $tempStr = "INITCAP(TO_CHAR({$pre}{$columnName}, '{$format}')) AS {$columnName}";
@@ -130,7 +130,7 @@ class Helper {
     public static function timeExpression($columnName, $shortForm = null) {
         $format = Helper::ORACLE_TIME_FORMAT;
         $pre = "";
-        if ($shortForm != null && sizeof($shortForm) != 0) {
+        if ($shortForm != null && strlen($shortForm) != 0) {
             $pre = $shortForm . ".";
         }
         $tempStr = "INITCAP(TO_CHAR({$pre}{$columnName}, '{$format}')) AS {$columnName}";
@@ -140,7 +140,7 @@ class Helper {
     public static function datetimeExpression($columnName, $shortForm = null) {
         $format = Helper::ORACLE_DATE_FORMAT . " " . self::ORACLE_TIME_FORMAT;
         $pre = "";
-        if ($shortForm != null && sizeof($shortForm) != 0) {
+        if ($shortForm != null && strlen($shortForm) != 0) {
             $pre = $shortForm . ".";
         }
         $tempStr = "INITCAP(TO_CHAR({$pre}{$columnName}, '{$format}')) AS {$columnName}";
@@ -149,7 +149,7 @@ class Helper {
 
     public static function columnExpression($columnName, $shortForm = null, $function = null, $customColumnName = null) {
         $pre = "";
-        if ($shortForm != null && sizeof($shortForm) != 0) {
+        if ($shortForm != null && strlen($shortForm) != 0) {
             $pre = $shortForm . ".";
         }
 
