@@ -96,6 +96,7 @@ class HolidayRepository implements RepositoryInterface {
     }
 
     public function filterRecords($fromDate, $toDate) {
+        $boundedParameter=[];
         $sql = "
                 SELECT INITCAP(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
                  BS_DATE(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE_N,
@@ -119,11 +120,13 @@ class HolidayRepository implements RepositoryInterface {
                 WHERE A.STATUS ='E'";
 
         if ($fromDate != null) {
-            $sql .= " AND A.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
+            $sql .= " AND A.START_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY')";
+            $boundedParameter['fromDate']=$fromDate;
         }
 
         if ($toDate != null) {
-            $sql .= " AND A.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
+            $sql .= " AND A.END_DATE<=TO_DATE(:toDate,'DD-MM-YYYY')";
+            $boundedParameter['toDate']=$toDate;
         }
 //        if ($fromDate == null && $toDate == null) {
 //            $sql .= " AND A.FISCAL_YEAR=" . $this->fiscalYr;
@@ -131,7 +134,7 @@ class HolidayRepository implements RepositoryInterface {
 
         $sql .= " ORDER BY A.START_DATE DESC";
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
         return $result;
     }
 
