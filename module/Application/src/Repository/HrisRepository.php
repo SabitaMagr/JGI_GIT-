@@ -16,9 +16,9 @@ class HrisRepository {
         }
     }
 
-    protected function rawQuery($sql): array {
+    protected function rawQuery($sql,$paramenter = []): array {
         $statement = $this->adapter->query($sql);
-        $iterator = $statement->execute();
+        $iterator = $statement->execute($paramenter);
         return iterator_to_array($iterator, false);
     }
 
