@@ -111,7 +111,7 @@ class WorkOnDayoffStatus extends HrisController {
             $request = $this->getRequest();
             $data = $request->getPost();
             $dayoffWorkStatusRepo = new WorkOnDayoffStatusRepository($this->adapter);
-            $recordList = $dayoffWorkStatusRepo->getWODReqList($data);
+            $recordList = Helper::extractDbData($dayoffWorkStatusRepo->getWODReqList($data));
             return new JsonModel([
                 "success" => "true",
                 "data" => $recordList,

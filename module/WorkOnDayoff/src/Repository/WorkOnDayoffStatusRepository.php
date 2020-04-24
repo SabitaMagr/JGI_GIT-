@@ -1,8 +1,16 @@
 <?php
 namespace WorkOnDayoff\Repository;
 
+use Application\Helper\EntityHelper;
+use Application\Model\Model;
+use Exception;
 use Application\Repository\HrisRepository;
 use Setup\Model\HrEmployees;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Sql;
+use Zend\Db\TableGateway\TableGateway;
 
 class WorkOnDayoffStatusRepository extends HrisRepository {
 
@@ -106,7 +114,8 @@ class WorkOnDayoffStatusRepository extends HrisRepository {
         return $result;
     }
 
-    public function getWODReqList($data): array {
+    public function getWODReqList($data) {
+        $boundedParameter = [];
         $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
         $branchId = $data['branchId'];
@@ -126,17 +135,17 @@ class WorkOnDayoffStatusRepository extends HrisRepository {
         $fromDateCondition = "";
         $toDateCondition = "";
 
-        if ($requestStatusId != -1) {
-            $statusCondition = " AND WD.STATUS ='{$requestStatusId}'";
-        }
-
-        if ($fromDate != null) {
-            $fromDateCondition = " AND WD.FROM_DATE>=TO_DATE('{$fromDate}','DD-MM-YYYY')";
-        }
-
-        if ($toDate != null) {
-            $toDateCondition = "AND WD.TO_DATE<=TO_DATE('{$toDate}','DD-MM-YYYY')";
-        }
+//        if ($requestStatusId != -1) {
+//            $statusCondition = " AND WD.STATUS ='{$requestStatusId}'";
+//        }
+//
+//        if ($fromDate != null) {
+//            $fromDateCondition = " AND WD.FROM_DATE>=TO_DATE('{$fromDate}','DD-MM-YYYY')";
+//        }
+//
+//        if ($toDate != null) {
+//            $toDateCondition = "AND WD.TO_DATE<=TO_DATE('{$toDate}','DD-MM-YYYY')";
+//        }
          $sql = "SELECT INITCAP(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY'))              AS FROM_DATE_AD,
                    BS_DATE(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY'))                   AS FROM_DATE_BS,
                    INITCAP(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY'))                     AS TO_DATE_AD,
@@ -202,11 +211,24 @@ class WorkOnDayoffStatusRepository extends HrisRepository {
                    END
                  OR APRV.STATUS IS NULL)
                  {$searchCondition}
-                 {$statusCondition}
-                 {$fromDateCondition}
-                 {$toDateCondition}
-                 ORDER BY WD.REQUESTED_DATE DESC";
+                 ";
 
+        if ($requestStatusId != -1) {
+            $sql .= " AND WD.STATUS =':requestStatusId'";
+            $boundedParameter['requestStatusId'] = $requestStatusId;
+        }
+
+        if ($fromDate != null) {
+            $sql .= " AND WD.FROM_DATE>=TO_DATE(':fromDate','DD-MM-YYYY')";
+            $boundedParameter['fromDate'] = $fromDate;
+        }
+
+        if ($toDate != null) {
+            $sql .= "AND WD.TO_DATE<=TO_DATE(':toDate','DD-MM-YYYY')";
+            $boundedParameter['toDate'] = $toDate;
+        }
+
+        $sql .= " ORDER BY WD.REQUESTED_DATE DESC";
         // FOR SHIVAM
 //        $sql = "SELECT INITCAP(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY'))              AS FROM_DATE_AD,
 //                  BS_DATE(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY'))                   AS FROM_DATE_BS,
@@ -239,6 +261,8 @@ class WorkOnDayoffStatusRepository extends HrisRepository {
 //                ORDER BY WD.REQUESTED_DATE DESC";
 
         $finalSql = $this->getPrefReportQuery($sql);
-        return $this->rawQuery($finalSql);
+        $statement = $this->adapter->query($finalSql);
+        $result = $statement->execute($boundedParameter);
+        return $result;
     }
 }
