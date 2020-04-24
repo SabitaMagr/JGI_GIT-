@@ -584,8 +584,9 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 ON(FCAS.ACC_CODE=E.ID_ACC_CODE AND C.COMPANY_CODE=FCAS.COMPANY_CODE)";
         }
 
-
-        $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId'], $by['functionalTypeId']);
+        $boundedParameter=[];
+        $condition = EntityHelper::getSearchConditonBounded($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId'], $by['functionalTypeId']);
+        $boundedParameter=array_merge($boundedParameter,$condition['parameter']);
         $sql = "SELECT 
             {$columIfSynergy}
                 E.ID_ACCOUNT_NO  AS ID_ACCOUNT_NO,
@@ -719,9 +720,10 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 ON (EF.FILE_CODE=E.PROFILE_PICTURE_ID)
                 {$joinIfSyngery}
                 WHERE 1                 =1 AND E.STATUS='E' 
-                {$condition}
+                {$condition['sql']}
                 {$orderByString}";
-        return $this->rawQuery($sql);
+                
+        return $this->rawQuery($sql,$boundedParameter);
     }
 
     public function getEmployeeListOfBirthday() {
