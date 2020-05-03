@@ -5,7 +5,7 @@ namespace Customer\Form;
 use Zend\Form\Annotation;
 
 /**
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Zend\Hydrator\ObjectPropertyHydrator")
  * @Annotation\Name("CustomerContract")
  * @Annotation\Attributes({"id":"customerContract"})
  */

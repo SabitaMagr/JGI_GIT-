@@ -10,7 +10,7 @@ namespace Setup\Form;
 use Zend\Form\Annotation;
 
 /**
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Hydrator("Zend\Hydrator\ObjectPropertyHydrator")
  * @Annotation\Name("AcademicDegree")
  */
 
