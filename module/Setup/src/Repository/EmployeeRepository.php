@@ -723,7 +723,7 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 {$condition['sql']}
                 {$orderByString}";
                 
-        return $this->rawQuery($sql,$boundedParameter);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function getEmployeeListOfBirthday() {

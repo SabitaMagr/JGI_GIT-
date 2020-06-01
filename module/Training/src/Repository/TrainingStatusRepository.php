@@ -24,20 +24,26 @@ class TrainingStatusRepository extends HrisRepository {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
 
-        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $searchCondition = $this->getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
+
         $statusCondition = "";
         $fromDateCondition = "";
         $toDateCondition = "";
         if ($requestStatusId != -1) {
-            $statusCondition = " AND TR.STATUS ='{$requestStatusId }'";
+            $statusCondition = " AND TR.STATUS =':requestStatusId'";
+            $boundedParameter['requestStatusId'] = $requestStatusId;
         }
 
         if ($fromDate != null) {
-            $fromDateCondition = " AND ((TR.START_DATE>=TO_DATE('{$fromDate}','DD-MM-YYYY')) OR (T.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')))";
+            $fromDateCondition = " AND ((TR.START_DATE>=TO_DATE('{$fromDate}','DD-MM-YYYY')) OR (T.START_DATE>=TO_DATE(':$fromDate','DD-MM-YYYY')))";
+            $boundedParameter['fromDate'] = $fromDate;
         }
 
         if ($toDate != null) {
-            $toDateCondition = "AND ((TR.END_DATE<=TO_DATE('{$toDate}','DD-MM-YYYY')) OR (T.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')))";
+            $toDateCondition = "AND ((TR.END_DATE<=TO_DATE('{$toDate}','DD-MM-YYYY')) OR (T.END_DATE<=TO_DATE(':toDate','DD-MM-YYYY')))";
+            $boundedParameter['toDate'] = $toDate;
         }
 
         $sql = "SELECT TR.REQUEST_ID,
@@ -147,9 +153,11 @@ class TrainingStatusRepository extends HrisRepository {
                 {$fromDateCondition}
                 {$toDateCondition}
                 ORDER BY TR.REQUESTED_DATE DESC";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
+
+                return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return $result;
     }
     
     public function fetchEmployeeTraining(){

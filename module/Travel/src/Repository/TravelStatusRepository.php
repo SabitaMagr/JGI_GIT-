@@ -13,7 +13,11 @@ class TravelStatusRepository extends HrisRepository {
 
     public function getFilteredRecord($search):array {
         $condition = "";
-        $condition = EntityHelper::getSearchConditon($search['companyId'], $search['branchId'], $search['departmentId'], $search['positionId'], $search['designationId'], $search['serviceTypeId'], $search['serviceEventTypeId'], $search['employeeTypeId'], $search['employeeId'], null, null, $search['functionalTypeId']);
+        $condition = EntityHelper::getSearchConditonBounded($search['companyId'], $search['branchId'], $search['departmentId'], $search['positionId'], $search['designationId'], $search['serviceTypeId'], $search['serviceEventTypeId'], $search['employeeTypeId'], $search['employeeId'], null, null, $search['functionalTypeId']);
+
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $condition['parameter']);
+
         if (isset($search['fromDate']) && $search['fromDate'] != null) {
             $condition .= " AND TR.FROM_DATE>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";
         }
@@ -105,10 +109,12 @@ class TravelStatusRepository extends HrisRepository {
                 ON (RA.RECOMMEND_BY=RAR.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
-                WHERE 1          =1 {$condition}";
-                
-        $finalSql = $this->getPrefReportQuery($sql);
-        return $this->rawQuery($finalSql);
+                WHERE 1          =1 {$condition['sql']}";
+           
+           $finalSql = $this->getPrefReportQuery($sql);
+           return $this->rawQuery($finalSql, $boundedParameter);     
+         
+        // return $this->rawQuery($finalSql);
     }
 
     public function notSettled(): array {
@@ -200,15 +206,21 @@ class TravelStatusRepository extends HrisRepository {
     }
     
     public function getSameDateApprovedStatus($employeeId, $fromDate, $toDate) {
+      $boundedParameter = [];
+      $boundedParameter['fromDate'] = $fromDate;
+      $boundedParameter['toDate'] = $toDate;
+      $boundedParameter['employeeId'] = $employeeId;
         $sql = "SELECT COUNT(*) as TRAVEL_COUNT
   FROM HRIS_EMPLOYEE_TRAVEL_REQUEST
-  WHERE (('{$fromDate}' BETWEEN FROM_DATE AND TO_DATE)
-  OR ('{$toDate}' BETWEEN FROM_DATE AND TO_DATE))
+  WHERE ((':fromDate' BETWEEN FROM_DATE AND TO_DATE)
+  OR (':toDate' BETWEEN FROM_DATE AND TO_DATE))
   AND STATUS  IN ('AP','CP','CR')
-  AND EMPLOYEE_ID = $employeeId
+  AND EMPLOYEE_ID = :employeeId
                 ";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+
+        $result = $this->rawQuery($sql, $boundedParameter);
         return $result->current();
     }
 }
