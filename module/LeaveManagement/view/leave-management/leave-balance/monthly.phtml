@@ -18,6 +18,7 @@ $this->headScript()
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
     document.getLeaveYearMonthLink = '<?php echo $this->url('leavebalance', ['action' => 'getLeaveYearMonth']); ?>';
     document.preference =<?php echo json_encode($preference) ?>;
+    document.allLeaveForReport =<?php echo json_encode($allLeaveForReport) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leavebalance')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

@@ -8,13 +8,11 @@ use Application\Helper\Helper;
 use Exception;
 use LeaveManagement\Form\LeaveApplyForm;
 use LeaveManagement\Repository\LeaveBalanceRepository;
+use LeaveManagement\Repository\LeaveStatusRepository;
 use SelfService\Repository\LeaveRequestRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
-use LeaveManagement\Model\LeaveMaster;
-use Application\Repository\MonthRepository;
-use LeaveManagement\Model\LeaveMonths;
 
 class LeaveBalance extends HrisController {
 
@@ -30,12 +28,22 @@ class LeaveBalance extends HrisController {
     public function indexAction() {
         $leaveList = $this->repository->getAllLeave();
         $leaves = Helper::extractDbData($leaveList);
+        
+        $leaveYearList=EntityHelper::getTableKVList($this->adapter, "HRIS_LEAVE_YEARS", "LEAVE_YEAR_ID", ["LEAVE_YEAR_NAME"], null);
+        $leaveYearSE = $this->getSelectElement(['name' => 'leaveYear', 'id' => 'leaveYear', 'class' => 'form-control ', 'label' => 'Type'], $leaveYearList);
+        
+        $leaveStatusReposotory = new LeaveStatusRepository($this->adapter);
+                
+        $allLeaveForReport= $leaveStatusReposotory->getMonthlyLeaveforReport();
+        
         return $this->stickFlashMessagesTo([
                     'leavesArrray' => $leaves,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail'],
-                    'preference' => $this->preference
+                    'preference' => $this->preference,
+                    'leaveYearSelect'  =>$leaveYearSE,
+                    'allLeaveForReport'  =>$allLeaveForReport,
         ]);
     }
 
@@ -58,12 +66,17 @@ class LeaveBalance extends HrisController {
 
         $leaveList = $this->repository->getAllLeave(true);
         $leaves = iterator_to_array($leaveList, false);
+        
+        $leaveStatusReposotory = new LeaveStatusRepository($this->adapter);
+        $allLeaveForReport= $leaveStatusReposotory->getMonthlyLeaveforReport(true);
+        
         return $this->stickFlashMessagesTo([
                     'leavesArrray' => $leaves,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail'],
-                    'preference' => $this->preference
+                    'preference' => $this->preference,
+                    'allLeaveForReport'  =>$allLeaveForReport,
         ]);
     }
 
@@ -71,7 +84,7 @@ class LeaveBalance extends HrisController {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-            $leaveList = $this->repository->getAllLeave(false, $data['leaveId']);
+            $leaveList = $this->repository->getAllLeave(false, $data['leaveId'],$data['leaveYear']);
             $leaves = Helper::extractDbData($leaveList);
             $rawList = $this->repository->getPivotedList($data);
             $list = Helper::extractDbData($rawList);
@@ -89,12 +102,20 @@ class LeaveBalance extends HrisController {
     public function betweenDatesAction() {
         $leaveList = $this->repository->getAllLeave();
         $leaves = Helper::extractDbData($leaveList);
+        
+        $leaveYearList=EntityHelper::getTableKVList($this->adapter, "HRIS_LEAVE_YEARS", "LEAVE_YEAR_ID", ["LEAVE_YEAR_NAME"], null);
+        $leaveYearSE = $this->getSelectElement(['name' => 'leaveYear', 'id' => 'leaveYear', 'class' => 'form-control ', 'label' => 'Type'], $leaveYearList);
+        $leaveStatusReposotory = new LeaveStatusRepository($this->adapter);
+        $allLeaveForReport= $leaveStatusReposotory->getMonthlyLeaveforReport();
+        
         return $this->stickFlashMessagesTo([
                     'leavesArrray' => $leaves,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail'],
-                    'preference' => $this->preference
+                    'preference' => $this->preference,
+                    'leaveYearSelect'  =>$leaveYearSE, 
+                    'allLeaveForReport'  =>$allLeaveForReport,
         ]);
     }
 

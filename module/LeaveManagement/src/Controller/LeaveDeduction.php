@@ -16,10 +16,11 @@ use Application\Helper\Helper;
 use Exception;
 use LeaveManagement\Form\LeaveDeductionForm;
 use LeaveManagement\Model\LeaveDeduction as LeaveDeductionModel;
-use SelfService\Repository\LeaveRequestRepository;
 use LeaveManagement\Repository\LeaveDeductionRepository;
+use LeaveManagement\Repository\LeaveStatusRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
+use SelfService\Repository\LeaveRequestRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
@@ -33,12 +34,20 @@ class LeaveDeduction extends HrisController {
     }
 
     public function indexAction() {
+        $leaveYearList=EntityHelper::getTableKVList($this->adapter, "HRIS_LEAVE_YEARS", "LEAVE_YEAR_ID", ["LEAVE_YEAR_NAME"], null);
+        $leaveYearSE = $this->getSelectElement(['name' => 'leaveYear', 'id' => 'leaveYear', 'class' => 'form-control ', 'label' => 'Type'], $leaveYearList);
+        
+        $leaveStatusReposotory = new LeaveStatusRepository($this->adapter);
+                
+        $allLeaveForReport= $leaveStatusReposotory->getMonthlyLeaveforReport();
 
         return $this->stickFlashMessagesTo([
             'searchValues' => EntityHelper::getSearchData($this->adapter),
             'acl' => $this->acl,
             'employeeDetail' => $this->storageData['employee_detail'],
-            'preference' => $this->preference
+            'preference' => $this->preference,
+            'leaveYearSelect'  =>$leaveYearSE,
+            'allLeaveForReport'  =>$allLeaveForReport,
         ]);
     }
 
@@ -48,16 +57,16 @@ class LeaveDeduction extends HrisController {
             $data = $request->getPost();
             $recordList = $this->repository->fetchLeaveDeductionList($data);
 
-            if($this->preference['displayHrApproved'] == 'Y'){
-                for($i = 0; $i < count($recordList); $i++){
-                    if($recordList[$i]['HARDCOPY_SIGNED_FLAG'] == 'Y'){
-                        $recordList[$i]['APPROVER_ID'] = '-1';
-                        $recordList[$i]['APPROVER_NAME'] = 'HR';
-                        $recordList[$i]['RECOMMENDER_ID'] = '-1';
-                        $recordList[$i]['RECOMMENDER_NAME'] = 'HR';
-                    }
-                }
-            }
+//            if($this->preference['displayHrApproved'] == 'Y'){
+//                for($i = 0; $i < count($recordList); $i++){
+//                    if($recordList[$i]['HARDCOPY_SIGNED_FLAG'] == 'Y'){
+//                        $recordList[$i]['APPROVER_ID'] = '-1';
+//                        $recordList[$i]['APPROVER_NAME'] = 'HR';
+//                        $recordList[$i]['RECOMMENDER_ID'] = '-1';
+//                        $recordList[$i]['RECOMMENDER_NAME'] = 'HR';
+//                    }
+//                }
+//            }
 
             return new JsonModel(["success" => "true", "data" => $recordList, "message" => null ]);
         } catch (Exception $e) {
@@ -90,9 +99,9 @@ class LeaveDeduction extends HrisController {
             'form' => $this->form,
             'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["EMPLOYEE_CODE", "FULL_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N', 'IS_ADMIN' => "N"], "FULL_NAME", "ASC", "-", FALSE, TRUE, $this->employeeId),
             'customRenderer' => Helper::renderCustomView(),
-            'applyOption' => $applyOption,
-            'subLeaveReference' => $subLeaveReference,
-            'subLeaveMaxDays' => $subLeaveMaxDays
+//            'applyOption' => $applyOption,
+//            'subLeaveReference' => $subLeaveReference,
+//            'subLeaveMaxDays' => $subLeaveMaxDays
         ]);
     }
 

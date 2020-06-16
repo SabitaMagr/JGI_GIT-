@@ -8,7 +8,7 @@ use Application\Helper\Helper;
 use Exception;
 use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveReportCardRepository;
-use SelfService\Repository\LeaveRequestRepository;
+use LeaveManagement\Repository\LeaveStatusRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
@@ -23,15 +23,23 @@ class LeaveReportCard extends HrisController {
     }
 
     public function indexAction() {
-        $leaveList = EntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", NULL, ['-1' => 'All Leaves'], TRUE);
+        $leaveList = EntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", NULL, [], TRUE);
         $leaveSE = $this->getSelectElement(['name' => 'leave', 'id' => 'leaveId', 'class' => 'form-control reset-field', 'label' => 'Type'], $leaveList);
         $leaveSE->setAttribute('multiple', 'multiple');
+        
+        $leaveYearList=EntityHelper::getTableKVList($this->adapter, "HRIS_LEAVE_YEARS", "LEAVE_YEAR_ID", ["LEAVE_YEAR_NAME"], null);
+        $leaveYearSE = $this->getSelectElement(['name' => 'leaveYear', 'id' => 'leaveYear', 'class' => 'form-control ', 'label' => 'Type'], $leaveYearList);
+        $leaveStatusReposotory = new LeaveStatusRepository($this->adapter);
+        $allLeaveForReport= $leaveStatusReposotory->getMonthlyLeaveforReport();
+        
         return $this->stickFlashMessagesTo([
             'searchValues' => EntityHelper::getSearchData($this->adapter),
             'acl' => $this->acl,
             'leaves' => $leaveSE,
             'employeeDetail' => $this->storageData['employee_detail'],
-            'preference' => $this->preference
+            'preference' => $this->preference,
+            'leaveYearSelect'  =>$leaveYearSE,
+            'allLeaveForReport'  =>$allLeaveForReport,
         ]);
     }
   
@@ -43,7 +51,7 @@ class LeaveReportCard extends HrisController {
                 $employee = $data['data']['employeeId'];
                 $rawList = $this->repository->fetchLeaveReportCard($data);
                 $list = Helper::extractDbData($rawList);
-                $rawLeaves = $this->repository->fetchLeaves($employee, $data['data']['leaveId']);
+                $rawLeaves = $this->repository->fetchLeaves($employee, $data['data']['leaveId'],$data['data']['leaveYear']);
                 $leaves = Helper::extractDbData($rawLeaves);
                 return new JsonModel([
                     "success" => true,

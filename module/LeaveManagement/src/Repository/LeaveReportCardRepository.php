@@ -12,13 +12,22 @@ class LeaveReportCardRepository extends HrisRepository {
 
   public function fetchLeaveReportCard($by){
     $leaveId = $by['data']['leaveId'];
-    $leaveId = implode($leaveId, ',');
     $leaveIdFilter = "";
     if($leaveId != '' && $leaveId != null){
+        $leaveId = implode($leaveId, ',');
       $leaveIdFilter.=" and l.leave_id IN ($leaveId)";
     }
     $employees = $by['data']['employeeId'];
     //$employees = implode(',', $employees);
+    
+    $leaveYear = $by['data']['leaveYear'];
+    
+    if ($leaveYear != null) {
+            $leaveYearStatusCondition = "( ( L.STATUS ='E' OR L.OLD_LEAVE='Y' ) AND L.LEAVE_YEAR= {$leaveYear} )";
+        } else {
+            $leaveYearStatusCondition = "L.STATUS ='E'";
+        }
+    
 
     $sql = "(SELECT LA.ID AS ID, E.EMPLOYEE_CODE AS EMPLOYEE_ID, E.EMPLOYEE_CODE AS 
     EMPLOYEE_CODE,E.JOIN_DATE AS JOIN_DATE, LA.LEAVE_ID AS LEAVE_ID, 
@@ -48,9 +57,9 @@ class LeaveReportCardRepository extends HrisRepository {
     E2.EMPLOYEE_ID=LA.RECOMMENDED_BY LEFT JOIN HRIS_EMPLOYEES  E3 ON E3.EMPLOYEE_ID=LA.APPROVED_BY LEFT JOIN 
     HRIS_RECOMMENDER_APPROVER  RA ON RA.EMPLOYEE_ID=LA.EMPLOYEE_ID LEFT JOIN HRIS_EMPLOYEES  RECM ON 
     RECM.EMPLOYEE_ID=RA.RECOMMEND_BY LEFT JOIN HRIS_EMPLOYEES APRV ON APRV.EMPLOYEE_ID=RA.APPROVED_BY 
-    INNER JOIN HRIS_DESIGNATIONS D ON E.DESIGNATION_ID = D.DESIGNATION_ID  
-    INNER JOIN HRIS_DEPARTMENTS HD ON E.DEPARTMENT_ID = HD.DEPARTMENT_ID
-    WHERE L.STATUS='E' and la.status='AP'  AND E.EMPLOYEE_ID IN ($employees) {$leaveIdFilter}"
+    LEFT JOIN HRIS_DESIGNATIONS D ON E.DESIGNATION_ID = D.DESIGNATION_ID  
+    LEFT JOIN HRIS_DEPARTMENTS HD ON E.DEPARTMENT_ID = HD.DEPARTMENT_ID
+    WHERE {$leaveYearStatusCondition} and la.status in ( 'AP','CP','CR')  AND E.EMPLOYEE_ID IN ($employees) {$leaveIdFilter}"
     . " union
 
 
@@ -114,32 +123,58 @@ INNER JOIN HRIS_LEAVE_MASTER_SETUP L
 ON L.LEAVE_ID=LA.LEAVE_ID
 LEFT JOIN HRIS_EMPLOYEES E
 ON LA.EMPLOYEE_ID=E.EMPLOYEE_ID
-INNER JOIN HRIS_DESIGNATIONS D
+LEFT JOIN HRIS_DESIGNATIONS D
 ON E.DESIGNATION_ID = D.DESIGNATION_ID
-INNER JOIN HRIS_DEPARTMENTS HD
+LEFT JOIN HRIS_DEPARTMENTS HD
 ON E.DEPARTMENT_ID = HD.DEPARTMENT_ID
-AND E.EMPLOYEE_ID IN ($employees) {$leaveIdFilter})
+where {$leaveYearStatusCondition} and E.EMPLOYEE_ID IN ($employees) {$leaveIdFilter})
 ORDER BY REQUESTED_DT_AD ASC
 ";  
-                            //echo $sql; die;
+//                            echo $sql; die;
     return $this->rawQuery($sql);    
   }
 
-  public function fetchLeaves($empId, $leaveId){
-    $leaveId = implode($leaveId, ',');
+  public function fetchLeaves($empId, $leaveId,$leaveYear){
     $leaveIdFilter = "";
     if($leaveId != '' && $leaveId != null){
+      $leaveId = implode($leaveId, ',');
       $leaveIdFilter.=" and lms.leave_id IN ($leaveId)";
     }
+    
+    
+    if ($leaveYear != null) {
+            $leaveYearStatusCondition = "( ( lms.STATUS ='E' OR lms.OLD_LEAVE='Y' ) AND lms.LEAVE_YEAR= {$leaveYear} )";
+        } else {
+            $leaveYearStatusCondition = "lms.STATUS ='E'";
+        }
+    
     $sql = "select 
     Lms.Leave_Ename,Lms.LEAVE_ID,
-    la.Total_Days, nvl(la.PREVIOUS_YEAR_BAL, 0) as PREVIOUS_YEAR_BAL,
-    la.Total_Days + nvl(la.PREVIOUS_YEAR_BAL, 0) as Balance
+    la.Total_Days - 
+    case when lms.is_monthly='Y' 
+    and lms.CARRY_FORWARD='Y' then nvl(la.PREVIOUS_YEAR_BAL, 0) else 0 end as total_days, nvl(la.PREVIOUS_YEAR_BAL, 0) as PREVIOUS_YEAR_BAL,
+    la.Total_Days + case when lms.is_monthly='Y' then 0 else nvl(la.PREVIOUS_YEAR_BAL, 0) end as Balance
     from hris_leave_master_setup lms
     left join Hris_Employee_Leave_Assign la on (lms.leave_id=la.leave_id )
-    where 1=1 and lms.status = 'E' and la.employee_id= $empId 
+    where {$leaveYearStatusCondition} and la.employee_id= $empId 
+        and
+    (la.FISCAL_YEAR_MONTH_NO =
+                  CASE
+                    WHEN lms.is_monthly = 'Y'  THEN 
+                    (SELECT LEAVE_YEAR_MONTH_NO FROM HRIS_LEAVE_MONTH_CODE
+                    WHERE (
+      select 
+                       case when trunc(sysdate)>max(to_date) then
+                        max(to_date)
+                        else 
+                        trunc(sysdate)
+                        end
+                        from HRIS_LEAVE_MONTH_CODE
+                        ) BETWEEN FROM_DATE AND TO_DATE)
+                  END
+                OR la.FISCAL_YEAR_MONTH_NO IS NULL)
     {$leaveIdFilter}
-    order by Lms.LEAVE_ID asc";
+    order by Lms.VIEW_ORDER asc";
 //    echo $sql; die;
     return $this->rawQuery($sql);
   }

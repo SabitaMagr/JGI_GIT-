@@ -211,6 +211,9 @@ class LeaveStatusRepository extends HrisRepository {
     }
 
     public function getLeaveRequestList($data): array {
+        
+//        print_r($data);
+//        die();
         $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
         $branchId = $data['branchId'];
@@ -226,6 +229,7 @@ class LeaveStatusRepository extends HrisRepository {
         $leaveId = $data['leaveId'];
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
+        $leaveYear = $data['leaveYear'];
 
 
         $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId,null,null,$functionalTypeId);
@@ -233,6 +237,13 @@ class LeaveStatusRepository extends HrisRepository {
         $leaveCondition = '';
         $fromDateCondition = "";
         $toDateCondition = "";
+        
+        if($leaveYear!=null){
+            $leaveYearStatusCondition="( ( L.STATUS ='E' OR L.OLD_LEAVE='Y' ) AND L.LEAVE_YEAR= {$leaveYear} )";
+        }else{
+            $leaveYearStatusCondition="L.STATUS ='E'";
+        }
+        
         if ($leaveRequestStatusId != -1) {
             $statusCondition = " AND LA.STATUS='{$leaveRequestStatusId}'";
         }
@@ -335,7 +346,8 @@ JOIN Hris_Employee_Work_Holiday WH ON (LA.WOH_ID=WH.ID)
 LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID)) SLR ON (SLR.ID=LA.SUB_REF_ID AND SLR.EMPLOYEE_ID=LA.EMPLOYEE_ID)
 LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT
     ON E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID                
-                WHERE L.STATUS ='E'
+                WHERE 
+                {$leaveYearStatusCondition}
                 AND E.STATUS   ='E'
                 {$searchCondition} {$statusCondition} {$leaveCondition} {$fromDateCondition} {$toDateCondition}
                 ORDER BY LA.REQUESTED_DT DESC";
@@ -388,4 +400,50 @@ LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT
     }
     
     
+    public function getAllLeaveforReport() {
+        $sql = "select 
+                lms.leave_id,
+                lms.LEAVE_CODE,
+                lms.LEAVE_ENAME,
+                lms.LEAVE_YEAR 
+                from hris_leave_master_setup lms
+                where ( status='E' or OLD_LEAVE='Y' ) order by VIEW_ORDER asc  ";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        $allLeaveForReport = [];
+        foreach ($result as $allLeave) {
+            $tempId = $allLeave['LEAVE_YEAR'];
+            (!array_key_exists($tempId, $allLeaveForReport)) ?
+                            $allLeaveForReport[$tempId][0] = $allLeave :
+                            array_push($allLeaveForReport[$tempId], $allLeave);
+        }
+
+        return $allLeaveForReport;
+    }
+    
+    
+    public function getMonthlyLeaveforReport($monthly=false) {
+        $monthlyCondition=($monthly)?"AND  IS_MONTHLY='Y' ":"AND  IS_MONTHLY='N'";
+        $sql = "select 
+                lms.leave_id,
+                lms.LEAVE_CODE,
+                lms.LEAVE_ENAME,
+                lms.LEAVE_YEAR 
+                from hris_leave_master_setup lms
+                where ( status='E' or OLD_LEAVE='Y' ) {$monthlyCondition} order by VIEW_ORDER asc  ";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        $allLeaveForReport = [];
+        foreach ($result as $allLeave) {
+            $tempId = $allLeave['LEAVE_YEAR'];
+            (!array_key_exists($tempId, $allLeaveForReport)) ?
+                            $allLeaveForReport[$tempId][0] = $allLeave :
+                            array_push($allLeaveForReport[$tempId], $allLeave);
+        }
+
+        return $allLeaveForReport;
+    }
+
 }

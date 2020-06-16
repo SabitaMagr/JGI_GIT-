@@ -62,8 +62,8 @@ class LeaveAssignRepository extends HrisRepository {
                 ON (E.EMPLOYEE_ID = ELA.EMPLOYEE_ID)
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP LS
                 ON(LS.LEAVE_ID={$leaveId})
-                LEFT JOIN (SELECT * FROM HRIS_LEAVE_MONTH_CODE WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE) MC 
-                ON (MC.LEAVE_YEAR_MONTH_NO=ELA.FISCAL_YEAR_MONTH_NO)
+               LEFT JOIN HRIS_LEAVE_MONTH_CODE MC ON
+               (MC.LEAVE_YEAR_MONTH_NO=ELA.FISCAL_YEAR_MONTH_NO AND LS.LEAVE_YEAR=MC.LEAVE_YEAR_ID)
                 LEFT JOIN HRIS_COMPANY C
                 ON (E.COMPANY_ID=C.COMPANY_ID)
                 LEFT JOIN HRIS_BRANCHES B
@@ -74,7 +74,15 @@ class LeaveAssignRepository extends HrisRepository {
                 {$searchCondition}
                     AND (CASE 
            WHEN ELA.FISCAL_YEAR_MONTH_NO IS NOT NULL THEN 
-         (SELECT LEAVE_YEAR_MONTH_NO FROM HRIS_LEAVE_MONTH_CODE WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE)
+         (SELECT LEAVE_YEAR_MONTH_NO FROM HRIS_LEAVE_MONTH_CODE WHERE 
+         (select 
+            case when trunc(sysdate)>max(to_date) then
+            max(to_date)
+            else 
+            trunc(sysdate)
+            end
+            from HRIS_LEAVE_MONTH_CODE) 
+            BETWEEN FROM_DATE AND TO_DATE)
            END=ELA.FISCAL_YEAR_MONTH_NO 
           OR 
            CASE 

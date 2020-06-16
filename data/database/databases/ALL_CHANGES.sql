@@ -1696,5 +1696,7 @@ alter table HRIS_LEAVE_MASTER_SETUP add
 (leave_year VARCHAR2(2) ,
 old_leave char(1) DEFAULT 'N' ,
 enable_override char(1) DEFAULT 'N',
-show_leave_form char(1) default 'N'
+show_leave_form char(1) default 'N',
+view_order number(2,0),
+report_show_default char(1) DEFAULT 'Y'
 );

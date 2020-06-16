@@ -9,6 +9,7 @@
         
         var $leave = $('#leaveId');
         var leaveList = document.leaves;
+        var $leaveYear = $('#leaveYear');
         app.populateSelect($leave, document.leaves, 'LEAVE_ID', 'LEAVE_ENAME');
 
 
@@ -116,6 +117,7 @@
             var q = document.searchManager.getSearchValues();
             q['fromDate'] = fromDate;
             q['toDate'] = toDate;
+            q['leaveYear'] = $leaveYear.val();
             App.blockUI({target: "#hris-page-content"});
             app.pullDataById(document.pullBalanceBetweenDates, q).then(function (success) {
                 App.unblockUI("#hris-page-content");
@@ -137,6 +139,17 @@
 //            $(".form-control").val("");
 //            document.searchManager.reset();
 //        });
+
+
+        function leaveYearChange(leaveYear) {
+            leaveList = document.allLeaveForReport[leaveYear];
+            app.populateSelect($leave, leaveList, 'LEAVE_ID', 'LEAVE_ENAME', 'All Leaves', -1, -1);
+        }
+        leaveYearChange($leaveYear.val());
+        $leaveYear.on('change', function () {
+            let selectedLeaveYear = $(this).val();
+            leaveYearChange(selectedLeaveYear);
+        });
 
     });
 })(window.jQuery, window.app);

@@ -64,6 +64,8 @@ class LeaveDeductionRepository  extends HrisRepository implements RepositoryInte
     }
 
     public function fetchLeaveDeductionList($data) {
+//        print_r($data);
+//        die();
 
         $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
@@ -78,11 +80,24 @@ class LeaveDeductionRepository  extends HrisRepository implements RepositoryInte
 
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
+        $leaveId = $data['leaveId'];
+        $leaveYear = $data['leaveYear'];
+
+        $leaveCondition = "";
+        if ($leaveId != null && $leaveId != '') {
+            $leaveId = implode($leaveId, ',');
+            $leaveCondition .= " AND L.LEAVE_ID IN ($leaveId) ";
+        }
+        if ($leaveYear != null) {
+            $leaveYearStatusCondition = "( ( L.STATUS ='E' OR L.OLD_LEAVE='Y' ) AND L.LEAVE_YEAR= {$leaveYear} )";
+        } else {
+            $leaveYearStatusCondition = "L.STATUS ='E'";
+        }
 
         $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
         $fromDateCondition = "";
         $toDateCondition = "";
-
+        
         if ($fromDate != null) {
             $fromDateCondition = " AND LA.START_DATE>=TO_DATE('{$fromDate}','DD-MM-YYYY')";
         }
@@ -111,11 +126,11 @@ class LeaveDeductionRepository  extends HrisRepository implements RepositoryInte
         ON E.EMPLOYEE_ID=LD.EMPLOYEE_ID
         LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT
         ON E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID
-        WHERE L.STATUS         ='E'
+        WHERE {$leaveYearStatusCondition} {$leaveCondition}
         AND E.STATUS           ='E'
                {$searchCondition} {$fromDateCondition} {$toDateCondition}
                 ORDER BY LD.MODIFIED_DT DESC";
-
+               
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);

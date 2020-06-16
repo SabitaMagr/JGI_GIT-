@@ -363,7 +363,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <?php } ?>
                 <div class="form-group">
                     <?php if ($status == 'RQ' || $status == 'RC' || $status == 'CP' || $status == 'CR') { ?>
-                        <?php  if($acl['HR_APPROVE']=='Y'){  ?>
+                        <?php  if($acl['HR_APPROVE']=='Y' && $setupStatus=='E'){  ?>
                             <?php print $this->formSubmit($submit); ?>
                             <input type="submit" name="submit" class="btn btn-danger pull-right" value="Reject">
                             <?php }      ?>
