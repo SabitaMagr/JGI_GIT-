@@ -151,7 +151,6 @@
         });
         
         function leaveYearChange(leaveYear){
-            console.log(leaveYear);
             let leaveList = document.allLeaveForReport[leaveYear];
             app.populateSelect($leaveId, leaveList, 'LEAVE_ID', 'LEAVE_ENAME', 'All Leaves', -1, -1);
         }

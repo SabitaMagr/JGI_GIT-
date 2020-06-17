@@ -20,6 +20,7 @@ $this->headScript()
     document.viewLink = '<?= $this->url("leaverequest", ["action" => "view"]) ?>';
     document.editLink = '<?= $this->url("leaverequest", ["action" => "edit"]) ?>';
     document.deleteLink = '<?= $this->url("leaverequest", ["action" => "delete"]) ?>';
+    document.allLeaveForReport =<?php echo json_encode($allLeaveForReport) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaverequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -79,6 +80,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
         <div class="portlet-body">
             <div class="row">
+                <div class="col-sm-2 ">
+                <label>Leave Year</label>
+                <?php print $this->formElement($leaveYearSelect); ?>
+                </div>
                 <div class="col-sm-2">
                     <?php print $this->formLabel($leaves); ?>
                     <?php print $this->formElement($leaves); ?>

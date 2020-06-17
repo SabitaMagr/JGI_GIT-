@@ -258,7 +258,8 @@ class LeaveRequestRepository implements RepositoryInterface {
         $leaveRequestStatusId = $data['leaveRequestStatusId'];
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
-
+        $leaveYear = $data['leaveYear'];
+        
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -321,8 +322,17 @@ HRIS_EMPLOYEE_LEAVE_ADDITION LA
 JOIN Hris_Employee_Work_Holiday WH ON (LA.WOH_ID=WH.ID)
 LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID))"], "SLR.ID=LA.SUB_REF_ID AND SLR.EMPLOYEE_ID=LA.EMPLOYEE_ID", [], "left");
         
+        if($leaveYear!=null){
         $select->where([
-            "L.STATUS='E'",
+            "( ( L.STATUS ='E' OR L.OLD_LEAVE='Y' ) AND L.LEAVE_YEAR= {$leaveYear} )"
+        ]);
+        }else{
+        $select->where([
+            "L.STATUS='E'"
+        ]);
+        }
+        
+        $select->where([
             "E.EMPLOYEE_ID=" . $employeeId
         ]);
 
@@ -338,7 +348,7 @@ LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID))"], "SLR.I
                       CASE
                         WHEN LA.STATUS = 'C'
                         THEN 20
-                        ELSE 365
+                        ELSE 1000
                       END)"
             ]);
         }
