@@ -5,6 +5,7 @@
         var $table = $("#table");
         var $search = $('#search');
         var $leaveId = $("#leaveId");
+        var $leaveYear = $('#leaveYear');
         var columns = [
             {field: "EMPLOYEE_CODE", title: "Code", width: 150, locked: true},
             {field: "FULL_NAME", title: "Employee", width: 150, locked: true},
@@ -31,6 +32,7 @@
         var leaveList = document.leaves;
         app.populateSelect($leaveId, leaveList, 'LEAVE_ID', 'LEAVE_ENAME');
         function reinitializeKendo(optionalColumns){
+            console.log(optionalColumns);
             columns = [
                 {field: "EMPLOYEE_CODE", title: "Code", width: 70, locked: true},
                 {field: "FULL_NAME", title: "Employee", width: 100, locked: true},
@@ -127,6 +129,7 @@
             $table.empty();
             var q = document.searchManager.getSearchValues();
             q['leaveId'] = $leaveId.val();
+            q['leaveYear'] = $leaveYear.val();
             App.blockUI({target: "#hris-page-content"});
             app.pullDataById(document.pullLeaveBalanceDetailLink, q).then(function (success) {
                 leaveList = success.leaves;
@@ -146,5 +149,20 @@
         $('#pdfExport').on("click", function () {
             app.exportToPDF($table, map, "Employee Leave Balance Report.pdf", 'A2');
         });
+        
+        function leaveYearChange(leaveYear){
+            let leaveList = document.allLeaveForReport[leaveYear];
+            app.populateSelect($leaveId, leaveList, 'LEAVE_ID', 'LEAVE_ENAME', 'All Leaves', -1, -1);
+        }
+        leaveYearChange($leaveYear.val());
+        
+        $leaveYear.on('change', function () {
+            let selectedLeaveYear = $(this).val();
+            leaveYearChange(selectedLeaveYear);
+//            let leaveList = document.allLeaveForReport[selectedLeaveYear];
+//            app.populateSelect($leaveId, leaveList, 'LEAVE_ID', 'LEAVE_ENAME', 'All Leaves', -1, -1);
+        });
+        
+        
     });
 })(window.jQuery, window.app);

@@ -24,6 +24,7 @@ $this->headScript()
     document.acl =<?php echo json_encode($acl); ?>;
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
     document.preference =<?php echo json_encode($preference) ?>;
+    document.allLeaveForReport =<?php echo json_encode($allLeaveForReport) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leavebalance')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -129,6 +130,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <label>Employee</label>
                 <select multiple class="form-control" name="employee" id="employeeId">
                 </select>
+            </div>
+            <div class="col-sm-2 ">
+                <label>Leave Year</label>
+                <?php print $this->formElement($leaveYearSelect); ?>
             </div>
             <div class="col-sm-2 ">
                 <label>Leave List</label>

@@ -37,6 +37,7 @@ $this->headScript()
     document.acl =<?php echo json_encode($acl); ?>;
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
     document.preference =<?php echo json_encode($preference) ?>;
+    document.allLeaveForReport =<?php echo json_encode($allLeaveForReport) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leavebalance')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -155,6 +156,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         Search
                         <i class="fa fa-search"></i>
                 </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2 ">
+                <label>Leave Year</label>
+                <?php print $this->formElement($leaveYearSelect); ?>
             </div>
         </div>
     </div>

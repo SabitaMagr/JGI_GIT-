@@ -1,12 +1,16 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        $("select").select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
         var $tableContainer = $("#leaveDeductionStatusTable");
         var $search = $('#search');
         var $bulkActionDiv = $('#bulkActionDiv');
         var $bulkBtns = $(".btnApproveReject");
         var $superpower = $("#super_power");
+        
+        var $leaveId = $("#leaveId");
+        var $leaveYear = $('#leaveYear');
 
         $.each(document.searchManager.getIds(), function (key, value) {
             $('#' + value).select2();
@@ -61,6 +65,8 @@
             var q = document.searchManager.getSearchValues();
             q['fromDate'] = $('#fromDate').val();
             q['toDate'] = $('#toDate').val();
+            q['leaveId'] = $leaveId.val();
+            q['leaveYear'] = $leaveYear.val();
             App.blockUI({target: "#hris-page-content"});
             app.pullDataById(document.pullLeaveDeductionStatus, q).then(function (success) {
                 App.unblockUI("#hris-page-content");
@@ -91,6 +97,18 @@
             }, function (data, error) {
 
             });
+        });
+        
+        
+         function leaveYearChange(leaveYear){
+            let leaveList = document.allLeaveForReport[leaveYear];
+            app.populateSelect($leaveId, leaveList, 'LEAVE_ID', 'LEAVE_ENAME', 'All Leaves', -1, -1);
+        }
+        leaveYearChange($leaveYear.val());
+        
+        $leaveYear.on('change', function () {
+            let selectedLeaveYear = $(this).val();
+            leaveYearChange(selectedLeaveYear);
         });
         
 

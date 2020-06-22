@@ -5,6 +5,8 @@
 
         var listDiv = $('#listDiv');
         var $assignTable = $('#employeeTable');
+        var $leaveId = $("#leaveId");
+        var $leaveYear = $('#leaveYear');
 
         function searchAction() {
             
@@ -19,7 +21,8 @@
             for(let i in id){
                 var data = {
                     employeeId: id[i],
-                    leaveId : $("#leaveId").val()
+                    leaveId : $("#leaveId").val(),
+                    leaveYear : $leaveYear.val()
                 }; 
 
             app.serverRequest(document.pullLeaveReportCardLink , {'data': data}).then(function (response) {
@@ -126,6 +129,17 @@
             kendo.drawing.drawDOM($("#table")).then(function (group) {
                 kendo.drawing.pdf.saveAs(group, "Leave-report-card.pdf");
             });
+        });
+        
+        function leaveYearChange(leaveYear){
+            let leaveList = document.allLeaveForReport[leaveYear];
+            app.populateSelect($leaveId, leaveList, 'LEAVE_ID', 'LEAVE_ENAME', 'All Leaves', -1, -1);
+        }
+        leaveYearChange($leaveYear.val());
+        
+        $leaveYear.on('change', function () {
+            let selectedLeaveYear = $(this).val();
+            leaveYearChange(selectedLeaveYear);
         });
 
     });

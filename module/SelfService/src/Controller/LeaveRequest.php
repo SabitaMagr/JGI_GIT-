@@ -10,6 +10,7 @@ use Exception;
 use LeaveManagement\Form\LeaveApplyForm;
 use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Model\LeaveMaster;
+use LeaveManagement\Repository\LeaveStatusRepository;
 use ManagerService\Repository\LeaveApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
@@ -31,6 +32,10 @@ class LeaveRequest extends HrisController {
 
     public function indexAction() {
         $request = $this->getRequest();
+        $leaveYearList=EntityHelper::getTableKVList($this->adapter, "HRIS_LEAVE_YEARS", "LEAVE_YEAR_ID", ["LEAVE_YEAR_NAME"], null);
+        $leaveYearSE = $this->getSelectElement(['name' => 'leaveYear', 'id' => 'leaveYear', 'class' => 'form-control ', 'label' => 'Type'], $leaveYearList);
+        $leaveStatusReposotory = new LeaveStatusRepository($this->adapter);
+        $allLeaveForReport= $leaveStatusReposotory->getMonthlyLeaveforReport();
         if ($request->isPost()) {
             try {
                 $data = $request->getPost();
@@ -61,6 +66,8 @@ class LeaveRequest extends HrisController {
                     'leaves' => $leaveSE,
                     'leaveStatus' => $leaveStatusFE,
                     'employeeId' => $this->employeeId,
+                    'leaveYearSelect'  =>$leaveYearSE, 
+                    'allLeaveForReport'  =>$allLeaveForReport,
         ]);
     }
 

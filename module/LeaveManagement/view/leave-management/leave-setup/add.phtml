@@ -7,6 +7,7 @@ $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveSetup/a
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'leaveSetup-form');
 
+$leaveCode = $form->get('leaveCode');
 $leaveEname = $form->get('leaveEname');
 $leaveLname = $form->get('leaveLname');
 $allowHalfday = $form->get('allowHalfday');
@@ -29,6 +30,7 @@ $remarks = $form->get('remarks');
 $fiscalYear->setValueOptions($fiscalYears);
 $hrOnly = $form->get('hrOnly');
 $enableOverride = $form->get('enableOverride');
+$viewOrder =$form->get('viewOrder');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -78,6 +80,14 @@ print $this->form()->openTag($form);
                             <?php print $this->formElement($fiscalYear); ?>
                         </div>
                         <?php print $this->formElementErrors()->render($fiscalYear, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($leaveCode->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($leaveCode); ?>
+                            <?php print $this->formElement($leaveCode); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($leaveCode, ['class' => 'help-block error']); ?>
                     </div>
                 </div>
 
@@ -204,6 +214,8 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($isProdataBasis, ['class' => 'help-block error']); ?>
                     </div>
+                </div>
+                <div class=" row">
                     <div class=" col-sm-4 ">
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($enableSubstitute); ?>
@@ -231,6 +243,8 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($holidayAsLeave, ['class' => 'help-block error']); ?>
                     </div>
+                    </div>
+                <div class=" row">
                     <div class=" col-sm-4 ">
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($hrOnly); ?>
@@ -249,6 +263,15 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($enableOverride, ['class' => 'help-block error']); ?>
                     </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($viewOrder); ?>
+                            <?php print $this->formElement($viewOrder); ?>
+                            <?php print $this->formElementErrors()->render($viewOrder, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>

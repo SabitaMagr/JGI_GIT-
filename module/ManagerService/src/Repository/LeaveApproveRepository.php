@@ -225,6 +225,7 @@ class LeaveApproveRepository implements RepositoryInterface {
                   ELSE 'Second Half' END) AS HALF_DAY_DETAIL
                 ,CASE WHEN SUB_REF_ID IS NOT NULL THEN 
                 INITCAP(L.LEAVE_ENAME)||'('||SLR.SUB_NAME||')' END AS LEAVE_ENAME
+                ,L.STATUS AS SETUP_STATUS
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON L.LEAVE_ID=LA.LEAVE_ID
@@ -272,7 +273,15 @@ class LeaveApproveRepository implements RepositoryInterface {
                     WHEN l.is_monthly = 'Y' AND l.CARRY_FORWARD = 'N'  THEN mth.leave_year_month_no
                     WHEN l.is_monthly = 'Y' AND l.CARRY_FORWARD = 'Y'  THEN 
                     (SELECT LEAVE_YEAR_MONTH_NO FROM HRIS_LEAVE_MONTH_CODE
-                    WHERE TRUNC(SYSDATE)BETWEEN FROM_DATE AND TO_DATE)
+                    WHERE (
+      select 
+                       case when trunc(sysdate)>max(to_date) then
+                        max(to_date)
+                        else 
+                        trunc(sysdate)
+                        end
+                        from HRIS_LEAVE_MONTH_CODE
+                        ) BETWEEN FROM_DATE AND TO_DATE)
                   END
                 OR ELA.FISCAL_YEAR_MONTH_NO IS NULL)";
 
@@ -461,7 +470,15 @@ INITCAP(L.LEAVE_ENAME)||'('||SLR.SUB_NAME||')' END AS LEAVE_ENAME
                     WHEN l.is_monthly = 'Y' AND l.CARRY_FORWARD = 'N'  THEN mth.leave_year_month_no
                     WHEN l.is_monthly = 'Y' AND l.CARRY_FORWARD = 'Y'  THEN 
                     (SELECT LEAVE_YEAR_MONTH_NO FROM HRIS_LEAVE_MONTH_CODE
-                    WHERE TRUNC(SYSDATE)BETWEEN FROM_DATE AND TO_DATE)
+                    WHERE (
+                    select 
+                       case when trunc(sysdate)>max(to_date) then
+                        max(to_date)
+                        else 
+                        trunc(sysdate)
+                        end
+                        from HRIS_LEAVE_MONTH_CODE
+                    ) BETWEEN FROM_DATE AND TO_DATE)
                   END
                 OR ELA.FISCAL_YEAR_MONTH_NO IS NULL)";
         $statement = $this->adapter->query($sql);

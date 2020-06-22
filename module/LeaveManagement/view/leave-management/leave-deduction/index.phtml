@@ -21,6 +21,7 @@ $this->headScript()
     document.pullLeaveDeductionStatus = '<?= $this->url("leavededuction", ["action" => "pullLeaveDeductionList"]) ?>';
     document.preference =<?php echo json_encode($preference) ?>;
     document.bulkLink = '<?= $this->url("leavededuction", ["action" => "bulk"]) ?>';
+    document.allLeaveForReport =<?php echo json_encode($allLeaveForReport) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leavededuction')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -128,6 +129,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <select multiple class="form-control" name="employee" id="employeeId">
                 </select>
             </div>
+            
+            <div class="col-sm-2">
+                <label>Leave</label>
+                <select multiple class="form-control" name="leaveId" id="leaveId">
+                </select>
+            </div>
+             <div class="col-sm-2 ">
+                <label>Leave Year</label>
+                <?php print $this->formElement($leaveYearSelect); ?>
+            </div>
+            
 
         </div>
 

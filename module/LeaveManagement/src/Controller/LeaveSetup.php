@@ -50,6 +50,7 @@ class LeaveSetup extends HrisController {
                 $leaveMaster->createdDt = Helper::getcurrentExpressionDate();
                 $leaveMaster->createdBy = $this->employeeId;
                 $leaveMaster->status = 'E';
+                $leaveMaster->leaveYear = $leaveMaster->fiscalYear;
                 $this->arrayToCSV($leaveMaster, $postData);
                 $this->repository->add($leaveMaster);
                 $this->flashmessenger()->addMessage("Leave Successfully added!!!");
@@ -132,6 +133,7 @@ class LeaveSetup extends HrisController {
                 $leaveMaster->exchangeArrayFromForm($this->form->getData());
                 $leaveMaster->modifiedDt = Helper::getcurrentExpressionDate();
                 $leaveMaster->modifiedBy = $this->employeeId;
+                $leaveMaster->leaveYear = $leaveMaster->fiscalYear;
                 $this->arrayToCSV($leaveMaster, $postData);
                 $this->repository->edit($leaveMaster, $id);
                 $this->flashmessenger()->addMessage("Leave Successfuly Updated!!!");

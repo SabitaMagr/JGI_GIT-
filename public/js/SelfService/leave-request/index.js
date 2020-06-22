@@ -2,6 +2,8 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
+        var $leaveId = $("#leaveId");
+        var $leaveYear = $('#leaveYear');
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
 
         $("#reset").on("click", function () {
@@ -62,13 +64,15 @@
             var leaveRequestStatusId = $('#leaveRequestStatusId').val();
             var fromDate = $('#fromDate').val();
             var toDate = $('#toDate').val();
+            let leaveYear= $leaveYear.val();
 
             app.pullDataById('', {
                 'employeeId': employeeId,
                 'leaveId': leaveId,
                 'leaveRequestStatusId': leaveRequestStatusId,
                 'fromDate': fromDate,
-                'toDate': toDate
+                'toDate': toDate,
+                'leaveYear': leaveYear,
             }).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($table, response.data);
@@ -108,6 +112,20 @@
 
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, exportMap, 'Leave Request List');
+        });
+        
+        
+        function leaveYearChange(leaveYear){
+            let leaveList = document.allLeaveForReport[leaveYear];
+            app.populateSelect($leaveId, leaveList, 'LEAVE_ID', 'LEAVE_ENAME', 'All Leaves', -1, -1);
+        }
+        leaveYearChange($leaveYear.val());
+        
+        $leaveYear.on('change', function () {
+            let selectedLeaveYear = $(this).val();
+            leaveYearChange(selectedLeaveYear);
+//            let leaveList = document.allLeaveForReport[selectedLeaveYear];
+//            app.populateSelect($leaveId, leaveList, 'LEAVE_ID', 'LEAVE_ENAME', 'All Leaves', -1, -1);
         });
 
     });

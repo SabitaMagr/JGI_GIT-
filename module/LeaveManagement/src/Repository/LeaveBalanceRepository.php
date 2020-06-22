@@ -31,14 +31,19 @@ class LeaveBalanceRepository {
         $this->leaveMonthTableGateway = new TableGateway("HRIS_LEAVE_MONTH_CODE", $adapter);
     }
 
-    public function getAllLeave($isMonthly = false, $leaveId = null) {
-        $leaveCondition = '';
-        $leaveId = implode($leaveId, ',');
+    public function getAllLeave($isMonthly = false, $leaveId = null,$leaveYear=null) {
+        $leaveCondition = " AND REPORT_SHOW_DEFAULT='Y'";
         if($leaveId != null && $leaveId != ''){
-            $leaveCondition .= " and leave_id in ($leaveId)";
+            $leaveId = implode($leaveId, ',');
+            $leaveCondition = " and leave_id in ($leaveId)";
+        }
+        if($leaveYear!=null){
+            $leaveYearStatusCondition="( ( STATUS ='E' OR OLD_LEAVE='Y' ) AND LEAVE_YEAR= {$leaveYear} )";
+        }else{
+            $leaveYearStatusCondition="STATUS ='E'";
         }
         $condition = $isMonthly ? " AND IS_MONTHLY = 'Y' " : "  AND IS_MONTHLY = 'N' ";
-        $sql = "SELECT LEAVE_ID,INITCAP(LEAVE_ENAME) AS LEAVE_ENAME FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS='E' {$condition} {$leaveCondition} ORDER BY LEAVE_ENAME";
+        $sql = "SELECT LEAVE_ID,INITCAP(LEAVE_ENAME) AS LEAVE_ENAME FROM HRIS_LEAVE_MASTER_SETUP WHERE {$leaveYearStatusCondition} {$condition} {$leaveCondition} ORDER BY VIEW_ORDER,LEAVE_ENAME";
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }
@@ -182,14 +187,15 @@ class LeaveBalanceRepository {
 
     public function getPivotedList($searchQuery, $isMonthly = false) {
         $leaveId = $searchQuery['leaveId'];
-        $leaveId = implode($leaveId, ',');
         $leaveCondition = "";
         if($leaveId != null && $leaveId != ''){
+            $leaveId = implode($leaveId, ',');
             $leaveCondition .= " AND HA.LEAVE_ID IN ($leaveId) ";
         }
+        $leaveYear = $searchQuery['leaveYear'];
         $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId'], $searchQuery['genderId'], $searchQuery['locationId'], $searchQuery['functionalTypeId']);
         $monthlyCondition = $isMonthly ? " AND FISCAL_YEAR_MONTH_NO ={$searchQuery['leaveYearMonthNo']} " : "";
-        $leaveArrayDb = $this->fetchLeaveAsDbArray($isMonthly, $leaveId);
+        $leaveArrayDb = $this->fetchLeaveAsDbArray($isMonthly, $leaveId,$leaveYear);
         $includePreviousBalance = $isMonthly ? "0" : " HA.PREVIOUS_YEAR_BAL ";
         
         $sql = "
@@ -242,13 +248,18 @@ FROM (SELECT *
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
-    private function fetchLeaveAsDbArray($isMonthly = false, $leaveId = '') {
+    private function fetchLeaveAsDbArray($isMonthly = false, $leaveId = '',$leaveYear=null) {
         $condition = $isMonthly ? " AND IS_MONTHLY = 'Y' " : " AND IS_MONTHLY = 'N' ";
         $leaveCondition = "";
         if($leaveId != null && $leaveId != ''){
             $leaveCondition .= " AND LEAVE_ID IN ($leaveId) ";
         }
-    $rawList = EntityHelper::rawQueryResult($this->adapter, "SELECT LEAVE_ID FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS ='E' {$condition} {$leaveCondition}");
+        if($leaveYear!=null){
+            $leaveYearStatusCondition="( ( STATUS ='E' OR OLD_LEAVE='Y' ) AND LEAVE_YEAR= {$leaveYear} )";
+        }else{
+            $leaveYearStatusCondition="STATUS ='E'";
+        }
+    $rawList = EntityHelper::rawQueryResult($this->adapter, "SELECT LEAVE_ID FROM HRIS_LEAVE_MASTER_SETUP WHERE {$leaveYearStatusCondition} {$condition} {$leaveCondition}");
         $dbArray = "";
         foreach ($rawList as $key => $row) {
             if ($key == sizeof($rawList)) {
@@ -263,7 +274,8 @@ FROM (SELECT *
     public function getPivotedListBetnDates($searchQuery, $isMonthly = false) {
         $orderByString = EntityHelper::getOrderBy('E.FULL_NAME ASC', null, 'E.SENIORITY_LEVEL', 'P.LEVEL_NO', 'E.JOIN_DATE', 'DES.ORDER_NO', 'E.FULL_NAME');
         $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId'], null, null, $searchQuery['functionalTypeId']);
-        $leaveArrayDb = $this->fetchLeaveAsDbArray($isMonthly);
+        $leaveYear = $searchQuery['leaveYear'];
+        $leaveArrayDb = $this->fetchLeaveAsDbArray($isMonthly, null,$leaveYear);
         $fromDate = "to_date('{$searchQuery['fromDate']}')";
         $toDate = "to_date('{$searchQuery['toDate']}')";
 
@@ -288,7 +300,7 @@ FROM (SELECT *
               (SELECT 
 EMPLOYEE_ID,LEAVE_ID
 ,SUM(CASE WHEN HALF_DAY='F' OR HALF_DAY='S' THEN 0.5 ELSE 1 END) AS lEAVE_TAKEN_BETWEEN_DATES 
-FROM (SELECT * FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE STATUS='AP') LR
+FROM (SELECT * FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE STATUS IN ('AP','CP','CR')) LR
   JOIN 
 (SELECT   {$fromDate} + ROWNUM -1  AS DATES
     FROM dual d
@@ -306,7 +318,7 @@ OR
 THEN (end_date - {$toDate})/2
 ELSE end_date - {$toDate}
 END as leave_days 
-    FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE STATUS='AP'
+    FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE STATUS IN ('AP','CP','CR') 
     AND END_DATE>{$toDate}
     AND START_DATE<={$toDate}
         UNION ALL
@@ -321,7 +333,7 @@ OR
 THEN no_of_days/2
 ELSE no_of_days
 END as leave_days
-    FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE STATUS='AP'
+    FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE STATUS IN ('AP','CP','CR') 
     AND START_DATE>{$toDate}
     )
     GROUP BY EMPLOYEE_ID,LEAVE_ID) LTAD ON (LTAD.LEAVE_ID=LA.LEAVE_ID AND LTAD.EMPLOYEE_ID=LA.EMPLOYEE_ID)
@@ -444,7 +456,10 @@ where 1=1  {$leaveCondition} {$searchCondition}
               INITCAP(TO_CHAR(TO_DATE,'DD-MON-YYYY')) AS TO_DATE_AD,
               BS_DATE(TO_DATE) AS TO_DATE_BS
             FROM HRIS_LEAVE_MONTH_CODE
-            WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE
+            WHERE (select 
+            case when trunc(sysdate)>max(to_date) then max(to_date) else trunc(sysdate)
+            end
+            from HRIS_LEAVE_MONTH_CODE) BETWEEN FROM_DATE AND TO_DATE
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
