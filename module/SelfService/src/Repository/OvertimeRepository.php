@@ -151,12 +151,13 @@ class OvertimeRepository implements RepositoryInterface {
         TOTAL_HOUR,
         TOTAL_HOUR - 480 as OT_MINUTES
         FROM HRIS_ATTENDANCE_DETAIL 
-        WHERE EMPLOYEE_ID = {$employeeId} 
-        and ATTENDANCE_DT = TO_DATE('{$date}', 'DD-MON-YY')";
+        WHERE EMPLOYEE_ID = :employeeId 
+        and ATTENDANCE_DT = TO_DATE(:date, 'DD-MON-YY')";
 
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        $boundedParameter = [];
+        $boundedParameter['employeeId'] = $employeeId;
+        $boundedParameter['date'] = $date;
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
 }

@@ -70,14 +70,18 @@ class ReportRepository extends HrisRepository {
                 ELSE 0
               END) AS IS_DAYOFF
               FROM HRIS_ATTENDANCE_DETAIL AD
-              WHERE AD.EMPLOYEE_ID = $employeeId
+              WHERE AD.EMPLOYEE_ID = :employeeId
               ) R
             JOIN HRIS_MONTH_CODE M
             ON (M.MONTH_ID = R.MONTH_ID)
 EOT;
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+
+        $boundedParameter = [];
+        $boundedParameter['employeeId'] = $employeeId;
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return Helper::extractDbData($result);
     }
 
     public function departmentWiseDailyReport(int $monthId, int $departmentId = null, int $branchId = null) {
@@ -141,15 +145,18 @@ EOT;
                       ( SELECT FROM_DATE,TO_DATE FROM HRIS_MONTH_CODE WHERE MONTH_ID=$monthId
                       ) M
                     WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
-                    AND E.DEPARTMENT_ID=$departmentId
+                    AND E.DEPARTMENT_ID=:departmentId
                     ORDER BY AD.ATTENDANCE_DT,
                       E.EMPLOYEE_ID
 EOT;
 //        echo $sql;
 //        die();
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        $boundedParameter = [];
+        $boundedParameter['departmentId'] = $departmentId;
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return Helper::extractDbData($result);
     }
 
     public function branchWiseEmployeeMonthReport($branchId) {
@@ -208,7 +215,7 @@ EOT;
                     FROM HRIS_ATTENDANCE_DETAIL AD
                     JOIN HRIS_EMPLOYEES E
                     ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID)
-                    WHERE E.BRANCH_ID=$branchId
+                    WHERE E.BRANCH_ID=:branchId
                     ) I
                   GROUP BY I.EMPLOYEE_ID,
                     I.MONTH_ID
@@ -218,9 +225,12 @@ EOT;
                 JOIN HRIS_MONTH_CODE JM
                 ON (J.MONTH_ID = JM.MONTH_ID)
 EOT;
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        $boundedParameter = [];
+        $boundedParameter['branchId'] = $branchId;
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return Helper::extractDbData($result);
     }
 
     public function getCompanyBranchDepartment() {
@@ -798,11 +808,13 @@ EOT;
 
     public function getDaysInMonth($monthId) {
 
-        $sql = "SELECT TO_DATE - FROM_DATE +1 AS TOTAL_DAYS FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}";
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        $sql = "SELECT TO_DATE - FROM_DATE +1 AS TOTAL_DAYS FROM HRIS_MONTH_CODE WHERE MONTH_ID =:monthId";
+        $boundedParameter = [];
+        $boundedParameter['monthId'] = $monthId;
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return Helper::extractDbData($result);
     }
 
     public function checkIfEmpowerTableExists() {
@@ -1078,7 +1090,7 @@ EOT;
                 AND (EMC.EMPLOYEE_ID=A.EMPLOYEE_ID))
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON (A.LEAVE_ID          = L.LEAVE_ID)
-                WHERE EMC.FISCAL_YEAR_ID={$fiscalYearId}
+                WHERE EMC.FISCAL_YEAR_ID=:fiscalYearId
                 GROUP BY EMC.DEPARTMENT_ID,
                   EMC.FISCAL_YEAR_MONTH_NO
                 ) PIVOT (MAX(PRESENT) AS PRESENT,MAX(ABSENT) AS ABSENT,MAX(LEAVE) AS LEAVE,MAX(DAYOFF) AS DAYOFF,MAX(HOLIDAY) AS HOLIDAY,MAX(WORK_ON_HOLIDAY) AS WOH,MAX(WORK_ON_DAYOFF) AS WOD FOR FISCAL_YEAR_MONTH_NO IN (1 AS one,2 AS two,3 AS three,4 AS four,5 AS five,6 AS six,7 AS seven,8 AS eight,9 AS nine,10 AS ten,11 AS eleven,12 AS twelve))
@@ -1086,14 +1098,16 @@ EOT;
             JOIN HRIS_DEPARTMENTS D
             ON (R.DEPARTMENT_ID=D.DEPARTMENT_ID)       
 EOT;
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        $boundedParameter['fiscalYearId'] = $fiscalYearId;
+        return $this->rawQuery($sql, $boundedParameter);
+        //$result = $statement->execute();
+        //return Helper::extractDbData($result);
     }
 
     public function employeeMonthlyReport($searchQuery) {
-        $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId'], null, null, $searchQuery['functionalTypeId']);
+        $searchCondition = EntityHelper::getSearchConditonBounded($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId'], null, null, $searchQuery['functionalTypeId']);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
         $sql = <<<EOT
                 SELECT D.FULL_NAME, D.EMPLOYEE_CODE,
                   R.*
@@ -1160,14 +1174,14 @@ EOT;
                     FROM
                       (SELECT * FROM HRIS_MONTH_CODE MC,HRIS_EMPLOYEES E
                             WHERE 1=1 
-                            {$searchConditon}
+                            {$searchCondition['sql']}
                       ) EMC
                     LEFT JOIN HRIS_ATTENDANCE_DETAIL A
                     ON ((A.ATTENDANCE_DT BETWEEN EMC.FROM_DATE AND EMC.TO_DATE)
                     AND (EMC.EMPLOYEE_ID=A.EMPLOYEE_ID))
                     LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                     ON (A.LEAVE_ID          = L.LEAVE_ID)
-                    WHERE EMC.FISCAL_YEAR_ID={$searchQuery['fiscalYearId']}
+                    WHERE EMC.FISCAL_YEAR_ID=:fiscalYearId
                     GROUP BY EMC.EMPLOYEE_ID,
                       EMC.FISCAL_YEAR_MONTH_NO
                     ) PIVOT (MAX(PRESENT) AS PRESENT,MAX(ABSENT) AS ABSENT,MAX(LEAVE) AS LEAVE,MAX(DAYOFF) AS DAYOFF,MAX(HOLIDAY) AS HOLIDAY,MAX(WORK_ON_HOLIDAY) AS WOH,MAX(WORK_ON_DAYOFF) AS WOD FOR FISCAL_YEAR_MONTH_NO IN (1 AS one,2 AS two,3 AS three,4 AS four,5 AS five,6 AS six,7 AS seven,8 AS eight,9 AS nine,10 AS ten,11 AS eleven,12 AS twelve))
@@ -1176,9 +1190,11 @@ EOT;
                 ON (R.EMPLOYEE_ID=D.EMPLOYEE_ID)                   
 EOT;
 
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        $boundedParameter['fiscalYearId'] = $searchQuery['fiscalYearId'];
+        return $this->rawQuery($sql, $boundedParameter);
+        //$statement = $this->adapter->query($sql);
+        //$result = $statement->execute();
+        //return Helper::extractDbData($result);
     }
 
     public function employeeDailyReport($searchQuery) {
@@ -1575,7 +1591,9 @@ EOT;
         $fromDate = !empty($_POST['fromDate']) ? $_POST['fromDate'] : '01-Jan-2019';
         $toDate = !empty($_POST['toDate']) ? $_POST['toDate'] : '31-Dec-2019';
 
-        $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId'], $by['functionalTypeId']);
+        $condition = EntityHelper::getSearchConditonBounded($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId'], $by['functionalTypeId']);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $condition['parameter']);
         $sql = "SELECT  
           {$columIfSynergy}
               E.ID_ACCOUNT_NO  AS ID_ACCOUNT_NO,
@@ -1706,10 +1724,10 @@ EOT;
               BETWEEN to_number(to_char(TO_DATE('{$fromDate}', 'DD-MON-YY') , 'MMDD'))
               AND to_number(to_char(TO_DATE('{$toDate}', 'DD-MON-YY') , 'MMDD'))
               AND E.STATUS='E' 
-              {$condition}
+              {$condition['sql']}
               {$orderByString}";
 
-        return $this->rawQuery($sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function fetchJobDurationReport($by) {
@@ -2251,14 +2269,19 @@ EOT;
         $lessCondition = "";
         $bothCondition = "";
 
+        $boundedParameter = [];
         if ($data['greaterThan'] != null && $data['lessThan'] == null) {
-            $greaterCondition = "AND E.AGE >= {$data['greaterThan']}";
+            $greaterCondition = "AND E.AGE >= :greaterThan";
+            $boundedParameter['greaterThan'] = $data['greaterThan'];
         }
         if ($data['greaterThan'] == null && $data['lessThan'] != null) {
-            $lessCondition = "AND E.AGE <= {$data['lessThan']} ";
+            $lessCondition = "AND E.AGE <= :lessThan ";
+            $boundedParameter['lessThan'] = $data['lessThan'];
         }
         if ($data['greaterThan'] != null && $data['lessThan'] != null) {
-            $bothCondition = "AND E.AGE between {$data['greaterThan']} and {$data['lessThan']} ";
+            $bothCondition = "AND E.AGE between :greaterThan and :lessThan ";
+            $boundedParameter['greaterThan'] = $data['greaterThan'];
+            $boundedParameter['lessThan'] = $data['lessThan'];
         }
 
         $sql = <<<EOT
@@ -2280,9 +2303,10 @@ EOT;
               ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID) WHERE E.STATUS = 'E' {$greaterCondition} {$lessCondition} {$bothCondition}
 EOT;
 
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return Helper::extractDbData($result);
     }
 
     public function checkContract($searchQuery) {

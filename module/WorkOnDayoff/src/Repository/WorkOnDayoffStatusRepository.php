@@ -28,7 +28,7 @@ class WorkOnDayoffStatusRepository extends HrisRepository {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
 
-        $searchCondition = $this->getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
         $boundedParameter = [];
         $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
         $statusCondition = "";
@@ -36,17 +36,17 @@ class WorkOnDayoffStatusRepository extends HrisRepository {
         $toDateCondition = "";
 
         if ($requestStatusId != -1) {
-            $statusCondition = " AND WD.STATUS =':requestStatusId'";
+            $statusCondition = " AND WD.STATUS =:requestStatusId";
             $boundedParameter['requestStatusId'] = $requestStatusId;
         }
 
         if ($fromDate != null) {
-            $fromDateCondition = " AND WD.FROM_DATE>=TO_DATE(':fromDate','DD-MM-YYYY')";
+            $fromDateCondition = " AND WD.FROM_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY')";
             $boundedParameter['fromDate'] = $fromDate;
         }
 
         if ($toDate != null) {
-            $toDateCondition = "AND WD.TO_DATE<=TO_DATE(':toDate','DD-MM-YYYY')";
+            $toDateCondition = "AND WD.TO_DATE<=TO_DATE(:toDate,'DD-MM-YYYY')";
             $boundedParameter['toDate'] = $toDate;
         }
 
@@ -136,7 +136,7 @@ class WorkOnDayoffStatusRepository extends HrisRepository {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
 
-        $searchCondition = $this->getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, null, null, $functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, null, null, $functionalTypeId);
         $boundedParameter = [];
         $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
         $statusCondition = "";
@@ -222,17 +222,17 @@ class WorkOnDayoffStatusRepository extends HrisRepository {
                  ";
 
         if ($requestStatusId != -1) {
-            $sql .= " AND WD.STATUS =':requestStatusId'";
+            $sql .= " AND WD.STATUS =:requestStatusId";
             $boundedParameter['requestStatusId'] = $requestStatusId;
         }
 
         if ($fromDate != null) {
-            $sql .= " AND WD.FROM_DATE>=TO_DATE(':fromDate','DD-MM-YYYY')";
+            $sql .= " AND WD.FROM_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY')";
             $boundedParameter['fromDate'] = $fromDate;
         }
 
         if ($toDate != null) {
-            $sql .= "AND WD.TO_DATE<=TO_DATE(':toDate','DD-MM-YYYY')";
+            $sql .= "AND WD.TO_DATE<=TO_DATE(:toDate,'DD-MM-YYYY')";
             $boundedParameter['toDate'] = $toDate;
         }
 
@@ -267,7 +267,6 @@ class WorkOnDayoffStatusRepository extends HrisRepository {
 //                {$fromDateCondition}
 //                {$toDateCondition}
 //                ORDER BY WD.REQUESTED_DATE DESC";
-
         $finalSql = $this->getPrefReportQuery($sql);
         return $this->rawQuery($finalSql, $boundedParameter);
         

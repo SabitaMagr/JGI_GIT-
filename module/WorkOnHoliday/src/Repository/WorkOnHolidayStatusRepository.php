@@ -23,7 +23,7 @@ class WorkOnHolidayStatusRepository extends HrisRepository {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
 
-        $searchCondition = $this->getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
         $boundedParameter = [];
         $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
         $statusCondition = '';
@@ -31,22 +31,22 @@ class WorkOnHolidayStatusRepository extends HrisRepository {
         $fromDateCondition = '';
         $toDateCondition = '';
         if ($requestStatusId != -1) {
-            $statusCondition = " AND  WH.STATUS=':requestStatusId' ";
+            $statusCondition = " AND  WH.STATUS=:requestStatusId ";
             $boundedParameter['requestStatusId'] = $requestStatusId;
         }
         
         if ($holidayId != -1) {
-            $holidayCondition = " AND WH.HOLIDAY_ID =':holidayId'";
+            $holidayCondition = " AND WH.HOLIDAY_ID =:holidayId";
             $boundedParameter['holidayId'] = $holidayId;
         }
 
         if ($fromDate != null) {
-            $fromDateCondition = " AND WH.FROM_DATE>=TO_DATE(':fromDate','DD-MM-YYYY')";
+            $fromDateCondition = " AND WH.FROM_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY')";
             $boundedParameter['fromDate'] = $fromDate;
         }
 
         if ($toDate != null) {
-            $toDateCondition = " AND WH.TO_DATE<=TO_DATE(':toDate','DD-MM-YYYY')";
+            $toDateCondition = " AND WH.TO_DATE<=TO_DATE(:toDate,'DD-MM-YYYY')";
             $boundedParameter['toDate'] = $toDate;
         }
 
@@ -141,7 +141,7 @@ class WorkOnHolidayStatusRepository extends HrisRepository {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
 
-        $searchCondition = $this->getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, null, null, $functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, null, null, $functionalTypeId);
         $boundedParameter = [];
         $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
         $statusCondition = '';
@@ -149,22 +149,22 @@ class WorkOnHolidayStatusRepository extends HrisRepository {
         $fromDateCondition = '';
         $toDateCondition = '';
         if ($requestStatusId != -1) {
-            $statusCondition = " AND  WH.STATUS=':requestStatusId') ";
+            $statusCondition = " AND  WH.STATUS=:requestStatusId ";
             $boundedParameter['requestStatusId'] = $requestStatusId;
         }
 
         if ($holidayId != -1) {
-            $holidayCondition = " AND WH.HOLIDAY_ID =':$holidayId'";
+            $holidayCondition = " AND WH.HOLIDAY_ID =:holidayId";
             $boundedParameter['holidayId'] = $holidayId;
         }
 
         if ($fromDate != null) {
-            $fromDateCondition = " AND WH.FROM_DATE>=TO_DATE(':fromDate','DD-MM-YYYY')";
+            $fromDateCondition = " AND WH.FROM_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY')";
             $boundedParameter['fromDate'] = $fromDate;
         }
 
         if ($toDate != null) {
-            $toDateCondition = " AND WH.TO_DATE<=TO_DATE(':toDate','DD-MM-YYYY')";
+            $toDateCondition = " AND WH.TO_DATE<=TO_DATE(:toDate,'DD-MM-YYYY')";
             $boundedParameter['toDate'] = $toDate;
         }
         $sql = "SELECT INITCAP(H.HOLIDAY_ENAME) AS HOLIDAY_ENAME,
@@ -239,7 +239,6 @@ class WorkOnHolidayStatusRepository extends HrisRepository {
                 {$holidayCondition}
                 {$fromDateCondition}
                 {$toDateCondition} ORDER BY WH.REQUESTED_DATE DESC";
-
         // FOR SHIVAM
 //        $sql = "SELECT INITCAP(H.HOLIDAY_ENAME) AS HOLIDAY_ENAME,
 //                  WH.DURATION,
@@ -273,7 +272,6 @@ class WorkOnHolidayStatusRepository extends HrisRepository {
 //                {$holidayCondition}
 //                {$fromDateCondition}
 //                {$toDateCondition} ORDER BY WH.REQUESTED_DATE DESC";
-
         $finalSql = $this->getPrefReportQuery($sql);
         return $this->rawQuery($finalSql, $boundedParameter);
     }

@@ -14,15 +14,16 @@ class TravelStatusRepository extends HrisRepository {
     public function getFilteredRecord($search):array {
         $condition = "";
         $condition = EntityHelper::getSearchConditonBounded($search['companyId'], $search['branchId'], $search['departmentId'], $search['positionId'], $search['designationId'], $search['serviceTypeId'], $search['serviceEventTypeId'], $search['employeeTypeId'], $search['employeeId'], null, null, $search['functionalTypeId']);
-
         $boundedParameter = [];
         $boundedParameter=array_merge($boundedParameter, $condition['parameter']);
 
         if (isset($search['fromDate']) && $search['fromDate'] != null) {
-            $condition .= " AND TR.FROM_DATE>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";
+            $condition['sql'] .= " AND TR.FROM_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY') ";
+            $boundedParameter['fromDate'] = $search['fromDate'];
         }
         if (isset($search['fromDate']) && $search['toDate'] != null) {
-            $condition .= " AND TR.TO_DATE<=TO_DATE('{$search['toDate']}','DD-MM-YYYY') ";
+            $condition['sql'] .= " AND TR.TO_DATE<=TO_DATE(:toDate,'DD-MM-YYYY') ";
+            $boundedParameter['toDate'] = $search['toDate'];
         }
 
 
@@ -36,14 +37,14 @@ class TravelStatusRepository extends HrisRepository {
                         $csv .= ",'{$search['status'][$i]}'";
                     }
                 }
-                $condition .= "AND TR.STATUS IN ({$csv})";
+                $condition['sql'] .= "AND TR.STATUS IN ({$csv})";
             } else {
-                $condition .= "AND TR.STATUS IN ('{$search['status']}')";
+                $condition['sql'] .= "AND TR.STATUS IN ('{$search['status']}')";
             }
         }
         
         if (isset($search['itnaryId']) && $search['itnaryId'] != null && $search['itnaryId'] != -1) {
-            $condition .= "AND TR.ITNARY_ID IN ({$search['itnaryId']})";
+            $condition['sql'] .= "AND TR.ITNARY_ID IN ({$search['itnaryId']})";
         }
  
         $sql = "SELECT TR.TRAVEL_ID                        AS TRAVEL_ID,

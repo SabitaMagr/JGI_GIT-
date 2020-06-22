@@ -109,7 +109,7 @@ class LeaveStatusRepository extends HrisRepository {
         $fromDateCondition = "";
         $toDateCondition = "";
         if ($leaveRequestStatusId != -1) {
-            $statusCondition = " AND LA.STATUS=':leaveRequestStatusId'";
+            $statusCondition = " AND LA.STATUS=:leaveRequestStatusId";
             $boundedParameter['leaveRequestStatusId'] = $leaveRequestStatusId;
         }
 
@@ -119,12 +119,12 @@ class LeaveStatusRepository extends HrisRepository {
         }
 
         if ($fromDate != null) {
-            $fromDateCondition = " AND LA.START_DATE>=TO_DATE(':fromDate','DD-MM-YYYY')";
+            $fromDateCondition = " AND LA.START_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY')";
             $boundedParameter['leaveId'] = $fromDate;
         }
 
         if ($toDate != null) {
-            $toDateCondition = "AND LA.END_DATE<=TO_DATE(':toDate','DD-MM-YYYY')";
+            $toDateCondition = "AND LA.END_DATE<=TO_DATE(:toDate,'DD-MM-YYYY')";
             $boundedParameter['leaveId'] = $toDate;
         }
 
@@ -244,8 +244,7 @@ class LeaveStatusRepository extends HrisRepository {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
 
-
-        $searchCondition = $this->getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId,null,null,$functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId,null,null,$functionalTypeId);
         $boundedParameter = [];
         $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
         $statusCondition = '';
@@ -253,22 +252,22 @@ class LeaveStatusRepository extends HrisRepository {
         $fromDateCondition = "";
         $toDateCondition = "";
         if ($leaveRequestStatusId != -1) {
-            $statusCondition = " AND LA.STATUS=':leaveRequestStatusId'";
+            $statusCondition = " AND LA.STATUS= :leaveRequestStatusId";
             $boundedParameter['leaveRequestStatusId'] = $leaveRequestStatusId;
         }
 
-        if ($leaveId != null && $leaveId != -1) {
+        if ($leaveId != -1) {
             $leaveCondition = " AND LA.LEAVE_ID = :leaveId";
             $boundedParameter['leaveId'] = $leaveId;
         }
 
         if ($fromDate != null) {
-            $fromDateCondition = " AND LA.START_DATE>=TO_DATE(':fromDate','DD-MM-YYYY')";
+            $fromDateCondition = " AND LA.START_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY')";
             $boundedParameter['fromDate'] = $fromDate;
         }
 
         if ($toDate != null) {
-            $toDateCondition = "AND LA.END_DATE<=TO_DATE(':toDate','DD-MM-YYYY')";
+            $toDateCondition = "AND LA.END_DATE<=TO_DATE(:toDate,'DD-MM-YYYY')";
             $boundedParameter['toDate'] = $toDate;
         }
 
@@ -368,21 +367,21 @@ LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT
     
     public function getSameDateApprovedStatus($employeeId, $startDate, $endDate) {
       $boundedParameter = [];
-      $boundedParameter['fromDate'] = $fromDate;
-      $boundedParameter['toDate'] = $toDate;
+      $boundedParameter['startDate'] = $startDate;
+      $boundedParameter['endDate'] = $endDate;
       $boundedParameter['employeeId'] = $employeeId;
         $sql = "SELECT COUNT(*) as LEAVE_COUNT
   FROM HRIS_EMPLOYEE_LEAVE_REQUEST
-  WHERE ((':startDate' BETWEEN START_DATE AND END_DATE)
-  OR (':endDate' BETWEEN START_DATE AND END_DATE))
+  WHERE ((:startDate BETWEEN START_DATE AND END_DATE)
+  OR (:endDate BETWEEN START_DATE AND END_DATE))
   AND STATUS  IN ('AP','CP','CR')
   AND EMPLOYEE_ID = :employeeId
                 ";
         // $statement = $this->adapter->query($sql);
         // $result = $statement->execute();
 
-        $result = $this->rawQuery($sql, $boundedParameter);
-        return $result->current();
+        return $this->rawQuery($sql, $boundedParameter);
+        
     }
 
     public function getLfcData($id) {

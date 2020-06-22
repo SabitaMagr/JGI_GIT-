@@ -83,11 +83,13 @@ class BirthdayRepository {
                 ON (E.EMPLOYEE_ID=BM.FROM_EMPLOYEE)
                 LEFT JOIN HRIS_EMPLOYEE_FILE EF
                 ON (E.PROFILE_PICTURE_ID=EF.FILE_CODE)
-                WHERE BM.TO_EMPLOYEE={$employeeId}
+                WHERE BM.TO_EMPLOYEE=:employeeId
                 ORDER BY BM.CREATED_DT DESC";
 
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $boundedParameter = [];
+        $boundedParameter['employeeId'] = $employeeId;
+
+        $result = $this->rawQuery($sql, $boundedParameter);
 
         $list = [];
 
@@ -109,12 +111,11 @@ class BirthdayRepository {
                 ON (E.PROFILE_PICTURE_ID=EF.FILE_CODE)
                 LEFT JOIN HRIS_DESIGNATIONS DES
                 ON (E.DESIGNATION_ID = DES.DESIGNATION_ID)
-                WHERE E.EMPLOYEE_ID     ={$employeeId}";
+                WHERE E.EMPLOYEE_ID     =:employeeId";
 
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-
-        return $result->current();
+        $boundedParameter = [];
+        $boundedParameter['employeeId'] = $employeeId;
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function checkMessagePosted($fromEmployee, $toEmployee) {

@@ -84,8 +84,8 @@ class LeaveRepository extends HrisRepository {
                 LEAVE_YEAR_ID=(SELECT LEAVE_YEAR_ID FROM HRIS_LEAVE_YEARS 
                 WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE)) MTH
                 ON (MTH.LEAVE_YEAR_MONTH_NO= LA.FISCAL_YEAR_MONTH_NO)
-                WHERE LA.EMPLOYEE_ID        ={$employeeId}
-                AND LA.FISCAL_YEAR_MONTH_NO ={$fiscalYearMonthNo}
+                WHERE LA.EMPLOYEE_ID        =:employeeId
+                AND LA.FISCAL_YEAR_MONTH_NO =:fiscalYearMonthNo
                 AND LMS.STATUS              ='E'
                 AND LMS.IS_MONTHLY          = 'Y'
                 AND LMS.CARRY_FORWARD          = 'N'
@@ -115,14 +115,17 @@ class LeaveRepository extends HrisRepository {
                 LEAVE_YEAR_ID=(SELECT LEAVE_YEAR_ID FROM HRIS_LEAVE_YEARS 
                 WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE)) MTH
                 ON (MTH.LEAVE_YEAR_MONTH_NO= LA.FISCAL_YEAR_MONTH_NO)
-                WHERE LA.EMPLOYEE_ID        ={$employeeId}
-                AND LA.FISCAL_YEAR_MONTH_NO ={$fiscalYearMonthNo}
+                WHERE LA.EMPLOYEE_ID        =:employeeId
+                AND LA.FISCAL_YEAR_MONTH_NO =:fiscalYearMonthNo
                 AND LMS.STATUS              ='E'
                 AND LMS.IS_MONTHLY          = 'Y'
                 AND LMS.CARRY_FORWARD          = 'Y'
                 ORDER BY LMS.LEAVE_ENAME ASC) ";
-        $statement = $this->adapter->query($sql);
-        return $statement->execute();
+
+        $boundedParameter = [];
+        $boundedParameter['employeeId'] = $employeeId;
+        $boundedParameter['fiscalYearMonthNo'] = $fiscalYearMonthNo;
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
 }
