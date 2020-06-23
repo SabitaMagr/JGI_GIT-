@@ -29,7 +29,7 @@ class LeaveBalance extends HrisController {
         $leaveList = $this->repository->getAllLeave();
         $leaves = Helper::extractDbData($leaveList);
         
-        $leaveYearList=EntityHelper::getTableKVList($this->adapter, "HRIS_LEAVE_YEARS", "LEAVE_YEAR_ID", ["LEAVE_YEAR_NAME"], null);
+        $leaveYearList=EntityHelper::getTableKVList($this->adapter, "HRIS_LEAVE_YEARS", "LEAVE_YEAR_ID", ["LEAVE_YEAR_NAME"], null,null,false,'LEAVE_YEAR_ID','desc');
         $leaveYearSE = $this->getSelectElement(['name' => 'leaveYear', 'id' => 'leaveYear', 'class' => 'form-control ', 'label' => 'Type'], $leaveYearList);
         
         $leaveStatusReposotory = new LeaveStatusRepository($this->adapter);
@@ -103,7 +103,7 @@ class LeaveBalance extends HrisController {
         $leaveList = $this->repository->getAllLeave();
         $leaves = Helper::extractDbData($leaveList);
         
-        $leaveYearList=EntityHelper::getTableKVList($this->adapter, "HRIS_LEAVE_YEARS", "LEAVE_YEAR_ID", ["LEAVE_YEAR_NAME"], null);
+        $leaveYearList=EntityHelper::getTableKVList($this->adapter, "HRIS_LEAVE_YEARS", "LEAVE_YEAR_ID", ["LEAVE_YEAR_NAME"], null,null,false,'LEAVE_YEAR_ID','desc');
         $leaveYearSE = $this->getSelectElement(['name' => 'leaveYear', 'id' => 'leaveYear', 'class' => 'form-control ', 'label' => 'Type'], $leaveYearList);
         $leaveStatusReposotory = new LeaveStatusRepository($this->adapter);
         $allLeaveForReport= $leaveStatusReposotory->getMonthlyLeaveforReport();
