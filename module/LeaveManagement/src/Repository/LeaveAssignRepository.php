@@ -44,7 +44,11 @@ class LeaveAssignRepository extends HrisRepository {
     }
 
     public function filter($branchId, $departmentId, $genderId, $designationId, $serviceTypeId, $employeeId, $companyId, $positionId, $employeeTypeId, $leaveId): array {
-        $searchCondition = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, null, $employeeTypeId, $employeeId, $genderId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, null, $employeeTypeId, $employeeId, $genderId);
+
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
+
         $sql = "SELECT C.COMPANY_NAME,
                   B.BRANCH_NAME,
                   DEP.DEPARTMENT_NAME,
@@ -71,7 +75,7 @@ class LeaveAssignRepository extends HrisRepository {
                 LEFT JOIN HRIS_DEPARTMENTS DEP
                 ON (E.DEPARTMENT_ID=DEP.DEPARTMENT_ID)
                 WHERE 1            =1 AND E.STATUS='E'
-                {$searchCondition}
+                {$searchCondition['sql']}
                     AND (CASE 
            WHEN ELA.FISCAL_YEAR_MONTH_NO IS NOT NULL THEN 
          (SELECT LEAVE_YEAR_MONTH_NO FROM HRIS_LEAVE_MONTH_CODE WHERE 
@@ -92,14 +96,9 @@ class LeaveAssignRepository extends HrisRepository {
          2
            END=1
           )
-                
-
                 ORDER BY C.COMPANY_NAME,B.BRANCH_NAME,DEP.DEPARTMENT_NAME,E.FULL_NAME,MC.LEAVE_YEAR_MONTH_NO";
-                
-//                ECHO $sql;
-//                DIE();
 
-        return $this->rawQuery($sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function filterByLeaveEmployeeId($leaveId, $employeeId) {

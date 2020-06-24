@@ -7,6 +7,7 @@ use Application\Repository\HrisRepository;
 use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
+use Application\Helper\EntityHelper;
 
 class TravelItnaryRepository extends HrisRepository implements RepositoryInterface {
     
@@ -231,14 +232,21 @@ WHERE TI.CREATED_BY={$search['employeeId']} {$condition}
     public function getSameDateApprovedStatus($employeeId, $fromDate, $toDate) {
         $sql = "SELECT COUNT(*) as TRAVEL_COUNT
   FROM HRIS_EMPLOYEE_TRAVEL_REQUEST
-  WHERE (('{$fromDate}' BETWEEN FROM_DATE AND TO_DATE)
-  OR ('{$toDate}' BETWEEN FROM_DATE AND TO_DATE))
+  WHERE ((:fromDate BETWEEN FROM_DATE AND TO_DATE)
+  OR (:toDate BETWEEN FROM_DATE AND TO_DATE))
   AND STATUS  IN ('AP','CP','CR')
-  AND EMPLOYEE_ID = $employeeId
+  AND EMPLOYEE_ID = :employeeId
                 ";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result->current();
+
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+        $boundedParameter['fromDate'] = $fromDate;
+        $boundedParameter['toDate'] = $toDate;
+
+        return $this->rawQuery($sql, $boundedParameter);     
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return $result->current();
     }
 
     public function add(Model $model) {
@@ -279,11 +287,17 @@ MODIFIED_DT,
 DELETED_BY,
 DELETED_DT               
 FROM HRIS_TRAVEL_ITNARY
-WHERE ITNARY_ID={$id}
+WHERE ITNARY_ID=:id
                 ";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result->current();
+
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+
+        return $this->rawQuery($sql, $boundedParameter);
+
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return $result->current();
         
     }
     
@@ -295,11 +309,16 @@ FROM
 HRIS_ITNARY_MEMBERS IM
 LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=IM.EMPLOYEE_ID)
 LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST TR ON (TR.EMPLOYEE_ID=IM.EMPLOYEE_ID AND TR.ITNARY_ID=IM.ITNARY_ID)
-WHERE IM.ITNARY_ID={$id}
+WHERE IM.ITNARY_ID=:id
                 ";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return Helper::extractDbData($result);
         
     }
     
@@ -313,11 +332,16 @@ WHERE IM.ITNARY_ID={$id}
  FROM 
 HRIS_ITNARY_DETAILS ITD
 LEFT JOIN  HRIS_TRANSPORT_TYPES TT ON (TT.TRANSPORT_CODE=ITD.TRANSPORT_TYPE)
-WHERE ITD.ITNARY_ID={$id} ORDER BY ITD.SNO asc
+WHERE ITD.ITNARY_ID=:id ORDER BY ITD.SNO asc
                 ";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return Helper::extractDbData($result);
     }
 
     public function delete($id) {

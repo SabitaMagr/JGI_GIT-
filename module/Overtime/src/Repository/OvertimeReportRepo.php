@@ -62,7 +62,9 @@ class OvertimeReportRepo extends HrisRepository {
                   (SELECT (TO_DATE-FROM_DATE)+1 FROM HRIS_MONTH_CODE WHERE MONTH_ID={$monthId}
                   )";
 
-        return $this->rawQuery($sql);
+        $boundedParameter = [];
+        $boundedParameter['monthId'] = $monthId;
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     private function fetchColumnsForPivot($monthId) {
@@ -85,7 +87,9 @@ class OvertimeReportRepo extends HrisRepository {
     public function fetchMonthlyForGrid($by, $calenderType): array {
         $monthId = $by['monthId'];
         $pivotIn = $this->fetchColumnsForPivot($monthId);
-        $searchConditon = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId']);
+        $searchCondition = EntityHelper::getSearchConditonBounded($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId']);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
 
         if ($calenderType == 'E') {
             $sql = "Select SS.*,AD.ADDITION, AD.DEDUCTION from (SELECT *
@@ -111,9 +115,9 @@ class OvertimeReportRepo extends HrisRepository {
                   LEFT JOIN HRIS_DEPARTMENTS D
                   ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
                   WHERE 1=1 
-                  {$searchConditon}
+                  {$searchConditon['sql']}
                   ) PIVOT (MAX(OVERTIME_HOUR) FOR MONTH_DAY IN ({$pivotIn}))) SS left join HRIS_OVERTIME_A_D AD
- on SS.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = {$monthId}";
+ on SS.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = :monthId";
         } else {
             $sql = "Select SS.*,AD.ADDITION, AD.DEDUCTION from (SELECT *
                 FROM
@@ -138,12 +142,13 @@ class OvertimeReportRepo extends HrisRepository {
                   LEFT JOIN HRIS_DEPARTMENTS D
                   ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
                   WHERE 1=1 
-                  {$searchConditon}
+                  {$searchConditon['sql']}
                   ) PIVOT (MAX(OVERTIME_HOUR) FOR MONTH_DAY IN ({$pivotIn}))) SS left join HRIS_OVERTIME_A_D AD
- on SS.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = {$monthId}";
+ on SS.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = :monthId";
         }
 
-        return $this->rawQuery($sql);
+        $boundedParameter['monthId'] = $monthId;
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function bulkEdit($data,$addDed) {
@@ -216,7 +221,9 @@ class OvertimeReportRepo extends HrisRepository {
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $employeeTypeId = $data['employeeTypeId'];
 
-        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
 
         $datesIn = "'";
         for ($i = 0; $i < count($dates); $i++) {
@@ -265,8 +272,8 @@ LEFT JOIN HRIS_EMPLOYEES E
 ON (OVD.employee_id = E.employee_id)
 LEFT JOIN HRIS_DEPARTMENTS D
 ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
-WHERE 1=1 {$searchCondition}";
-        return $this->rawQuery($sql);
+WHERE 1=1 {$searchCondition['sql']}";
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
 }

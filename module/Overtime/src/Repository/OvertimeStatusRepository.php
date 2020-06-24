@@ -3,6 +3,7 @@ namespace Overtime\Repository;
 
 use Application\Model\Model;
 use Application\Repository\HrisRepository;
+use Application\Helper\EntityHelper;
 use SelfService\Model\Overtime;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Predicate\Expression;
@@ -85,8 +86,8 @@ class OvertimeStatusRepository extends HrisRepository {
                     RA.RECOMMEND_BY as RECOMMENDER,
                     RA.APPROVED_BY AS APPROVER,
                     LEAVE_STATUS_DESC(OT.STATUS)                     AS STATUS,
-                    REC_APP_ROLE({$id},RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
-                    REC_APP_ROLE_NAME({$id},RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
+                    REC_APP_ROLE(:id,RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
+                    REC_APP_ROLE_NAME(:id,RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
                     FROM HRIS_OVERTIME OT
                     LEFT JOIN HRIS_EMPLOYEES E ON 
                     E.EMPLOYEE_ID=OT.EMPLOYEE_ID
@@ -94,11 +95,15 @@ class OvertimeStatusRepository extends HrisRepository {
                     ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
                     WHERE  E.STATUS='E'
                     AND E.RETIRED_FLAG='N' 
-                    AND ((RA.RECOMMEND_BY= {$id} AND OT.STATUS='RQ') OR (RA.APPROVED_BY= {$id} AND OT.STATUS='RC') )
+                    AND ((RA.RECOMMEND_BY= :id AND OT.STATUS='RQ') OR (RA.APPROVED_BY= :id AND OT.STATUS='RC') )
                     ORDER BY OT.REQUESTED_DATE DESC";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
+
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return $result;
     }
 
     public function getFilteredRecord($data, $recomApproveId) {
@@ -116,22 +121,29 @@ class OvertimeStatusRepository extends HrisRepository {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
 
-        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
+
         $statusConditon = "";
         $fromDateCondition = "";
         $toDateCondition = "";
 
         if ($requestStatusId != -1) {
-            $statusConditon = " AND OT.STATUS ='{$requestStatusId}'";
+            $statusConditon = " AND OT.STATUS =:requestStatusId";
+            $boundedParameter['requestStatusId'] = $requestStatusId;
         }
 
         if ($fromDate != null) {
-            $fromDateCondition = " AND OT.OVERTIME_DATE>=TO_DATE('{$fromDate}','DD-MON-YYYY')";
+            $fromDateCondition = " AND OT.OVERTIME_DATE>=TO_DATE(:fromDate,'DD-MON-YYYY')";
+            $boundedParameter['fromDate'] = $fromDate;
         }
 
         if ($toDate != null) {
-            $toDateCondition = "AND OT.OVERTIME_DATE<=TO_DATE('{$toDate}','DD-MON-YYYY')";
+            $toDateCondition = "AND OT.OVERTIME_DATE<=TO_DATE(:toDate,'DD-MON-YYYY')";
+            $boundedParameter['toDate'] = $toDate;
         }
+
         $sql = "SELECT INITCAP(TO_CHAR(OT.OVERTIME_DATE, 'DD-MON-YYYY'))          AS OVERTIME_DATE_AD,
                   BS_DATE(TO_CHAR(OT.OVERTIME_DATE, 'DD-MON-YYYY'))               AS OVERTIME_DATE_BS,
                   INITCAP(TO_CHAR(OT.REQUESTED_DATE, 'DD-MON-YYYY'))              AS REQUESTED_DATE_AD,
@@ -200,12 +212,15 @@ class OvertimeStatusRepository extends HrisRepository {
                     THEN ('E')
                   END
                 OR APRV.STATUS   IS NULL)
-                AND U.EMPLOYEE_ID = {$recomApproveId} {$searchCondition} {$statusConditon} {$fromDateCondition} {$toDateCondition}
+                AND U.EMPLOYEE_ID = :recomApproveId {$searchCondition['sql']} {$statusConditon} {$fromDateCondition} {$toDateCondition}
                 ORDER BY OT.REQUESTED_DATE DESC";
 
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
+        $boundedParameter['recomApproveId'] = $recomApproveId;
+        return $this->rawQuery($sql, $boundedParameter);
+
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return $result;
     }
 
     public function getOTRequestList($data): array {
@@ -223,21 +238,28 @@ class OvertimeStatusRepository extends HrisRepository {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
 
-        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, null, null, $functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, null, null, $functionalTypeId);
+
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
+
         $statusConditon = "";
         $fromDateCondition = "";
         $toDateCondition = "";
 
         if ($requestStatusId != -1) {
-            $statusConditon = " AND OT.STATUS ='{$requestStatusId}'";
+            $statusConditon = " AND OT.STATUS =:requestStatusId";
+            $boundedParameter['requestStatusId'] = $requestStatusId;
         }
 
         if ($fromDate != null) {
-            $fromDateCondition = " AND OT.OVERTIME_DATE>=TO_DATE('{$fromDate}','DD-MON-YYYY')";
+            $fromDateCondition = " AND OT.OVERTIME_DATE>=TO_DATE(:fromDate,'DD-MON-YYYY')";
+            $boundedParameter['fromDate'] = $fromDate;
         }
 
         if ($toDate != null) {
-            $toDateCondition = "AND OT.OVERTIME_DATE<=TO_DATE('{$toDate}','DD-MON-YYYY')";
+            $toDateCondition = "AND OT.OVERTIME_DATE<=TO_DATE(:toDate,'DD-MON-YYYY')";
+            $boundedParameter['toDate'] = $toDate;
         }
 
         $sql = "SELECT INITCAP(TO_CHAR(OT.OVERTIME_DATE, 'DD-MON-YYYY')) AS OVERTIME_DATE_AD,
@@ -279,18 +301,6 @@ class OvertimeStatusRepository extends HrisRepository {
                 LEFT OUTER JOIN HRIS_EMPLOYEES APRV
                 ON APRV.EMPLOYEE_ID = RA.APPROVED_BY
                 WHERE E.STATUS      ='E'
-                AND (E1.STATUS      =
-                  CASE
-                    WHEN E1.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR E1.STATUS  IS NULL)
-                AND (E2.STATUS =
-                  CASE
-                    WHEN E2.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR E2.STATUS    IS NULL)
                 AND (RECM.STATUS =
                   CASE
                     WHEN RECM.STATUS IS NOT NULL
@@ -302,9 +312,10 @@ class OvertimeStatusRepository extends HrisRepository {
                     WHEN APRV.STATUS IS NOT NULL
                     THEN ('E')
                   END
-                OR APRV.STATUS IS NULL) {$searchCondition} {$statusConditon} {$fromDateCondition} {$toDateCondition}
+                OR APRV.STATUS IS NULL) {$searchCondition['sql']} {$statusConditon} {$fromDateCondition} {$toDateCondition}
                 ORDER BY OT.REQUESTED_DATE DESC";
+
         $finalSql = $this->getPrefReportQuery($sql);
-        return $this->rawQuery($finalSql);
+        return $this->rawQuery($finalSql, $boundedParameter);
     }
 }

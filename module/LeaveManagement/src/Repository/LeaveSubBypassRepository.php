@@ -18,7 +18,10 @@ class LeaveSubBypassRepository extends HrisRepository {
     public function getEmployeeList($data) {
 
 
-        $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId']);
+        $condition = EntityHelper::getSearchConditonBounded($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId']);
+
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $condition['parameter']);
 
         $sql = "SELECT 
                   E.FULL_NAME,
@@ -47,14 +50,13 @@ class LeaveSubBypassRepository extends HrisRepository {
                 ON (DES.DESIGNATION_ID=E.DESIGNATION_ID)
                 WHERE 1            =1 
                  AND E.STATUS ='E'
-                {$condition}
-                
-
+                {$condition['sql']}
                 ORDER BY E.FULL_NAME";
 
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
+                return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return $result;
     }
     
     public function add(Model $model) {
