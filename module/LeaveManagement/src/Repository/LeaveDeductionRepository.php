@@ -20,7 +20,7 @@ use LeaveManagement\Model\LeaveDeduction;
 
 class LeaveDeductionRepository  extends HrisRepository implements RepositoryInterface {
 
-    private $gateway;
+    protected $gateway;
 
     public function __construct(AdapterInterface $adapter) {
         parent::__construct($adapter);
@@ -61,7 +61,7 @@ class LeaveDeductionRepository  extends HrisRepository implements RepositoryInte
             $boundedParameter = [];
             $boundedParameter['id'] = $id;
 
-            return $this->rawQuery($sql, $boundedParameter);
+            return $this->rawQuery($sql, $boundedParameter)[0];
         // $statement = $this->adapter->query($sql);
         // $result = $statement->execute();
         // return $result->current();

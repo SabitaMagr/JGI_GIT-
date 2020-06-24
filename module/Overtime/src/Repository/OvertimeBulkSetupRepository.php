@@ -7,13 +7,14 @@ use Overtime\Model\CompulsoryOvertime;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use Application\Repository\HrisRepository;
 use Zend\Db\TableGateway\TableGateway;
 
-class OvertimeBulkSetupRepository
+class OvertimeBulkSetupRepository extends HrisRepository
 {
 
-    private $adapter;
-    private $tableGateway;
+    protected $adapter;
+    protected $tableGateway;
 
     public function __construct(AdapterInterface $adapter)
     {

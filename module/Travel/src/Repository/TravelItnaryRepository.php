@@ -243,7 +243,7 @@ WHERE TI.CREATED_BY={$search['employeeId']} {$condition}
         $boundedParameter['fromDate'] = $fromDate;
         $boundedParameter['toDate'] = $toDate;
 
-        return $this->rawQuery($sql, $boundedParameter);     
+        return $this->rawQuery($sql, $boundedParameter)[0];     
         // $statement = $this->adapter->query($sql);
         // $result = $statement->execute();
         // return $result->current();
@@ -293,7 +293,7 @@ WHERE ITNARY_ID=:id
         $boundedParameter = [];
         $boundedParameter['id'] = $id;
 
-        return $this->rawQuery($sql, $boundedParameter);
+        return $this->rawQuery($sql, $boundedParameter)[0];
 
         // $statement = $this->adapter->query($sql);
         // $result = $statement->execute();
