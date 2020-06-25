@@ -14,14 +14,15 @@ use Zend\Db\TableGateway\TableGateway;
 use Application\Helper\Helper;
 use Zend\Db\Sql\Select;
 use LeaveManagement\Model\LeaveMonths;
+use Application\Repository\HrisRepository;
 
-class LeaveBalanceRepository {
+class LeaveBalanceRepository extends HrisRepository {
 
-    private $adapter;
-    private $tableGateway;
-    private $leaveTableGateway;
-    private $employeeTableGateway;
-    private $leaveMonthTableGateway;
+    protected $adapter;
+    protected $tableGateway;
+    protected $leaveTableGateway;
+    protected $employeeTableGateway;
+    protected $leaveMonthTableGateway;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -193,7 +194,11 @@ class LeaveBalanceRepository {
             $leaveCondition .= " AND HA.LEAVE_ID IN ($leaveId) ";
         }
         $leaveYear = $searchQuery['leaveYear'];
-        $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId'], $searchQuery['genderId'], $searchQuery['locationId'], $searchQuery['functionalTypeId']);
+        $searchCondition = EntityHelper::getSearchConditonBounded($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId'], $searchQuery['genderId'], $searchQuery['locationId'], $searchQuery['functionalTypeId']);
+
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
+
         $monthlyCondition = $isMonthly ? " AND FISCAL_YEAR_MONTH_NO ={$searchQuery['leaveYearMonthNo']} " : "";
         $leaveArrayDb = $this->fetchLeaveAsDbArray($isMonthly, $leaveId,$leaveYear);
         $includePreviousBalance = $isMonthly ? "0" : " HA.PREVIOUS_YEAR_BAL ";
@@ -229,7 +234,7 @@ FROM (SELECT *
                     group by employee_id,leave_id) EPD
                     on (EPD.EMPLOYEE_ID = HA.EMPLOYEE_ID AND EPD.LEAVE_ID = HA.LEAVE_ID)
               WHERE ha.EMPLOYEE_ID IN
-                ( SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 AND E.STATUS='E' {$searchConditon}
+                ( SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 AND E.STATUS='E' {$searchCondition['sql']}
                 ){$monthlyCondition} {$leaveCondition}
               ) PIVOT (sum ( ENCASHED ) AS ENCASHED, sum ( DEDUCTED ) AS DEDUCTED, MAX(PREVIOUS_YEAR_BAL) AS PREVIOUS_YEAR_BAL,MAX(BALANCE) AS BALANCE,MAX(CURR) AS CURR,MAX(TOTAL) AS TOTAL,MAX(TAKEN) AS TAKEN FOR LEAVE_ID IN ({$leaveArrayDb}) )
             ) LA LEFT JOIN HRIS_EMPLOYEES E ON (LA.EMPLOYEE_ID=E.EMPLOYEE_ID)
@@ -245,7 +250,7 @@ FROM (SELECT *
 ";
 //        print_r($sql);
 //        die();
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     private function fetchLeaveAsDbArray($isMonthly = false, $leaveId = '',$leaveYear=null) {
@@ -387,8 +392,10 @@ where LMS.STATUS = 'E' ";
 //            $fromCondition = " AND ";
 //        }
 
-        $searchCondition = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
+        $searchCondition = EntityHelper::getSearchConditonBounded($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
 
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
 
         $sql = " SELECT E.EMPLOYEE_CODE, E.FULL_NAME, D.DEPARTMENT_NAME, B.BRANCH_NAME, LMS.LEAVE_ENAME, ELA.*,
   CASE
@@ -418,13 +425,14 @@ LEFT JOIN HRIS_DEPARTMENTS D
 ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
 LEFT JOIN HRIS_BRANCHES B
 ON (E.BRANCH_ID = B.BRANCH_ID)
-where 1=1  {$leaveCondition} {$searchCondition} 
+where 1=1  {$leaveCondition} {$searchCondition['sql']} 
 ";
 
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
 
-        return Helper::extractDbData($result);
+        // return Helper::extractDbData($result);
     }
 
     public function fetchLeaveYearMonth() {

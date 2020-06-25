@@ -401,8 +401,7 @@ LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT
         $employeeId = "SELECT EMPLOYEE_ID FROM  HRIS_EMPLOYEE_LEAVE_REQUEST where id = {$id}";
 
         $boundedParameter = [];
-        $boundedParameter['employeeId'] = $employeeId;
-        $boundedParameter['leaveId'] = $leaveId;
+        $boundedParameter['id'] = $id;
 
         $sql = "SELECT L.*, 
                 BS_DATE(TO_CHAR(L.START_DATE, 'DD-MON-YYYY')) as START_DATE_BS,
@@ -422,8 +421,8 @@ LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT
                 left join HRIS_DEPARTMENTS D on (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
                 left join HRIS_DESIGNATIONS DE on (E.DESIGNATION_ID = DE.DESIGNATION_ID)
                 left join HRIS_BRANCHES B on (E.BRANCH_ID = B.BRANCH_ID)
-                where LR.EMPLOYEE_ID = :employeeId
-                and LR.LEAVE_ID = :leaveId 
+                where LR.EMPLOYEE_ID = (SELECT EMPLOYEE_ID FROM  HRIS_EMPLOYEE_LEAVE_REQUEST where id = :id)
+                and LR.LEAVE_ID = (SELECT LEAVE_ID FROM  HRIS_EMPLOYEE_LEAVE_REQUEST where id = :id)
                 and LR.STATUS = 'AP') L";
 
                 return $this->rawQuery($sql, $boundedParameter);

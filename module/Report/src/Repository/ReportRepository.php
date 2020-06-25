@@ -142,7 +142,7 @@ EOT;
                     FROM HRIS_ATTENDANCE_DETAIL AD
                     JOIN HRIS_EMPLOYEES E
                     ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID),
-                      ( SELECT FROM_DATE,TO_DATE FROM HRIS_MONTH_CODE WHERE MONTH_ID=$monthId
+                      ( SELECT FROM_DATE,TO_DATE FROM HRIS_MONTH_CODE WHERE MONTH_ID=:monthId
                       ) M
                     WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
                     AND E.DEPARTMENT_ID=:departmentId
@@ -153,6 +153,7 @@ EOT;
 //        die();
         $boundedParameter = [];
         $boundedParameter['departmentId'] = $departmentId;
+        $boundedParameter['monthId'] = $monthId;
         return $this->rawQuery($sql, $boundedParameter);
         // $statement = $this->adapter->query($sql);
         // $result = $statement->execute();
@@ -1882,7 +1883,10 @@ P.Position_Name, e.salary, e.allowance, (nvl(e.salary, 0)+nvl(e.allowance, 0)) g
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $employeeTypeId = $data['employeeTypeId'];
 
-        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
 
         $datesIn = "'";
         for ($i = 0; $i < count($dates); $i++) {
@@ -1900,7 +1904,7 @@ FROM
   ON (S.SHIFT_ID = R.SHIFT_ID)
   FULL OUTER JOIN HRIS_EMPLOYEES E
   ON (E.EMPLOYEE_ID = R.EMPLOYEE_ID)
-  WHERE 1=1 {$searchCondition}
+  WHERE 1=1 {$searchCondition['sql']}
   ) PIVOT ( MAX( SHIFT_NAME ) FOR FOR_DATE IN ($datesIn))";
         return $this->rawQuery($sql);
     }
@@ -1912,7 +1916,10 @@ FROM
         $otFromCondition = "";
         $otToCondition = "";
 
-        $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], $data['genderId'], $data['locationId']);
+        $condition = EntityHelper::getSearchConditonBounded($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], $data['genderId'], $data['locationId']);
+
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $condition['parameter']);
 
         if (isset($data['fromDate']) && $data['fromDate'] != null && $data['fromDate'] != -1) {
             $fromDate = Helper::getExpressionDate($data['fromDate']);
@@ -1926,6 +1933,7 @@ FROM
         }
 
         $monthId = $data['monthId'];
+        $boundedParameter['monthId'] = $monthId;
 
         $sql = <<<EOT
             SELECT C.COMPANY_NAME,
@@ -2111,15 +2119,16 @@ GROUP BY
             LEFT JOIN HRIS_DEPARTMENTS D
             ON (E.DEPARTMENT_ID= D.DEPARTMENT_ID)
             LEFT JOIN HRIS_OVERTIME_A_D AD
-            ON (A.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = {$monthId})
-            WHERE 1 = 1 {$condition}
+            ON (A.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = :monthId)
+            WHERE 1 = 1 {$condition['sql']}
             ORDER BY C.COMPANY_NAME,
               D.DEPARTMENT_NAME,
               E.FULL_NAME 
 EOT;
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return Helper::extractDbData($result);
     }
 
     public function employeeDailyReportShivam($searchQuery) {
@@ -2972,6 +2981,7 @@ EOT;
     }
 
     public function getBranchName($branchId) {
+
         $boundedParam = [];
         $sql = "select BRANCH_NAME from HRIS_BRANCHES where BRANCH_ID = :branchId";
         $boundedParam['branchId'] = $branchId;

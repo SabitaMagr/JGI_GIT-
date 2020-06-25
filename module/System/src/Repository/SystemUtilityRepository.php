@@ -7,8 +7,9 @@ use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
+use Application\Repository\HrisRepository;
 
-class SystemUtilityRepository implements RepositoryInterface {
+class SystemUtilityRepository extends HrisRepository implements RepositoryInterface {
 
     protected $adapter;
 
@@ -37,7 +38,11 @@ class SystemUtilityRepository implements RepositoryInterface {
     }
 
     public function filterRecords($branchId, $departmentId, $designationId, $positionId, $employeeType, $serviceTypeId, $companyId = null, $genderId = null, $serviceEventTypeId = null) {
-        $condition = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeType, null, $genderId);
+        $condition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeType, null, $genderId);
+
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $condition['parameter']);
+
         $sql = "SELECT E.EMPLOYEE_ID                                                AS EMPLOYEE_ID,
               E.COMPANY_ID                                                      AS COMPANY_ID,
               E.EMPLOYEE_CODE                                                   AS EMPLOYEE_CODE,
@@ -194,12 +199,14 @@ class SystemUtilityRepository implements RepositoryInterface {
             LEFT JOIN HRIS_FUNCTIONAL_LEVELS FUNL
             ON E.FUNCTIONAL_LEVEL_ID=FUNL.FUNCTIONAL_LEVEL_ID
             WHERE E.STATUS          ='E'
-            {$condition}
+            {$condition['sql']}
             ORDER BY E.FIRST_NAME ASC";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
 
-        return Helper::extractDbData($result);
+        // return Helper::extractDbData($result);
     }
 
     public function runQuery($query) {

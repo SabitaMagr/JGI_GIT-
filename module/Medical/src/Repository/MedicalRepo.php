@@ -3,6 +3,7 @@
 namespace Medical\Repository;
 
 use Application\Helper\EntityHelper;
+use Application\Repository\HrisRepository;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
@@ -10,10 +11,10 @@ use Medical\Model\Medical;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
-class MedicalRepo implements RepositoryInterface {
+class MedicalRepo extends HrisRepository implements RepositoryInterface {
 
-    private $adapter;
-    private $gateway;
+    protected $adapter;
+    protected $gateway;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -89,26 +90,36 @@ class MedicalRepo implements RepositoryInterface {
                     LEFT JOIN HRIS_RELATIONS R ON (R.RELATION_ID=ER.RELATION_ID)
                     LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
                     LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
-                    WHERE M.MEDICAL_ID={$id}";
-        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
-        return $rawResult->current();
+                    WHERE M.MEDICAL_ID=:id";
+
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+
+        return $this->rawQuery($sql, $boundedParameter)[0];
+        // $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        // return $rawResult->current();
     }
 
     public function filterRecord($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate = null, $toDate = null, $status = null) {
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
         $fromDateCondition = "";
         $toDateCondition = "";
         $statusCondition = '';
         $rowNums = '';
         if ($fromDate != null) {
-            $fromDateCondition = " AND M.TRANSACTION_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
+            $fromDateCondition = " AND M.TRANSACTION_DT>=TO_DATE(:fromDate,'DD-MM-YYYY') ";
+            $boundedParameter['fromDate'] = $fromDate;
         }
         if ($toDate != null) {
-            $toDateCondition = " AND M.TRANSACTION_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY') ";
+            $toDateCondition = " AND M.TRANSACTION_DT<=TO_DATE(:toDate,'DD-MM-YYYY') ";
+            $boundedParameter['toDate'] = $toDate;
         }
 
         if ($status != -1) {
-            $statusCondition = " AND M.BILL_STATUS='{$status}'";
+            $statusCondition = " AND M.BILL_STATUS=:status";
+            $boundedParameter['status'] = $status;
         }
 //        $presentStatusMap = [
 //            "LI" => "'L','B','Y'",
@@ -152,12 +163,12 @@ class MedicalRepo implements RepositoryInterface {
                     LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
                     LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
                     WHERE M.STATUS='E'
-                {$searchConditon}
+                {$searchCondition['sql']}
                 {$fromDateCondition}
                 {$toDateCondition}
                 {$statusCondition}
                 ";
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function fetchEmpMedicalDetail($employeeId) {
@@ -222,7 +233,9 @@ LEFT JOIN (select *  from HRIS_PREFERENCES WHERE KEY='STAFF_DEP_OPERATION') DMO 
     }
 
     public function fetchMedicalBalance($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId) {
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
         $fromDateCondition = "";
         $toDateCondition = "";
         $statusCondition = '';
@@ -287,24 +300,27 @@ end  AS DEPENDENT
                 LEFT JOIN (select *  from HRIS_PREFERENCES WHERE KEY='STAFF_DEP_MEDICAL') DM ON (1=1)
                 LEFT JOIN (select *  from HRIS_PREFERENCES WHERE KEY='STAFF_DEP_OPERATION') DMO ON (1=1)
                 WHERE E.STATUS='E'
-                {$searchConditon}
+                {$searchCondition['sql']}
                 ";
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function fetchTransactionList($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate = null, $toDate = null) {
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
         $fromDateCondition = "";
         $toDateCondition = "";
 //        $statusCondition = '';
 //        $rowNums = '';
         if ($fromDate != null) {
-            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE('" . $fromDate . "','DD-Mon-YYYY') ";
+            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE(:fromDate,'DD-Mon-YYYY') ";
+            $boundedParameter['fromDate'] = $fromDate;
         }
         if ($toDate != null) {
-            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE('" . $toDate . "','DD-Mon-YYYY') ";
+            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE(:toDate,'DD-Mon-YYYY') ";
+            $boundedParameter['toDate'] = $toDate;
         }
-
 
         $sql = "SELECT M.*
                     ,CASE M.BILL_STATUS 
@@ -327,23 +343,25 @@ end  AS DEPENDENT
                     LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
                     LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
                     WHERE M.STATUS='E' AND M.BILL_STATUS='PD'
-                    {$searchConditon}
+                    {$searchCondition['sql']}
                     {$fromDateCondition}
                     {$toDateCondition}";
-
-
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function fetchTransactionTotal($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate = null, $toDate = null) {
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
         $fromDateCondition = "";
         $toDateCondition = "";
         if ($fromDate != null) {
-            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE('" . $fromDate . "','DD-Mon-YYYY') ";
+            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE(:fromDate,'DD-Mon-YYYY') ";
+            $boundedParameter['fromDate'] = $fromDate;
         }
         if ($toDate != null) {
-            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE('" . $toDate . "','DD-Mon-YYYY') ";
+            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE(:toDate,'DD-Mon-YYYY') ";
+            $boundedParameter['toDate'] = $toDate;
         }
 
 
@@ -364,28 +382,29 @@ AS TOTAL_AMT_IN_WORDS
                     FROM Hris_Medical M
                     LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=M.EMPLOYEE_ID)
                     WHERE M.STATUS='E' AND M.BILL_STATUS='PD'
-                    {$searchConditon}
+                    {$searchCondition['sql']}
                     {$fromDateCondition}
                     {$toDateCondition}";
-                    
-        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
-        return $result->current();
+        return $this->rawQuery($sql, $boundedParameter)[0];
+        //return $result->current();
     }
     
-    
     public function fetchVoucherList($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate = null, $toDate = null) {
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
         $fromDateCondition = "";
         $toDateCondition = "";
 //        $statusCondition = '';
 //        $rowNums = '';
         if ($fromDate != null) {
-            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE('" . $fromDate . "','DD-Mon-YYYY') ";
+            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE(:fromDate,'DD-Mon-YYYY') ";
+            $boundedParameter['fromDate'] = $fromDate;
         }
         if ($toDate != null) {
-            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE('" . $toDate . "','DD-Mon-YYYY') ";
+            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE(:toDate,'DD-Mon-YYYY') ";
+            $boundedParameter['toDate'] = $toDate;
         }
-
 
         $sql = "SELECT ROWNUM,AA.* FROM (SELECT 
                          ' ' AS DR_AMT,
@@ -399,15 +418,11 @@ AS TOTAL_AMT_IN_WORDS
                     LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
                     LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
                     WHERE M.STATUS='E' AND M.BILL_STATUS='PD'
-                    {$searchConditon}
+                    {$searchCondition['sql']}
                     {$fromDateCondition}
                     {$toDateCondition} GROUP BY E.EMPLOYEE_CODE,E.FULL_NAME,E.ID_ACCOUNT_NO) AA";
 
-//                    echo $sql;
-//die();
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
-    
-    
 
 }

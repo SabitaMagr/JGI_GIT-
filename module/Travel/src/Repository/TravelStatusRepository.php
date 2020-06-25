@@ -221,7 +221,7 @@ class TravelStatusRepository extends HrisRepository {
         // $statement = $this->adapter->query($sql);
         // $result = $statement->execute();
 
-        $result = $this->rawQuery($sql, $boundedParameter);
-        return $result->current();
+        $result = $this->rawQuery($sql, $boundedParameter)[0];
+        //return $result->current();
     }
 }

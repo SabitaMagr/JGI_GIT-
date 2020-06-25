@@ -44,9 +44,12 @@ class LeaveAssignRepository extends HrisRepository {
     }
 
     public function filter($branchId, $departmentId, $genderId, $designationId, $serviceTypeId, $employeeId, $companyId, $positionId, $employeeTypeId, $leaveId): array {
-        $boundedParams = [];
+
         $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, null, $employeeTypeId, $employeeId, $genderId);
-        $boundedParams = array_merge($boundedParams, $searchCondition['parameter']);
+
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
+
         $sql = "SELECT C.COMPANY_NAME,
                   B.BRANCH_NAME,
                   DEP.DEPARTMENT_NAME,
@@ -94,14 +97,9 @@ class LeaveAssignRepository extends HrisRepository {
          2
            END=1
           )
-                
-
                 ORDER BY C.COMPANY_NAME,B.BRANCH_NAME,DEP.DEPARTMENT_NAME,E.FULL_NAME,MC.LEAVE_YEAR_MONTH_NO";
-                
-//                ECHO $sql;
-//                DIE();
-        $boundedParams['leaveId'] = $leaveId;
-        return $this->rawQuery($sql, $boundedParams);
+
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function filterByLeaveEmployeeId($leaveId, $employeeId) {
