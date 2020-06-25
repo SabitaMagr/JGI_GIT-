@@ -58,11 +58,17 @@ class DashboardRepository {
             LEFT JOIN
               (SELECT *
               FROM
-                (SELECT EMPLOYEE_ID,
-                  OVERALL_STATUS
-                FROM HRIS_ATTENDANCE_DETAIL
-                WHERE (ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY'))
-                ) PIVOT (COUNT(OVERALL_STATUS) FOR OVERALL_STATUS IN ('DO','HD','LV','TV','TN','PR','AB','WD','WH','BA','LA','TP','LP','VP'))
+                (SELECT ad.EMPLOYEE_ID,
+case when  ad.OVERALL_STATUS ='TN' and tms.SHOW_AS_TRAINING='N'
+then
+'CU'
+else
+ad.OVERALL_STATUS
+end as OVERALL_STATUS
+FROM HRIS_ATTENDANCE_DETAIL ad
+                left join HRIS_TRAINING_MASTER_SETUP tms on(ad.training_id=tms.training_id)
+                WHERE (ad.ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY'))
+                ) PIVOT (COUNT(OVERALL_STATUS) FOR OVERALL_STATUS IN ('DO','HD','LV','TV','TN','PR','AB','WD','WH','BA','LA','TP','LP','VP','CU'))
               ) ATTEN_TBL
             ON (EMPLOYEE_TBL.EMPLOYEE_ID = ATTEN_TBL.EMPLOYEE_ID)
             LEFT JOIN
@@ -76,7 +82,7 @@ class DashboardRepository {
               ) LATE_ATTEN_TBL
             ON (EMPLOYEE_TBL.EMPLOYEE_ID = LATE_ATTEN_TBL.EMPLOYEE_ID)
           ";
-
+                
         $statement = $this->adapter->query($sql);
         $result = $statement->execute()->current();
         return $result;
