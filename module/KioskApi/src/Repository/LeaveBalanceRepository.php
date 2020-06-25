@@ -14,6 +14,7 @@ class LeaveBalanceRepository {
     }
 
     public function fetchLeaveDetails($employeeId) {
+        $boundedParams = [];
         $sql = "
             SELECT LA.EMPLOYEE_ID,
             E.FULL_NAME, 
@@ -26,12 +27,13 @@ class LeaveBalanceRepository {
             ON LA.LEAVE_ID = LMS.LEAVE_ID 
             LEFT JOIN HRIS_EMPLOYEES E 
             ON LA.EMPLOYEE_ID = E.EMPLOYEE_ID 
-            WHERE LA.EMPLOYEE_ID = {$employeeId}
+            WHERE LA.EMPLOYEE_ID = :employeeId
             ORDER BY LA.LEAVE_ID
             ";
 
+        $boundedParams['employeeId'] = $employeeId;
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return Helper::extractDbData($result);
     }
 

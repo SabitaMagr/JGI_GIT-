@@ -690,9 +690,12 @@ EOT;
         $employeeTypeId = $data['employeeTypeId'];
         $functionalTypeId = $data['functionalTypeId'];
 
-        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId,null,null,$functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId,null,null,$functionalTypeId);
 
+        $boundedParameter = [];
+        $boundedParameter = array_merge($boundedParameter, $searchCondition['parameter']);
         $monthId = $data['monthId'];
+        $boundedParameter['monthId'] = $monthId;
 
         $sql = <<<EOT
                       SELECT 
@@ -773,7 +776,7 @@ EOT;
                         THEN 1
                         ELSE 0
                       END) AS HOLIDAY,
-                      (``
+                      (
                       CASE
                         WHEN AD.LEAVE_ID   IS NULL
                         AND AD.HOLIDAY_ID  IS NULL
@@ -793,16 +796,16 @@ EOT;
                     ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID)
                     LEFT JOIN HRIS_DEPARTMENTS HD 
                     ON (HD.DEPARTMENT_ID = E.DEPARTMENT_ID),
-                      ( SELECT FROM_DATE,TO_DATE FROM HRIS_MONTH_CODE WHERE MONTH_ID={$monthId}
+                      ( SELECT FROM_DATE,TO_DATE FROM HRIS_MONTH_CODE WHERE MONTH_ID= :monthId
                       ) M
                     WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
                     and E.EMPLOYEE_ID not in (select employee_id from hris_job_history where RETIRED_FLAG = 'Y' or DISABLED_FLAG = 'Y')
-                    {$searchCondition}
+                    {$searchCondition['sql']}
                     ORDER BY DAY_COUNT asc,
                       TO_NUMBER(NVL(E.EMPLOYEE_CODE,'0'),'9999D99','nls_numeric_characters=,.') asc
 EOT;
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
         return Helper::extractDbData($result);
     }
 
@@ -2315,16 +2318,20 @@ EOT;
         $fromDateCondition = "";
         $toDateCondition = "";
 
+        $boundedParameter = [];
+
         if ($fromDate != null) {
-            $fromDateCondition = " AND (S.END_DATE >= TO_DATE('{$fromDate}','DD-MM-YYYY') OR S.END_DATE IS NULL)";
+            $fromDateCondition = " AND (S.END_DATE >= TO_DATE(:fromDate,'DD-MM-YYYY') OR S.END_DATE IS NULL)";
+            $boundedParameter['fromDate'] = $fromDate;
         }
 
         if ($toDate != null) {
-            $toDateCondition = "AND (S.END_DATE <= TO_DATE('{$toDate}','DD-MM-YYYY') OR S.END_DATE IS NULL) ";
+            $toDateCondition = "AND (S.END_DATE <= TO_DATE(:toDate,'DD-MM-YYYY') OR S.END_DATE IS NULL) ";
+            $boundedParameter['toDate'] = $toDate;
         }
 
-        $searchCondition = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
-
+        $searchCondition = EntityHelper::getSearchConditonBounded($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
+        $boundedParameter = array_merge($boundedParameter, $searchCondition['parameter']);
         $sql = "SELECT S.*,
                 E.FULL_NAME,
                 E.EMPLOYEE_CODE,
@@ -2377,10 +2384,10 @@ EOT;
               LEFT JOIN HRIS_BRANCHES B
               ON E.BRANCH_ID = B.BRANCH_ID
               WHERE E.STATUS = 'E'
-              {$searchCondition} {$fromDateCondition} {$toDateCondition}";
+              {$searchCondition['sql']} {$fromDateCondition} {$toDateCondition}";
 
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
         return Helper::extractDbData($result);
     }
 
@@ -2388,8 +2395,9 @@ EOT;
         $fromDate = $searchQuery['fromDate'];
         $toDate = $searchQuery['toDate'];
 
-        $searchCondition = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
-
+        $boundedParameter = [];
+        $searchCondition = EntityHelper::getSearchConditonBounded($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
+        $boundedParameter = array_merge($boundedParameter, $searchCondition['parameter']);
         $sql = "
             SELECT C.COMPANY_NAME,
               D.DEPARTMENT_NAME,
@@ -2532,7 +2540,7 @@ GROUP BY
               LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
               ON (A.LEAVE_ID= L.LEAVE_ID)
 where  A.Attendance_Dt  
-between  '{$fromDate}' and '{$toDate}'
+between  :fromDate and :toDate
   GROUP BY A.EMPLOYEE_ID) A
     LEFT JOIN HRIS_EMPLOYEES E
             ON(A.EMPLOYEE_ID = E.EMPLOYEE_ID)
@@ -2540,17 +2548,18 @@ between  '{$fromDate}' and '{$toDate}'
             ON(E.COMPANY_ID= C.COMPANY_ID)
             LEFT JOIN HRIS_DEPARTMENTS D
             ON (E.DEPARTMENT_ID= D.DEPARTMENT_ID)
-            WHERE 1 = 1 {$searchCondition}
+            WHERE 1 = 1 {$searchCondition['sql']}
             and E.EMPLOYEE_ID not in (select employee_id from hris_job_history where RETIRED_FLAG = 'Y' or DISABLED_FLAG = 'Y')
             ORDER BY C.COMPANY_NAME,
               D.DEPARTMENT_NAME,
               E.FULL_NAME 
             ";
 
+        $boundedParameter['fromDate'] = $fromDate;
+        $boundedParameter['toDate'] = $toDate;
+
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-
-
+        $result = $statement->execute($boundedParameter);
         return Helper::extractDbData($result);
     }
     
@@ -2784,8 +2793,10 @@ EOT;
 
         $leaveDetails=$this->getLeaveList();
         $leavePivotString = $this->getLeaveCodePivot($leaveDetails);
-        $searchConditon = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], null, null, $data['functionalTypeId']);
 
+        $boundedParameter = [];
+        $searchConditon = EntityHelper::getSearchConditonBounded($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], null, null, $data['functionalTypeId']);
+        $boundedParameter = array_merge($boundedParameter, $searchConditon['parameter']);
         $sql = <<<EOT
                 SELECT PL.*,
   MLD.*,
@@ -2961,17 +2972,20 @@ EOT;
     }
 
     public function getBranchName($branchId) {
-        $sql = "select BRANCH_NAME from HRIS_BRANCHES where BRANCH_ID = {$branchId}";
+        $boundedParam = [];
+        $sql = "select BRANCH_NAME from HRIS_BRANCHES where BRANCH_ID = :branchId";
+        $boundedParam['branchId'] = $branchId;
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParam);
         return Helper::extractDbData($result);
     }
 
     public function getDates($monthId) {
-        $sql = "SELECT TO_DATE, FROM_DATE, MONTH_EDESC FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}";
-
+        $boundedParam = [];
+        $sql = "SELECT TO_DATE, FROM_DATE, MONTH_EDESC FROM HRIS_MONTH_CODE WHERE MONTH_ID = :monthId";
+        $boundedParam['monthId'] = $monthId;
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParamf);
         return Helper::extractDbData($result);
     }
 }

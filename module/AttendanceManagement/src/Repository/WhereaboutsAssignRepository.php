@@ -5,7 +5,10 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Join;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Expression;
+use Zend\Db\TableGateway\TableGateway;
 use Application\Repository\RepositoryInterface;
 
 class WhereaboutsAssignRepository {
@@ -17,43 +20,36 @@ class WhereaboutsAssignRepository {
 
     public function getEmployeeList($data)
     {
+        $condition = EntityHelper::getSearchConditonBounded($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId']);
 
-        $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId']);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $condition['parameter']);
+        $sql =  new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("E.FULL_NAME as FULL_NAME"),
+            new Expression("E.EMPLOYEE_ID as EMPLOYEE_ID"),
+            new Expression("E.EMPLOYEE_CODE as EMPLOYEE_CODE"),
+            new Expression("case when EWA.STATUS = 'E' then 'Y' else 'N' END AS ASSIGNED"),
+        ],false);
 
-        $sql = "SELECT 
-                  E.FULL_NAME,
-                  EWA.ORDER_BY,
-                  case when EWA.STATUS = 'E' then 'Y'
-                  else 'N' END AS ASSIGNED,
-                  C.COMPANY_NAME,
-                  B.BRANCH_NAME,
-                  DEP.DEPARTMENT_NAME,
-                  E.EMPLOYEE_ID,
-                  E.EMPLOYEE_CODE,
-                  P.POSITION_NAME,
-                  DES.DESIGNATION_TITLE
-                FROM HRIS_EMPLOYEES E
-                LEFT JOIN HRIS_COMPANY C
-                ON (E.COMPANY_ID=C.COMPANY_ID)
-                LEFT JOIN HRIS_EMP_WHEREABOUT_ASN EWA
-                ON (E.EMPLOYEE_ID = EWA.EMPLOYEE_ID)
-                LEFT JOIN HRIS_BRANCHES B
-                ON (E.BRANCH_ID=B.BRANCH_ID)
-                LEFT JOIN HRIS_DEPARTMENTS DEP
-                ON (E.DEPARTMENT_ID=DEP.DEPARTMENT_ID)
-                LEFT JOIN HRIS_POSITIONS P 
-                ON (P.POSITION_ID=E.POSITION_ID)
-                LEFT JOIN HRIS_DESIGNATIONS DES
-                ON (DES.DESIGNATION_ID=E.DESIGNATION_ID)
-                WHERE 1            =1 
-                 AND E.STATUS = 'E'  AND E.IS_ADMIN NOT IN ('Y')
-                {$condition}
-                ORDER BY EWA.ORDER_BY";
+        $select->from(["E" => "HRIS_EMPLOYEES"]);
 
-//        print_r($sql);
+        $select->join(["C" => "HRIS_COMPANY"],"E.COMPANY_ID = C.COMPANY_ID", ['COMPANY_NAME'],'left');
+        $select->join(["EWA" => "HRIS_EMP_WHEREABOUT_ASN"],"E.EMPLOYEE_ID = EWA.EMPLOYEE_ID", ['ORDER_BY'], 'left');
+        $select->join(["B" => "HRIS_BRANCHES"],"E.BRANCH_ID = B.BRANCH_ID", ['BRANCH_NAME' => new Expression("B.BRANCH_NAME ")], 'left');
+        $select->join(["DEP" => "HRIS_DEPARTMENTS"],"E.DEPARTMENT_ID = DEP.DEPARTMENT_ID", ['DEPARTMENT_NAME'], 'left');
+        $select->join(["P" => "HRIS_POSITIONS"],"E.POSITION_ID = P.POSITION_ID", ['POSITION_NAME'], 'left');
+        $select->join(["DES" => "HRIS_DESIGNATIONS"],"E.DESIGNATION_ID = DES.DESIGNATION_ID", ['DESIGNATION_TITLE'], 'left');
+
+        $select->where(["1=1 " . $condition['sql']]);
+
+        $select->order("EWA.ORDER_BY");
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+//        echo $statement->getSql();
 //        die();
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
         return $result;
     }
 
@@ -65,15 +61,18 @@ class WhereaboutsAssignRepository {
 
     public function updateWhereabouts($employeeId, $updateData){
         $sql = '';
+        $boundedParams = [];
+        $boundedParams['employeeId'] = $employeeId;
+        $boundedParams['orderBy'] = $updateData['orderBy'];
 
         if($updateData['orderBy'] == null){
-            $sql = "DELETE from HRIS_EMP_WHEREABOUT_ASN where EMPLOYEE_ID= {$employeeId}";
+            $sql = "DELETE from HRIS_EMP_WHEREABOUT_ASN where EMPLOYEE_ID= :employeeId";
         }
         else {
             $sql = "
                 DECLARE
-                  p_employee_id   NUMBER := {$employeeId};
-                  p_order_by      NUMBER := {$updateData['orderBy']};
+                  p_employee_id   NUMBER := :employeeId;
+                  p_order_by      NUMBER := :orderBy;
                   v_update      NUMBER := 1;
                   v_employee_id NUMBER;
                 BEGIN
@@ -99,7 +98,8 @@ class WhereaboutsAssignRepository {
                 ";
         }
 
-        EntityHelper::rawQueryResult($this->adapter, $sql);
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute($boundedParams);
         return;
     }
 

@@ -44,7 +44,9 @@ class LeaveAssignRepository extends HrisRepository {
     }
 
     public function filter($branchId, $departmentId, $genderId, $designationId, $serviceTypeId, $employeeId, $companyId, $positionId, $employeeTypeId, $leaveId): array {
-        $searchCondition = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, null, $employeeTypeId, $employeeId, $genderId);
+        $boundedParams = [];
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, null, $employeeTypeId, $employeeId, $genderId);
+        $boundedParams = array_merge($boundedParams, $searchCondition['parameter']);
         $sql = "SELECT C.COMPANY_NAME,
                   B.BRANCH_NAME,
                   DEP.DEPARTMENT_NAME,
@@ -58,10 +60,10 @@ class LeaveAssignRepository extends HrisRepository {
                   LS.IS_MONTHLY,
                   MC.MONTH_EDESC
                 FROM HRIS_EMPLOYEES E
-                LEFT JOIN (SELECT * FROM HRIS_EMPLOYEE_LEAVE_ASSIGN WHERE LEAVE_ID   ={$leaveId}) ELA
+                LEFT JOIN (SELECT * FROM HRIS_EMPLOYEE_LEAVE_ASSIGN WHERE LEAVE_ID   = :leaveId) ELA
                 ON (E.EMPLOYEE_ID = ELA.EMPLOYEE_ID)
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP LS
-                ON(LS.LEAVE_ID={$leaveId})
+                ON(LS.LEAVE_ID= :leaveId)
                LEFT JOIN HRIS_LEAVE_MONTH_CODE MC ON
                (MC.LEAVE_YEAR_MONTH_NO=ELA.FISCAL_YEAR_MONTH_NO AND LS.LEAVE_YEAR=MC.LEAVE_YEAR_ID)
                 LEFT JOIN HRIS_COMPANY C
@@ -71,7 +73,7 @@ class LeaveAssignRepository extends HrisRepository {
                 LEFT JOIN HRIS_DEPARTMENTS DEP
                 ON (E.DEPARTMENT_ID=DEP.DEPARTMENT_ID)
                 WHERE 1            =1 AND E.STATUS='E'
-                {$searchCondition}
+                {$searchCondition['sql']}
                     AND (CASE 
            WHEN ELA.FISCAL_YEAR_MONTH_NO IS NOT NULL THEN 
          (SELECT LEAVE_YEAR_MONTH_NO FROM HRIS_LEAVE_MONTH_CODE WHERE 
@@ -98,8 +100,8 @@ class LeaveAssignRepository extends HrisRepository {
                 
 //                ECHO $sql;
 //                DIE();
-
-        return $this->rawQuery($sql);
+        $boundedParams['leaveId'] = $leaveId;
+        return $this->rawQuery($sql, $boundedParams);
     }
 
     public function filterByLeaveEmployeeId($leaveId, $employeeId) {
@@ -122,16 +124,23 @@ class LeaveAssignRepository extends HrisRepository {
     
     
     public function editMonthlyLeave($employeeId,$leaveDetails,$monthId,$totalDays=null,$previousBalance=null){
+        $boundedParams = [];
         $monthlyDays=($totalDays !=null )?$totalDays:$leaveDetails['DEFAULT_DAYS'];
+        $boundedParams['monthlyDays'] = $monthlyDays;
+        $boundedParams['monthId'] = $monthId;
+        $boundedParams['employeeId'] = $employeeId;
+        $boundedParams['leaveId'] = $leaveDetails['LEAVE_ID'];
+        $boundedParams['previousBalance'] = $previousBalance;
+        $boundedParams['carryForward'] = $leaveDetails['CARRY_FORWARD'];
         $sql="DECLARE
-            V_DEFAULT_LEAVE_DAYS NUMBER:={$monthlyDays};
-            V_LEAVE_ID NUMBER:={$leaveDetails['LEAVE_ID']};
-            V_MONTH_ID NUMBER:={$monthId};
+            V_DEFAULT_LEAVE_DAYS NUMBER:= :monthlyDays;
+            V_LEAVE_ID NUMBER:= :leaveId;
+            V_MONTH_ID NUMBER:= :monthId;
      V_COUNT NUMBER;
-     V_EMPLOYEE_ID NUMBER:={$employeeId};
+     V_EMPLOYEE_ID NUMBER:= :employeeId;
          V_MONTH_COUNT NUMBER:=1;
-         V_CARRY_FORWARD CHAR(1 BYTE):='{$leaveDetails['CARRY_FORWARD']}';
-         V_PREVIOUS_YEAR_BAL NUMBER:={$previousBalance};
+         V_CARRY_FORWARD CHAR(1 BYTE):= :carryForward;
+         V_PREVIOUS_YEAR_BAL NUMBER:= :previousBalance;
     BEGIN
     
             IF(V_PREVIOUS_YEAR_BAL IS NULL)
@@ -179,7 +188,8 @@ class LeaveAssignRepository extends HrisRepository {
         END;
         
         END;";
-         $this->executeStatement($sql);
+
+         $this->executeStatement($sql, $boundedParams);
     }
     
     

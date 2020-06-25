@@ -14,6 +14,7 @@ class PaysheetRepository {
     }
 
     public function fetchPaysheet($employeeId) {
+        $boundedParams = [];
         $sql = "
            SELECT TS.*,
 P.PAY_TYPE_FLAG,
@@ -26,11 +27,12 @@ AND TS.SHEET_NO IN
 (SELECT SHEET_NO FROM HRIS_SALARY_SHEET WHERE MONTH_ID =13
 AND SALARY_TYPE_ID=1
 ) AND P.pay_type_flag!='V' 
-AND EMPLOYEE_ID ={$employeeId} ORDER BY P.PRIORITY_INDEX
+AND EMPLOYEE_ID = :employeeId ORDER BY P.PRIORITY_INDEX
             ";
 
+        $boundedParams['employeeId'] = $employeeId;
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return Helper::extractDbData($result);
     }
 
