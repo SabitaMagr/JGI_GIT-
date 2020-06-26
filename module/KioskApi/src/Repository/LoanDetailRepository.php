@@ -14,6 +14,7 @@ class LoanDetailRepository {
     }
 
     public function fetchLoanDetail($employeeId, $loanId) {
+        $boundedParams = [];
         $sql = "
             SELECT DISTINCT
             E.EMPLOYEE_CODE,
@@ -57,12 +58,15 @@ class LoanDetailRepository {
             1 = 1 
             AND
             LR.LOAN_STATUS = 'OPEN'
-            AND L.LOAN_ID = {$loanId}
-            AND E.EMPLOYEE_ID = {$employeeId}
+            AND L.LOAN_ID = :loanId
+            AND E.EMPLOYEE_ID = :employeeId
             ";
 
+        $boundedParams['loanId'] = $loanId;
+        $boundedParams['employeeId'] = $employeeId;
+
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return Helper::extractDbData($result);
     }
 

@@ -22,9 +22,9 @@ class HrisRepository {
         return iterator_to_array($iterator, false);
     }
 
-    protected function executeStatement($sql) {
+    protected function executeStatement($sql, $parameter = []) {
         $statement = $this->adapter->query($sql);
-        $statement->execute();
+        $statement->execute($parameter);
     }
 
     protected function checkIfTableExists($tableName): bool {
