@@ -12,12 +12,13 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
+use Application\Repository\HrisRepository;
 use Application\Helper\EntityHelper;
 
-class TrainingAssignRepository implements RepositoryInterface {
+class TrainingAssignRepository extends HrisRepository implements RepositoryInterface {
 
-    private $tableGateway;
-    private $adapter;
+    protected $tableGateway;
+    protected $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->tableGateway = new TableGateway(TrainingAssign::TABLE_NAME, $adapter);
@@ -115,7 +116,10 @@ class TrainingAssignRepository implements RepositoryInterface {
 
     public function filterRecords($search) {
         $condition = "";
-        $condition = EntityHelper::getSearchConditon($search['companyId'], $search['branchId'], $search['departmentId'], $search['positionId'], $search['designationId'], $search['serviceTypeId'], $search['serviceEventTypeId'], $search['employeeTypeId'], $search['employeeId']);
+        $condition = EntityHelper::getSearchConditonBounded($search['companyId'], $search['branchId'], $search['departmentId'], $search['positionId'], $search['designationId'], $search['serviceTypeId'], $search['serviceEventTypeId'], $search['employeeTypeId'], $search['employeeId']);
+
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $condition['parameter']);
 
         if (isset($search['trainingId']) && $search['trainingId'] != null && $search['trainingId'] != -1) {
             if (gettype($search['trainingId']) === 'array') {
@@ -160,8 +164,9 @@ class TrainingAssignRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_EMPLOYEES E
                 ON (TA.EMPLOYEE_ID=E.EMPLOYEE_ID)
                 WHERE 1=1 AND TA.STATUS='E' 
-                {$condition} ORDER BY TMS.TRAINING_NAME,E.FULL_NAME";
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+                {$condition['sql']} ORDER BY TMS.TRAINING_NAME,E.FULL_NAME";
+
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function edit(Model $model, $id) {
