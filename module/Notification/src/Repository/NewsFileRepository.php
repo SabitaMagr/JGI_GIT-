@@ -8,12 +8,13 @@ use Application\Repository\RepositoryInterface;
 use Notification\Model\NewsFile;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
+use Application\Repository\HrisRepository;
 use Zend\Db\TableGateway\TableGateway;
 
-class NewsFileRepository implements RepositoryInterface {
+class NewsFileRepository extends HrisRepository implements RepositoryInterface {
 
-    private $tableGateway;
-    private $adapter;
+    protected $tableGateway;
+    protected $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->tableGateway = new TableGateway('HRIS_NEWS_FILE', $adapter);
@@ -55,10 +56,15 @@ class NewsFileRepository implements RepositoryInterface {
     }
 
     public function fetchAllNewsFiles($id) {
-        $sql = "SELECT * FROM HRIS_NEWS_FILE WHERE NEWS_ID=$id ";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        $sql = "SELECT * FROM HRIS_NEWS_FILE WHERE NEWS_ID=:id ";
+
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return Helper::extractDbData($result);
     }
 
 }

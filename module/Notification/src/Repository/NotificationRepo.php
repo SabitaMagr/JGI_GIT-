@@ -12,12 +12,13 @@ use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use Application\Repository\HrisRepository;
 use Zend\Db\TableGateway\TableGateway;
 
-class NotificationRepo implements RepositoryInterface {
+class NotificationRepo extends HrisRepository implements RepositoryInterface {
 
-    private $tableGateway;
-    private $adapter;
+    protected $tableGateway;
+    protected $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -91,14 +92,17 @@ class NotificationRepo implements RepositoryInterface {
     }
     
     public function fetchAllEmployeeEmail($postData) {
-        $whereCondition = EntityHelper::getSearchConditon($postData['company'], $postData['branch'], $postData['department'], $postData['position'], $postData['designation'], $postData['serviceType'], $postData['serviceEventType'], $postData['employeeType'], $postData['employee']);
-        $sql = 'SELECT E.FULL_NAME,E.EMAIL_OFFICIAL FROM HRIS_EMPLOYEES E where E.EMAIL_OFFICIAL IS NOT NULL';
-        $sql.=$whereCondition;
-        
-        
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        $whereCondition = EntityHelper::getSearchConditonBounded($postData['company'], $postData['branch'], $postData['department'], $postData['position'], $postData['designation'], $postData['serviceType'], $postData['serviceEventType'], $postData['employeeType'], $postData['employee']);
+
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $whereCondition['parameter']);
+
+        $sql = 'SELECT E.FULL_NAME,E.EMAIL_OFFICIAL FROM HRIS_EMPLOYEES E where E.EMAIL_OFFICIAL IS NOT NULL ';
+        $sql.=$whereCondition['sql'];
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return Helper::extractDbData($result);
     }
 
 }

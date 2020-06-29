@@ -37,7 +37,7 @@ class TrainingStatusRepository extends HrisRepository {
         }
 
         if ($fromDate != null) {
-            $fromDateCondition = " AND ((TR.START_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY')) OR (T.START_DATE>=TO_DATE(:$fromDate,'DD-MM-YYYY')))";
+            $fromDateCondition = " AND ((TR.START_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY')) OR (T.START_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY')))";
             $boundedParameter['fromDate'] = $fromDate;
         }
 
