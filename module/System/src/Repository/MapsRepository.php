@@ -12,11 +12,12 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
+use Application\Repository\HrisRepository;
  
-class MapsRepository implements RepositoryInterface {
+class MapsRepository extends HrisRepository implements RepositoryInterface {
 
-    private $tableGateway;
-    private $adapter;
+    protected $tableGateway;
+    protected $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->tableGateway = new TableGateway(AttendanceDetail::TABLE_NAME, $adapter);
@@ -24,15 +25,27 @@ class MapsRepository implements RepositoryInterface {
     }
 
     public function fetchCheckInLocation($employeeId, $attd_date){
-      $sql = "select LOCATION,ATTENDANCE_TIME from (select * from HRIS_ATTENDANCE WHERE EMPLOYEE_ID = $employeeId AND ATTENDANCE_DT = '$attd_date' order by ATTENDANCE_TIME asc ) where ROWNUM <= 1";
-      $statement = $this->adapter->query($sql);
-      return $statement->execute();
+      $boundedParameter = [];
+      $boundedParameter['attd_date'] = $attd_date;
+      $boundedParameter['employeeId'] = $employeeId;
+
+      $sql = "select LOCATION,ATTENDANCE_TIME from (select * from HRIS_ATTENDANCE WHERE EMPLOYEE_ID = :employeeId AND ATTENDANCE_DT = :attd_date order by ATTENDANCE_TIME asc ) where ROWNUM <= 1";
+
+      return $this->rawQuery($sql, $boundedParameter);
+      // $statement = $this->adapter->query($sql);
+      // return $statement->execute();
     }
 
     public function fetchCheckOutLocation($employeeId, $attd_date){
-      $sql = "select LOCATION,ATTENDANCE_TIME from (select * from HRIS_ATTENDANCE WHERE EMPLOYEE_ID = $employeeId AND ATTENDANCE_DT = '$attd_date' order by ATTENDANCE_TIME desc ) where ROWNUM <= 1";
-      $statement = $this->adapter->query($sql);
-      return $statement->execute();
+      $boundedParameter = [];
+      $boundedParameter['attd_date'] = $attd_date;
+      $boundedParameter['employeeId'] = $employeeId;
+
+      $sql = "select LOCATION,ATTENDANCE_TIME from (select * from HRIS_ATTENDANCE WHERE EMPLOYEE_ID = :employeeId AND ATTENDANCE_DT = :attd_date order by ATTENDANCE_TIME desc ) where ROWNUM <= 1";
+
+      return $this->rawQuery($sql, $boundedParameter);
+      // $statement = $this->adapter->query($sql);
+      // return $statement->execute();
     }
 
     public function add(Model $model){}

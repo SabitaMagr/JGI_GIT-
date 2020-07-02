@@ -110,15 +110,17 @@ class TravelItnaryRepository extends HrisRepository implements RepositoryInterfa
 //                ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
 //                WHERE 1          =1 {$condition}";
         
-        
-         $condition = "";
+        $boundedParameter = [];
+        $condition = "";
         if (isset($search['fromDate']) && $search['fromDate'] != null) {
-            $condition .= " AND TI.FROM_DT>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";
+            $condition .= " AND TI.FROM_DT>=TO_DATE(:fromDate,'DD-MM-YYYY') ";
+            $boundedParameter['fromDate'] = $fromDate;
         }
         if (isset($search['fromDate']) && $search['toDate'] != null) {
-            $condition .= " AND TI.TO_DT<=TO_DATE('{$search['toDate']}','DD-MM-YYYY') ";
+            $condition .= " AND TI.TO_DT<=TO_DATE(:toDate,'DD-MM-YYYY') ";
+            $boundedParameter['toDate'] = $toDate;
         }
-        
+        $boundedParameter['employeeId'] = $employeeId;
         
         $sql="
             select 
@@ -134,11 +136,11 @@ LISTAGG(IME.EMPLOYEE_CODE||'-'||IME.FULL_NAME, ','||rpad(' ',4,' ')) WITHIN GROU
 FROM HRIS_ITNARY_MEMBERS IM
 JOIN HRIS_EMPLOYEES IME ON (IM.EMPLOYEE_ID=IME.EMPLOYEE_ID )
 GROUP BY IM.ITNARY_ID ) IMD ON (IMD.ITNARY_ID=TI.ITNARY_ID)
-WHERE TI.CREATED_BY={$search['employeeId']} {$condition} 
+WHERE TI.CREATED_BY=:employeeId {$condition} 
 ";
 
         $finalSql = $this->getPrefReportQuery($sql);
-        return $this->rawQuery($finalSql);
+        return $this->rawQuery($finalSql, $boundedParameter);
     }
 
     public function notSettled(): array {

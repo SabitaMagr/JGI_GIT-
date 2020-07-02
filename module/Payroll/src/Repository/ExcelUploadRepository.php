@@ -5,29 +5,40 @@ namespace Payroll\Repository;
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
+use Application\Repository\HrisRepository;
 
-class ExcelUploadRepository{
+class ExcelUploadRepository extends HrisRepository{
 
-    private $adapter;
+    protected $adapter;
 
     public function __construct(AdapterInterface $adapter) {
       $this->adapter = $adapter;
     }
 
     public function updateEmployeeSalary($id, $salary){
-        $sql = "UPDATE HRIS_EMPLOYEES SET SALARY = $salary WHERE EMPLOYEE_ID = $id"; 
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+        $boundedParameter['salary'] = $salary;
+        $sql = "UPDATE HRIS_EMPLOYEES SET SALARY = :salary WHERE EMPLOYEE_ID = :id"; 
+
         $statement = $this->adapter->query($sql);
-        $statement->execute();
+        $statement->execute($boundedParameter);
     }
     
     public function postPayValuesModifiedDetail($data) {
+        $boundedParameter = [];
+        $boundedParameter['id'] = $data['monthId'];
+        $boundedParameter['salary'] = $data['employeeId'];
+        $boundedParameter['id'] = $data['payId'];
+        $boundedParameter['salary'] = $data['val'];
+        $boundedParameter['salaryTypeId'] = $data['salaryTypeId'];
         $sql = "
                 DECLARE
-                  V_MONTH_ID HRIS_SS_PAY_VALUE_MODIFIED.MONTH_ID%TYPE := {$data['monthId']};
-                  V_EMPLOYEE_ID HRIS_SS_PAY_VALUE_MODIFIED.EMPLOYEE_ID%TYPE := {$data['employeeId']};
-                  V_PAY_ID HRIS_SS_PAY_VALUE_MODIFIED.PAY_ID%TYPE := {$data['payId']};
-                  V_VAL HRIS_SS_PAY_VALUE_MODIFIED.VAL%TYPE := {$data['val']};
-                  V_SALARY_TYPE_ID HRIS_SS_PAY_VALUE_MODIFIED.SALARY_TYPE_ID%TYPE := {$data['salaryTypeId']};
+                  V_MONTH_ID HRIS_SS_PAY_VALUE_MODIFIED.MONTH_ID%TYPE := :monthId;
+                  V_EMPLOYEE_ID HRIS_SS_PAY_VALUE_MODIFIED.EMPLOYEE_ID%TYPE := :employeeId;
+                  V_PAY_ID HRIS_SS_PAY_VALUE_MODIFIED.PAY_ID%TYPE := :payId;
+                  V_VAL HRIS_SS_PAY_VALUE_MODIFIED.VAL%TYPE := :val;
+                  V_SALARY_TYPE_ID HRIS_SS_PAY_VALUE_MODIFIED.SALARY_TYPE_ID%TYPE := :salaryTypeId;
                 BEGIN
                   SELECT VAL
                   INTO V_VAL
@@ -66,7 +77,7 @@ class ExcelUploadRepository{
 ";
                   //echo $sql; die;
         $statement = $this->adapter->query($sql);
-        return $statement->execute();
+        return $statement->execute($boundedParameter);
     }
     
     public function getSalaryTypes(){

@@ -18,13 +18,17 @@ class SSPayValueModifiedRepo extends HrisRepository {
     public function filter($monthId, $companyId = null, $groupId = null) {
         $csv = $this->fetchCSVSSRules();
         $employeeCondition = "";
+        $boundedParameter = [];
         if ($companyId != null) {
-            $employeeCondition = " AND E.COMPANY_ID = {$companyId}";
+            $employeeCondition = " AND E.COMPANY_ID = :companyId";
+            $boundedParameter['companyId'] = $companyId;
         }
 
         if ($groupId != null) {
-            $employeeCondition = " AND E.GROUP_ID = {$groupId}";
+            $employeeCondition = " AND E.GROUP_ID = :groupId";
+            $boundedParameter['groupId'] = $groupId;
         }
+        $boundedParameter['monthId'] = $monthId;
         $sql = "SELECT E.EMPLOYEE_ID,
                   E.FULL_NAME,
                   C.COMPANY_ID,
@@ -38,12 +42,12 @@ class SSPayValueModifiedRepo extends HrisRepository {
                 LEFT JOIN
                   (SELECT *
                   FROM
-                    (SELECT MONTH_ID, PAY_ID, EMPLOYEE_ID AS E_ID,VAL FROM HRIS_SS_PAY_VALUE_MODIFIED WHERE MONTH_ID ={$monthId}
+                    (SELECT MONTH_ID, PAY_ID, EMPLOYEE_ID AS E_ID,VAL FROM HRIS_SS_PAY_VALUE_MODIFIED WHERE MONTH_ID =:monthId
                     ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$csv}))
                   ) PV
                 ON (E.EMPLOYEE_ID=PV.E_ID)
                 WHERE E.STATUS   ='E' {$employeeCondition} ORDER BY C.COMPANY_NAME,SSG.GROUP_NAME,E.FULL_NAME";
-        return $this->rawQuery($sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     private function fetchCSVSSRules(): string {
@@ -74,11 +78,16 @@ class SSPayValueModifiedRepo extends HrisRepository {
     }
 
     private function createOrUpdate($m, $e, $p, $v) {
+        $boundedParameter = [];
+        $boundedParameter['m'] = $m;
+        $boundedParameter['e'] = $e;
+        $boundedParameter['p'] = $p;
+        $boundedParameter['v'] = $v;
         $sql = "DECLARE
-                  V_MONTH_ID HRIS_SS_PAY_VALUE_MODIFIED.MONTH_ID%TYPE      :={$m};
-                  V_EMPLOYEE_ID HRIS_SS_PAY_VALUE_MODIFIED.EMPLOYEE_ID%TYPE:={$e};
-                  V_PAY_ID HRIS_SS_PAY_VALUE_MODIFIED.PAY_ID%TYPE          :={$p};
-                  V_VAL HRIS_SS_PAY_VALUE_MODIFIED.VAL%TYPE                :={$v};
+                  V_MONTH_ID HRIS_SS_PAY_VALUE_MODIFIED.MONTH_ID%TYPE      :=:m;
+                  V_EMPLOYEE_ID HRIS_SS_PAY_VALUE_MODIFIED.EMPLOYEE_ID%TYPE:=:e;
+                  V_PAY_ID HRIS_SS_PAY_VALUE_MODIFIED.PAY_ID%TYPE          :=:p;
+                  V_VAL HRIS_SS_PAY_VALUE_MODIFIED.VAL%TYPE                :=:v;
                   V_ROW_COUNT NUMBER;
                 BEGIN
                   SELECT COUNT(*)
@@ -111,7 +120,7 @@ class SSPayValueModifiedRepo extends HrisRepository {
                       );
                   END IF;
                 END;";
-        $this->executeStatement($sql);
+        $this->executeStatement($sql, $boundedParameter);
     }
 
     public function fetch($q) {
@@ -131,6 +140,12 @@ class SSPayValueModifiedRepo extends HrisRepository {
     }
 
     public function setModifiedPayValue($data, $monthId, $salaryTypeId) {
+        $boundedParameter = [];
+        $boundedParameter['payId'] = $data['payId'];
+        $boundedParameter['employeeId'] = $data['employeeId'];
+        $boundedParameter['monthId'] = $monthId;
+        $boundedParameter['salaryTypeId'] = $salaryTypeId;
+
         if($data['value'] == null || $data['value'] == ''){
           $sql = "DELETE FROM HRIS_SS_PAY_VALUE_MODIFIED
                   WHERE PAY_ID       = {$data['payId']}
@@ -139,13 +154,14 @@ class SSPayValueModifiedRepo extends HrisRepository {
                   AND SALARY_TYPE_ID = {$salaryTypeId}";
         }
         else{
+          $boundedParameter['value'] = $data['value'];
           $sql = "
                 DECLARE
-                  V_PAY_ID HRIS_SS_PAY_VALUE_MODIFIED.PAY_ID%TYPE := {$data['payId']};
-                  V_EMPLOYEE_ID HRIS_SS_PAY_VALUE_MODIFIED.EMPLOYEE_ID%TYPE := {$data['employeeId']};
-                  V_PAY_VALUE HRIS_SS_PAY_VALUE_MODIFIED.VAL%TYPE := {$data['value']};
-                  V_MONTH_ID HRIS_SS_PAY_VALUE_MODIFIED.MONTH_ID%TYPE := {$monthId};
-                  V_SALARY_TYPE_ID HRIS_SS_PAY_VALUE_MODIFIED.SALARY_TYPE_ID%TYPE := {$salaryTypeId};
+                  V_PAY_ID HRIS_SS_PAY_VALUE_MODIFIED.PAY_ID%TYPE := :payId;
+                  V_EMPLOYEE_ID HRIS_SS_PAY_VALUE_MODIFIED.EMPLOYEE_ID%TYPE := :employeeId;
+                  V_PAY_VALUE HRIS_SS_PAY_VALUE_MODIFIED.VAL%TYPE := :value;
+                  V_MONTH_ID HRIS_SS_PAY_VALUE_MODIFIED.MONTH_ID%TYPE := :monthId;
+                  V_SALARY_TYPE_ID HRIS_SS_PAY_VALUE_MODIFIED.SALARY_TYPE_ID%TYPE := :salaryTypeId;
                   V_OLD_FLAT_VALUE HRIS_SS_PAY_VALUE_MODIFIED.VAL%TYPE;
                 BEGIN
                   SELECT VAL
@@ -185,32 +201,46 @@ class SSPayValueModifiedRepo extends HrisRepository {
                 END;";
         } 
         $statement = $this->adapter->query($sql);
-        return $statement->execute();
+        return $statement->execute($boundedParameter);
     }
 
     public function getColumns($payHeadId){
-      $payHeadId = implode(',', $payHeadId);
-      $sql = "select pay_id, pay_edesc, 'H_'||pay_id as title from hris_pay_setup where pay_id in ($payHeadId)
+      $payHeadIds = ':F_' . implode(',:F_', $payHeadId);
+      $boundedParameter = [];
+      for($i = 0; $i < count($payHeadId); $i++){
+        $boundedParameter['F_'.$payHeadId[$i]] = $payHeadId[$i];
+      }
+      //$payHeadId = implode(',', $payHeadId);
+      $sql = "select pay_id, pay_edesc, 'H_'||pay_id as title from hris_pay_setup where pay_id in ($payHeadIds)
       order by pay_id";
       $statement = $this->adapter->query($sql);
-      return $statement->execute();
+      return $statement->execute($boundedParameter);
     }
 
     public function modernFilter($monthId, $companyId = null, $groupId = null, $payId, $employeeId, $salaryTypeId) {
         $csv = $payId;
         $employeeCondition = "";
+        $boundedParameter = [];
         if ($companyId != null && $companyId != -1) {
-            $employeeCondition .= " AND E.COMPANY_ID = {$companyId}";
+            $employeeCondition .= " AND E.COMPANY_ID = :companyId";
+            $boundedParameter['companyId'] = $companyId;
         }
 
         if ($groupId != null && $groupId != -1) {
-            $employeeCondition .= " AND E.GROUP_ID = {$groupId}";
+            $employeeCondition .= " AND E.GROUP_ID = :groupId";
+            $boundedParameter['groupId'] = $groupId;
         }
 
         if ($employeeId != null && $employeeId != -1) {
-          $employeeId = implode(',', $employeeId);
-          $employeeCondition .= " AND E.EMPLOYEE_ID IN ($employeeId)";
+          //$employeeId = implode(',', $employeeId);
+          $employeeIds = ':F_' . implode(',:F_', $employeeId);
+          for($i = 0; $i < count($employeeId); $i++){
+            $boundedParameter['F_'.$employeeId[$i]] = $employeeId[$i];
+          }
+          $employeeCondition .= " AND E.EMPLOYEE_ID IN ($employeeIds)";
         }
+        $boundedParameter['monthId'] = $monthId;
+        $boundedParameter['salaryTypeId'] = $salaryTypeId;
         $sql = "SELECT E.EMPLOYEE_ID,
                   E.FULL_NAME,
                   C.COMPANY_ID,
@@ -224,13 +254,13 @@ class SSPayValueModifiedRepo extends HrisRepository {
                 LEFT JOIN
                   (SELECT *
                   FROM
-                    (SELECT MONTH_ID, PAY_ID, EMPLOYEE_ID AS E_ID,VAL FROM HRIS_SS_PAY_VALUE_MODIFIED WHERE MONTH_ID ={$monthId}
-                    and SALARY_TYPE_ID ={$salaryTypeId}
+                    (SELECT MONTH_ID, PAY_ID, EMPLOYEE_ID AS E_ID,VAL FROM HRIS_SS_PAY_VALUE_MODIFIED WHERE MONTH_ID =:monthId
+                    and SALARY_TYPE_ID =:salaryTypeId
                     order by pay_id ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$csv}))
                   ) PV
                 ON (E.EMPLOYEE_ID=PV.E_ID)
                 WHERE E.STATUS   ='E' {$employeeCondition} ORDER BY C.COMPANY_NAME,SSG.GROUP_NAME,E.FULL_NAME";
                 
-        return $this->rawQuery($sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 }

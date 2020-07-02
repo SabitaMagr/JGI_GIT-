@@ -4,15 +4,16 @@ namespace Payroll\Repository;
 
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
+use Application\Repository\HrisRepository;
 use Application\Repository\RepositoryInterface;
 use Payroll\Model\VarianceSetup;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
-class VarianceRepo implements RepositoryInterface {
+class VarianceRepo extends HrisRepository implements RepositoryInterface {
 
-    private $adapter;
-    private $tableGateway;
+    protected $adapter;
+    protected $tableGateway;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -73,9 +74,10 @@ AS VARIABLE_TYPE_NAME
     FROM Hris_Variance_Payhead VP
     left join HRIS_PAY_SETUP PS ON (Vp.Pay_Id=Ps.Pay_Id)
     GROUP BY VARIANCE_ID) VD ON (VD.Variance_Id=V.Variance_Id)
-    WHERE V.STATUS='E' and V.VARIANCE_ID={$id}";
-
-        return EntityHelper::rawQueryResult($this->adapter, $sql)->current();
+    WHERE V.STATUS='E' and V.VARIANCE_ID=:id";
+    $boundedParameter = [];
+    $boundedParameter['id'] = $id;
+        return $this->rawQuery($sql, $boundedParameter)[0];
     }
 
     public function delete($id) {

@@ -27,36 +27,51 @@ class MonthlyValueDetailRepo {
     }
 
     public function fetchById($id) {
+        $boundedParameter = [];
+        $boundedParameter['monthId'] = $id['monthId'];
+        $boundedParameter['employeeId'] = $id['employeeId'];
+        $boundedParameter['mthId'] = $id['mthId'];
+
         $sql = "SELECT MTH_VALUE
                 FROM HRIS_MONTHLY_VALUE_DETAIL
-                WHERE EMPLOYEE_ID = {$id['employeeId']}
-                AND MONTH_ID      = {$id['monthId']}
-                AND MTH_ID        = {$id['mthId']}";
+                WHERE EMPLOYEE_ID = :employeeId
+                AND MONTH_ID      = :monthId
+                AND MTH_ID        = :mthId";
 
         $statement = $this->adapter->query($sql);
-        $rawResult = $statement->execute();
+        $rawResult = $statement->execute($boundedParameter);
         $result = $rawResult->current();
         return $result != null ? $result['MTH_VALUE'] : 0;
     }
 
     public function getMonthlyValuesDetailById($monthlyValueId, $fiscalYearId, $emp, $monthId = null) {
-        $searchConditon = EntityHelper::getSearchConditon($emp['companyId'], $emp['branchId'], $emp['departmentId'], $emp['positionId'], $emp['designationId'], $emp['serviceTypeId'], $emp['serviceEventTypeId'], $emp['employeeTypeId'], $emp['employeeId'], $emp['genderId'],null, $emp['functionalTypeId']);
-        $empQuery = "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$searchConditon}";
+        $searchCondition = EntityHelper::getSearchConditonBounded($emp['companyId'], $emp['branchId'], $emp['departmentId'], $emp['positionId'], $emp['designationId'], $emp['serviceTypeId'], $emp['serviceEventTypeId'], $emp['employeeTypeId'], $emp['employeeId'], $emp['genderId'],null, $emp['functionalTypeId']);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
+        $boundedParameter['monthlyValueId'] = $monthlyValueId;
+        $boundedParameter['fiscalYearId'] = $fiscalYearId;
+        $empQuery = "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$searchCondition['sql']}";
         $sql = "SELECT MVD.*,EE.FULL_NAME,EE.EMPLOYEE_CODE FROM HRIS_MONTHLY_VALUE_DETAIL MVD
                 LEFT JOIN HRIS_EMPLOYEES EE on (EE.EMPLOYEE_ID=MVD.EMPLOYEE_ID)  
-                WHERE MVD.MTH_ID = {$monthlyValueId} AND MVD.FISCAL_YEAR_ID = {$fiscalYearId} AND MVD.EMPLOYEE_ID IN ( {$empQuery} )";
+                WHERE MVD.MTH_ID = :monthlyValueId AND MVD.FISCAL_YEAR_ID = :fiscalYearId AND MVD.EMPLOYEE_ID IN ( {$empQuery} )";
         $statement = $this->adapter->query($sql);
-        return $statement->execute();
+        return $statement->execute($boundedParameter);
     }
 
     public function postMonthlyValuesDetail($data) {
+        $boundedParameter = [];
+        $boundedParameter['monthId'] = $data['monthId'];
+        $boundedParameter['employeeId'] = $data['employeeId'];
+        $boundedParameter['mthId'] = $data['mthId'];
+        $boundedParameter['mthValue'] = $data['mthValue'];
+        $boundedParameter['fiscalYearId'] = $data['fiscalYearId'];
         $sql = "
                 DECLARE
-                  V_MTH_ID HRIS_MONTHLY_VALUE_DETAIL.MTH_ID%TYPE := {$data['mthId']};
-                  V_EMPLOYEE_ID HRIS_MONTHLY_VALUE_DETAIL.EMPLOYEE_ID%TYPE := {$data['employeeId']};
-                  V_MTH_VALUE HRIS_MONTHLY_VALUE_DETAIL.MTH_VALUE%TYPE := {$data['mthValue']};
-                  V_FISCAL_YEAR_ID HRIS_MONTHLY_VALUE_DETAIL.FISCAL_YEAR_ID%TYPE := {$data['fiscalYearId']};
-                  V_MONTH_ID HRIS_MONTHLY_VALUE_DETAIL.MONTH_ID%TYPE := {$data['monthId']};
+                  V_MTH_ID HRIS_MONTHLY_VALUE_DETAIL.MTH_ID%TYPE := :mthId;
+                  V_EMPLOYEE_ID HRIS_MONTHLY_VALUE_DETAIL.EMPLOYEE_ID%TYPE := :employeeId;
+                  V_MTH_VALUE HRIS_MONTHLY_VALUE_DETAIL.MTH_VALUE%TYPE := :mthValue;
+                  V_FISCAL_YEAR_ID HRIS_MONTHLY_VALUE_DETAIL.FISCAL_YEAR_ID%TYPE := :fiscalYearId;
+                  V_MONTH_ID HRIS_MONTHLY_VALUE_DETAIL.MONTH_ID%TYPE := :monthId;
                   V_OLD_MTH_VALUE HRIS_MONTHLY_VALUE_DETAIL.MTH_VALUE%TYPE;
                 BEGIN
                   SELECT MTH_VALUE
@@ -96,13 +111,15 @@ class MonthlyValueDetailRepo {
                 END;
 ";
         $statement = $this->adapter->query($sql);
-        return $statement->execute();
+        return $statement->execute($boundedParameter);
     }
 
     public function getMonthDeatilByFiscalYear($fiscalYearId) {
-        $sql = "SELECT * FROM HRIS_MONTH_CODE  WHERE FISCAL_YEAR_ID={$fiscalYearId} ORDER BY FISCAL_YEAR_MONTH_NO";
+        $boundedParameter = [];
+        $boundedParameter['fiscalYearId'] = $fiscalYearId;
+        $sql = "SELECT * FROM HRIS_MONTH_CODE  WHERE FISCAL_YEAR_ID=:fiscalYearId ORDER BY FISCAL_YEAR_MONTH_NO";
         $statement = $this->adapter->query($sql);
-        return $statement->execute();
+        return $statement->execute($boundedParameter);
     }
 
 }

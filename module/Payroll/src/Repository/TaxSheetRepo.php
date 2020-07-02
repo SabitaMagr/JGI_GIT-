@@ -39,9 +39,13 @@ class TaxSheetRepo extends HrisRepository {
 
     public function fetchTaxSheetPivoted($q) {
         $in = $this->fetchPayIdsAsArray();
-        $condition = EntityHelper::getSearchConditon($q['companyId'], $q['branchId'], $q['departmentId'], $q['positionId'], $q['designationId'], $q['serviceTypeId'], $q['serviceEventTypeId'], $q['employeeTypeId'], $q['employeeId']);
+        $condition = EntityHelper::getSearchConditonBounded($q['companyId'], $q['branchId'], $q['departmentId'], $q['positionId'], $q['designationId'], $q['serviceTypeId'], $q['serviceEventTypeId'], $q['employeeTypeId'], $q['employeeId']);
 
-        $empIn = "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$condition}";
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $condition['parameter']);
+        $boundedParameter['monthId'] = $q['monthId'];
+
+        $empIn = "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$condition['sql']}";
         $sql = "SELECT P.*,
                   E.FULL_NAME AS EMPLOYEE_NAME
                 FROM
@@ -52,14 +56,14 @@ class TaxSheetRepo extends HrisRepository {
                       VAL
                     FROM HRIS_TAX_SHEET
                     WHERE SHEET_NO IN
-                      (SELECT SHEET_NO FROM HRIS_SALARY_SHEET WHERE MONTH_ID ={$q['monthId']}
+                      (SELECT SHEET_NO FROM HRIS_SALARY_SHEET WHERE MONTH_ID =:monthId
                       )
                     AND EMPLOYEE_ID               IN ({$empIn})
                     ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$in}))
                   ) P
                 JOIN HRIS_EMPLOYEES E
                 ON (P.EMPLOYEE_ID=E.EMPLOYEE_ID)";
-        return $this->rawQuery($sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function fetchEmployeeTaxSlip($monthId, $employeeId) {
@@ -71,10 +75,13 @@ class TaxSheetRepo extends HrisRepository {
                 ON (TS.PAY_ID         =P.PAY_ID)
                 WHERE P.INCLUDE_IN_TAX='Y' AND TS.VAL>0
                 AND TS.SHEET_NO       IN
-                  (SELECT SHEET_NO FROM HRIS_SALARY_SHEET WHERE MONTH_ID ={$monthId}
+                  (SELECT SHEET_NO FROM HRIS_SALARY_SHEET WHERE MONTH_ID =:monthId
                   )
-                AND EMPLOYEE_ID ={$employeeId} ORDER BY P.PRIORITY_INDEX";
-        return $this->rawQuery($sql);
+                AND EMPLOYEE_ID =:employeeId ORDER BY P.PRIORITY_INDEX";
+        $boundedParameter = [];
+        $boundedParameter['monthId'] = $monthId;
+        $boundedParameter['employeeId'] = $employeeId;
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function delete($id) {

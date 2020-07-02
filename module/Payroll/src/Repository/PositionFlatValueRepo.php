@@ -17,6 +17,10 @@ class PositionFlatValueRepo extends HrisRepository {
     }
 
     public function fetchValue($keys) {
+        $boundedParameter = [];
+        $boundedParameter['EMPLOYEE_ID'] = $keys['EMPLOYEE_ID'];
+        $boundedParameter['MONTH_ID'] = $keys['MONTH_ID'];
+        $boundedParameter['FLAT_ID'] = $keys['FLAT_ID'];
         $sql = "SELECT (
                   CASE
                     WHEN ASSIGN_TYPE ='E'
@@ -31,8 +35,8 @@ class PositionFlatValueRepo extends HrisRepository {
                   LEFT JOIN
                     (SELECT *
                     FROM HRIS_FLAT_VALUE_DETAIL
-                    WHERE FISCAL_YEAR_ID = (SELECT FISCAL_YEAR_ID FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$keys['MONTH_ID']})
-                    AND EMPLOYEE_ID={$keys['EMPLOYEE_ID']}
+                    WHERE FISCAL_YEAR_ID = (SELECT FISCAL_YEAR_ID FROM HRIS_MONTH_CODE WHERE MONTH_ID = :MONTH_ID)
+                    AND EMPLOYEE_ID=:EMPLOYEE_ID
                     ) MVD
                   ON (MVS.FLAT_ID=MVD.FLAT_ID)
                   LEFT JOIN
@@ -40,13 +44,13 @@ class PositionFlatValueRepo extends HrisRepository {
                     FROM HRIS_POSITION_FLAT_VALUE
                     WHERE FISCAL_YEAR_ID =(SELECT FISCAL_YEAR_ID FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$keys['MONTH_ID']})
                     AND POSITION_ID=
-                      (SELECT POSITION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = {$keys['EMPLOYEE_ID']}
+                      (SELECT POSITION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = :EMPLOYEE_ID
                       )
                     ) PMV
                   ON (MVS.FLAT_ID   =PMV.FLAT_ID)
-                  WHERE MVS.FLAT_ID ={$keys['FLAT_ID']}
+                  WHERE MVS.FLAT_ID =:FLAT_ID
                   )";
-        $resultList = $this->rawQuery($sql);
+        $resultList = $this->rawQuery($sql, $boundedParameter);
         if (sizeof($resultList) != 1) {
             return 0;
         }
@@ -54,12 +58,14 @@ class PositionFlatValueRepo extends HrisRepository {
     }
 
     public function getPositionFlatValue($fiscalYearId) {
+      $boundedParameter = [];
+      $boundedParameter['fiscalYearId'] = $fiscalYearId;
         $sql = "
             SELECT *
             FROM
-              ( SELECT FLAT_ID,POSITION_ID,ASSIGNED_VALUE FROM HRIS_POSITION_FLAT_VALUE WHERE FISCAL_YEAR_ID ={$fiscalYearId}
+              ( SELECT FLAT_ID,POSITION_ID,ASSIGNED_VALUE FROM HRIS_POSITION_FLAT_VALUE WHERE FISCAL_YEAR_ID =:fiscalYearId
               ) PIVOT ( MAX(ASSIGNED_VALUE) FOR FLAT_ID IN ({$this->fetchFlatValueAsDbArray()}) )";
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     private function fetchFlatValueAsDbArray() {
@@ -76,12 +82,17 @@ class PositionFlatValueRepo extends HrisRepository {
     }
 
     public function setPositionFlatValue($fiscalYearId, $positionId, $flatId, $assignedValue) {
+        $boundedParameter = [];
+        $boundedParameter['flatId'] = $flatId;
+        $boundedParameter['positionId'] = $positionId;
+        $boundedParameter['assignedValue'] = $assignedValue;
+        $boundedParameter['fiscalYearId'] = $fiscalYearId;
         $sql = "
                 DECLARE
-                  V_FISCAL_YEAR_ID HRIS_POSITION_FLAT_VALUE.FISCAL_YEAR_ID%TYPE             := {$fiscalYearId};
-                  V_FLAT_ID HRIS_POSITION_FLAT_VALUE.FLAT_ID%TYPE                 := {$flatId};
-                  V_POSITION_ID HRIS_POSITION_FLAT_VALUE.POSITION_ID%TYPE       := {$positionId};
-                  V_ASSIGNED_VALUE HRIS_POSITION_FLAT_VALUE.ASSIGNED_VALUE%TYPE := {$assignedValue};
+                  V_FISCAL_YEAR_ID HRIS_POSITION_FLAT_VALUE.FISCAL_YEAR_ID%TYPE             := :fiscalYearId;
+                  V_FLAT_ID HRIS_POSITION_FLAT_VALUE.FLAT_ID%TYPE                 := :flatId;
+                  V_POSITION_ID HRIS_POSITION_FLAT_VALUE.POSITION_ID%TYPE       := :positionId;
+                  V_ASSIGNED_VALUE HRIS_POSITION_FLAT_VALUE.ASSIGNED_VALUE%TYPE := :assignedValue;
                   V_OLD_ASSIGNED_VALUE HRIS_POSITION_FLAT_VALUE.ASSIGNED_VALUE%TYPE;
                 BEGIN
                   SELECT ASSIGNED_VALUE
@@ -114,7 +125,7 @@ class PositionFlatValueRepo extends HrisRepository {
                     );
                 END;";
         $statement = $this->adapter->query($sql);
-        return $statement->execute();
+        return $statement->execute($boundedParameter);
     }
 
 }
