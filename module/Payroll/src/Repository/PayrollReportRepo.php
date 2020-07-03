@@ -7,10 +7,11 @@ use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
+use Application\Repository\HrisRepository;
 
-class PayrollReportRepo implements RepositoryInterface {
+class PayrollReportRepo extends HrisRepository implements RepositoryInterface {
 
-    private $adapter;
+    protected $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -337,7 +338,9 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $varianceVariable = $this->fetchOtVariableMonthly();
         $monthIdList = $this->fetchMonthIdList($fiscalId);
 
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
 
         $sql = "
              select 
@@ -408,11 +411,11 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                      LEFT JOIN HRIS_POSITIONS P ON (E.POSITION_ID=P.POSITION_ID)
                      LEFT JOIN HRIS_SERVICE_TYPES ST ON (E.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID)
                      LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
-                     WHERE 1=1 {$searchConditon}
+                     WHERE 1=1 {$searchCondition['sql']}
                 ";
                      //echo $sql; die;
 
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     private function fetchOtVariableMonthly() {
@@ -463,7 +466,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                 MONTH_EDESC,
                 TO_CHAR(YEAR) AS YEAR,
                 'M' AS TYPE
-                from hris_month_code where Fiscal_Year_Id={$fiscalId}
+                from hris_month_code where Fiscal_Year_Id=:fiscalId
                 union
                 select 
                 20 AS MONTH_ID,
@@ -472,7 +475,10 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                 'T' AS TYPE 
                 from dual) MC ON (1=1)";
 
-        $rawList = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $boundedParameter = [];
+        $boundedParameter['fiscalId'] = $fiscalId;
+
+        $rawList = $this->rawQuery($sql, $boundedParameter);
         return Helper::extractDbData($rawList);
     }
 
@@ -494,7 +500,11 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $monthId = $data['monthId'];
         $extraMonth = $data['extraMonth'];
 
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
+        $boundedParameter['extraMonth'] = $extraMonth;
+        $boundedParameter['monthId'] = $monthId;
 
         $sql = "SELECT 
             E.FULL_NAME,
@@ -520,7 +530,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
             JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND SD.Pay_Id=VP.Pay_Id)
             JOIN HRIS_MONTH_CODE MC ON (SS.MONTH_ID=MC.MONTH_ID) 
             WHERE  V.STATUS='E' AND V.VARIABLE_TYPE='O' 
-            AND (SS.MONTH_ID between  {$monthId} and {$extraMonth})
+            AND (SS.MONTH_ID between  :monthId and :extraMonth)
             GROUP BY SD.EMPLOYEE_ID,V.VARIANCE_NAME,Vp.Variance_Id)
             PIVOT ( MAX( TOTAL )
                 FOR Variance_Id 
@@ -533,9 +543,9 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                 LEFT JOIN HRIS_SERVICE_TYPES ST ON (E.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID)
                 LEFT JOIN HRIS_DESIGNATIONS DES ON (E.DESIGNATION_ID=DES.DESIGNATION_ID)
                 WHERE 1=1 
-             {$searchConditon}
+             {$searchCondition['sql']}
                 ";
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function getSpecialMonthly($data) {
@@ -556,7 +566,10 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $varianceVariable = $this->fetchOtVariableMonthly();
         $monthIdList = $this->fetchMonthIdList($fiscalId);
 
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
+        $boundedParameter['monthId'] = $monthId;
 
         $sql = "SELECT ROWNUM AS S_NO, HLSED.ACCOUNT_NO, HLSED.FULL_NAME, (
                     SELECT HLSED.SALARY +
@@ -567,7 +580,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                     hssd.pay_id IN(
                     SELECT PAY_ID FROM HRIS_SALARY_SHEET_DETAIL
                     WHERE SHEET_NO IN(
-                    SELECT SHEET_NO FROM HRIS_SALARY_SHEET WHERE MONTH_ID = $monthId
+                    SELECT SHEET_NO FROM HRIS_SALARY_SHEET WHERE MONTH_ID = :monthId
                     )) 
                     and hps.include_in_salary = 'Y') CR_AMOUNT FROM HRIS_SALARY_SHEET_EMP_DETAIL HLSED
                      LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=HLSED.EMPLOYEE_ID)
@@ -576,9 +589,9 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                      LEFT JOIN HRIS_POSITIONS P ON (E.POSITION_ID=P.POSITION_ID)
                      LEFT JOIN HRIS_SERVICE_TYPES ST ON (E.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID)
                      LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
-                     WHERE 1=1 {$searchConditon}";
+                     WHERE 1=1 {$searchCondition['sql']}";
         //echo $sql; die;
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function getSalaryGroupColumns($type, $default = null) {
@@ -614,7 +627,10 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         
         $strSalaryType=($salaryTypeId!=null && $salaryTypeId!=-1)?" WHERE SALARY_TYPE_ID={$salaryTypeId}":" ";
 
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
+        $boundedParameter['monthId'] = $monthId;
 
         $sql = "SELECT 
             E.FULL_NAME,
@@ -644,7 +660,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
             LEFT JOIN (select * from HRIS_SALARY_SHEET {$strSalaryType}) SS ON (1=1)
             LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND SD.Pay_Id=VP.Pay_Id)
             WHERE  V.STATUS='E' AND V.VARIABLE_TYPE='{$variableType}' 
-            and SS.MONTH_ID={$monthId}
+            and SS.MONTH_ID=:monthId
             GROUP BY SD.EMPLOYEE_ID,V.VARIANCE_NAME,Vp.Variance_Id,SS.Month_ID,SS.SHEET_NO)
             PIVOT ( MAX( TOTAL )
                 FOR Variance_Id 
@@ -657,15 +673,10 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                 LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
                 LEFT JOIN HRIS_BRANCHES BR ON ( E.BRANCH_ID=BR.BRANCH_ID)
                 WHERE 1=1 
-             {$searchConditon}
+             {$searchCondition['sql']}
              ";
 
-      //echo $sql;
-       // die();
-
-
-
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     private function fetchSalaryGroupVariable($variableType) {
@@ -714,7 +725,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
 //        print_r($variable);
 //        die();
 
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $searchConditon = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
 
         $sql = "SELECT 
             E.FULL_NAME,
@@ -772,10 +783,12 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
             from 
             Hris_Variance_Payhead vp
             left join Hris_Pay_Setup ps on (vp.pay_id=ps.pay_id)
-            where variance_id={$varianceId}";
+            where variance_id=:varianceId";
 
-        $data = EntityHelper::rawQueryResult($this->adapter, $sql);
-        return Helper::extractDbData($data);
+        $boundedParameter = [];
+        $boundedParameter['varianceId'] = $varianceId;
+        return $this->rawQuery($sql, $boundedParameter);
+        //return Helper::extractDbData($data);
     }
 
     private function fetchGroupDetailVariable($varianceId) {
@@ -861,18 +874,21 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
     public function fetchDepartmentList($departmentId = null) {
         if ($departmentId != null) {
             $sql = "
-                        select {$departmentId} as DEPARTMENT_ID from dual
+                        select $departmentId as DEPARTMENT_ID from dual
                             union all
                 SELECT CD.DEPARTMENT_ID FROM
                          HRIS_DEPARTMENTS CD
-                        START WITH CD.PARENT_DEPARTMENT={$departmentId}
+                        START WITH CD.PARENT_DEPARTMENT=:departmentId
                         CONNECT BY CD.PARENT_DEPARTMENT= PRIOR CD.DEPARTMENT_ID
                         ";
+            $boundedParameter = [];
+            $boundedParameter['departmentId'] = $departmentId;
+            return $this->rawQuery($sql, $boundedParameter);
         } else {
             $sql = "select * from hris_departments where status='E' ";
+            return $this->rawQuery($sql);
         }
-        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
-        return Helper::extractDbData($result);
+        //return Helper::extractDbData($result);
     }
 
     public function getMonthlySummaryByDep($monthId, $departmentId, $inVal,$salaryTypeId) {
@@ -965,12 +981,14 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
  Variance_Id,variance_name, 'V'||Variance_Id as template_name             
 from hris_variance 
             where variable_type='Y'
-            and v_heads='{$heads}'
+            and v_heads=:heads
             and status='E'
             order by order_no asc";
-        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $boundedParameter = [];
+        $boundedParameter['heads'] = $heads;
+        $result = $this->rawQuery($sql, $boundedParameter);
         if($type=='sin'){
-        return $result->current();
+        return $result != null ? $result[0] : ''; 
         }else{
         return Helper::extractDbData($result);
         }
@@ -1010,10 +1028,16 @@ from hris_variance
 //        $fiscalId = $data['fiscalId'];
         
         
-        $strSalaryType=($salaryTypeId!=null && $salaryTypeId!=-1)?" WHERE SALARY_TYPE_ID={$salaryTypeId}":" ";
+        $strSalaryType=($salaryTypeId!=null && $salaryTypeId!=-1)?" WHERE SALARY_TYPE_ID=:salaryTypeId":" ";
 
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
-
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
+        $boundedParameter['monthId'] = $monthId;
+        if($salaryTypeId!=null && $salaryTypeId!=-1){
+            $boundedParameter['salaryTypeId'] = $salaryTypeId;
+        }
+        
         $sql = "SELECT 
             E.FULL_NAME,
             E.EMPLOYEE_CODE
@@ -1045,7 +1069,7 @@ from hris_variance
             LEFT JOIN (select * from HRIS_SALARY_SHEET {$strSalaryType}) SS ON (1=1)
             LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND SD.Pay_Id=VP.Pay_Id)
             WHERE  V.STATUS='E' AND V.VARIABLE_TYPE='Y' 
-            and SS.MONTH_ID={$monthId}
+            and SS.MONTH_ID=:monthId
             GROUP BY SD.EMPLOYEE_ID,V.VARIANCE_NAME,Vp.Variance_Id,SS.Month_ID,SS.SHEET_NO)
             PIVOT ( MAX( TOTAL )
                 FOR Variance_Id 
@@ -1058,16 +1082,11 @@ from hris_variance
                 LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (SSED.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
                 LEFT JOIN HRIS_BRANCHES BR ON (SSED.BRANCH_ID=BR.BRANCH_ID)
                 LEFT JOIN HRIS_COMPANY C ON (SSED.COMPANY_ID=E.COMPANY_ID)
-                LEFT JOIN HRIS_MONTH_CODE MCD ON (MCD.MONTH_ID={$monthId})
+                LEFT JOIN HRIS_MONTH_CODE MCD ON (MCD.MONTH_ID=:monthId)
                 WHERE 1=1 
-             {$searchConditon}
+             {$searchCondition['sql']}
              ";
-             
 
-
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
-    
-    
-
 }
