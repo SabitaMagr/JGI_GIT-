@@ -68,7 +68,12 @@ class ForgotPasswordController extends AbstractActionController {
         if ($request->isPost()) {
             $postData = $request->getPost()->getArrayCopy();
             $username = $postData['username'];
-            $userDetail = $userRepo->fetchByUsername($username);
+			try {
+                    $userDetail = $userRepo->fetchByUsername($username);
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage('Invalid UserName');
+                }
+            
             if($userDetail!=null){
                 $employeeId = $userDetail['EMPLOYEE_ID'];
                 $code1 = Helper::generateUniqueName();

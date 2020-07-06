@@ -241,9 +241,22 @@ class AttendanceRepository implements RepositoryInterface {
                       ||TVL.DESTINATION
                       ||')'
                     WHEN A.OVERALL_STATUS ='TN'
-                    THEN 'On Training('
-                      || (CASE WHEN A.TRAINING_TYPE = 'A' THEN T.TRAINING_NAME ELSE ETN.TITLE END)
-                      ||')'
+                    THEN (CASE 
+                        WHEN T.SHOW_AS_TRAINING = 'Y' 
+                        THEN 'On Training ('
+                        || (CASE
+                          WHEN A.TRAINING_TYPE = 'A'
+                          THEN T.TRAINING_NAME
+                          ELSE ETN.TITLE
+                            END)
+                        ||')'
+                    ELSE
+                      (CASE
+                          WHEN A.TRAINING_TYPE = 'A'
+                          THEN T.TRAINING_NAME
+                          ELSE ETN.TITLE
+                        END)
+                      END)
                     WHEN A.OVERALL_STATUS ='WD'
                     THEN 'Work On Dayoff'
                     WHEN A.OVERALL_STATUS ='WH'

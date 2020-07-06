@@ -22,6 +22,7 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Exception;
 
 class AuthController extends AbstractActionController {
 
@@ -103,6 +104,7 @@ class AuthController extends AbstractActionController {
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
+				try {
                 
                  /*
                  * To check First Time Password 
@@ -216,6 +218,10 @@ class AuthController extends AbstractActionController {
                     $redirect = 'dashboard';
                 } else {
                     $this->allowLoginFor($request->getPost('username'), 5, 3600);
+                }
+				
+				} catch (Exception $e) {
+                    $this->flashmessenger()->addMessage('Login Error');
                 }
             }
         }
