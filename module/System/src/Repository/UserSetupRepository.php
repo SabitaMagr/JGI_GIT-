@@ -163,9 +163,9 @@ class UserSetupRepository implements RepositoryInterface {
 
         $select->where([
             "US.STATUS='E'",
-            "E.STATUS='E'",
-            "US.USER_NAME='" . $username . "'"
+            "E.STATUS='E'"
         ]);
+        $select->where(["US.USER_NAME"=>$username]);
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
