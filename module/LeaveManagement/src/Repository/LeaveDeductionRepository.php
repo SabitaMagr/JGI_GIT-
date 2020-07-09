@@ -20,7 +20,7 @@ use LeaveManagement\Model\LeaveDeduction;
 
 class LeaveDeductionRepository  extends HrisRepository implements RepositoryInterface {
 
-    private $gateway;
+    protected $gateway;
 
     public function __construct(AdapterInterface $adapter) {
         parent::__construct($adapter);
@@ -56,17 +56,18 @@ class LeaveDeductionRepository  extends HrisRepository implements RepositoryInte
             FROM HRIS_EMPLOYEE_LEAVE_DEDUCTION LD
             LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS
             ON (LD.LEAVE_ID = LMS.LEAVE_ID)
-            WHERE LD.ID     = {$id}";
+            WHERE LD.ID     = :id";
 
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result->current();
+            $boundedParameter = [];
+            $boundedParameter['id'] = $id;
+
+            return $this->rawQuery($sql, $boundedParameter)[0];
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return $result->current();
     }
 
     public function fetchLeaveDeductionList($data) {
-//        print_r($data);
-//        die();
-
         $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
         $branchId = $data['branchId'];
@@ -94,16 +95,22 @@ class LeaveDeductionRepository  extends HrisRepository implements RepositoryInte
             $leaveYearStatusCondition = "L.STATUS ='E'";
         }
 
-        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
+
         $fromDateCondition = "";
         $toDateCondition = "";
         
         if ($fromDate != null) {
-            $fromDateCondition = " AND LA.START_DATE>=TO_DATE('{$fromDate}','DD-MM-YYYY')";
+            $fromDateCondition = " AND LA.START_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY')";
+            $boundedParameter['fromDate'] = $fromDate;
         }
 
         if ($toDate != null) {
-            $toDateCondition = "AND LA.END_DATE<=TO_DATE('{$toDate}','DD-MM-YYYY')";
+            $toDateCondition = " AND LA.END_DATE<=TO_DATE(:toDate,'DD-MM-YYYY')";
+            $boundedParameter['toDate'] = $toDate;
         }
 
         $sql = "SELECT FUNT.FUNCTIONAL_TYPE_EDESC AS FUNCTIONAL_TYPE_EDESC,
@@ -128,12 +135,14 @@ class LeaveDeductionRepository  extends HrisRepository implements RepositoryInte
         ON E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID
         WHERE {$leaveYearStatusCondition} {$leaveCondition}
         AND E.STATUS           ='E'
-               {$searchCondition} {$fromDateCondition} {$toDateCondition}
+               {$searchCondition['sql']} {$fromDateCondition} {$toDateCondition}
                 ORDER BY LD.MODIFIED_DT DESC";
+
+        return $this->rawQuery($sql, $boundedParameter);
                
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return Helper::extractDbData($result);
     }
 
 }

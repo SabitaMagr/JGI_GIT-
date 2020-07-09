@@ -17,6 +17,10 @@ class PositionMonthlyValueRepo extends HrisRepository {
     }
 
     public function fetchValue($keys) {
+        $boundedParameter = [];
+        $boundedParameter['EMPLOYEE_ID'] = $keys['EMPLOYEE_ID'];
+        $boundedParameter['MONTH_ID'] = $keys['MONTH_ID'];
+        $boundedParameter['MTH_ID'] = $keys['MTH_ID'];
         $sql = "SELECT (
                   CASE
                     WHEN ASSIGN_TYPE ='E'
@@ -31,22 +35,22 @@ class PositionMonthlyValueRepo extends HrisRepository {
                   LEFT JOIN
                     (SELECT *
                     FROM HRIS_MONTHLY_VALUE_DETAIL
-                    WHERE MONTH_ID ={$keys['MONTH_ID']}
-                    AND EMPLOYEE_ID={$keys['EMPLOYEE_ID']}
+                    WHERE MONTH_ID =:MONTH_ID
+                    AND EMPLOYEE_ID=:EMPLOYEE_ID
                     ) MVD
                   ON (MVS.MTH_ID=MVD.MTH_ID)
                   LEFT JOIN
                     (SELECT *
                     FROM HRIS_POSITION_MONTHLY_VALUE
-                    WHERE MONTH_ID ={$keys['MONTH_ID']}
+                    WHERE MONTH_ID =:MONTH_ID
                     AND POSITION_ID=
-                      (SELECT POSITION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = {$keys['EMPLOYEE_ID']}
+                      (SELECT POSITION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = :EMPLOYEE_ID
                       )
                     ) PMV
                   ON (MVS.MTH_ID   =PMV.MTH_ID)
-                  WHERE MVS.MTH_ID ={$keys['MTH_ID']}
+                  WHERE MVS.MTH_ID =:MTH_ID
                   )";
-        $resultList = $this->rawQuery($sql);
+        $resultList = $this->rawQuery($sql, $boundedParameter);
         if (sizeof($resultList) != 1) {
             return 0;
         }
@@ -58,23 +62,30 @@ class PositionMonthlyValueRepo extends HrisRepository {
                 FROM HRIS_POSITION_MONTHLY_VALUE PMV
                 JOIN HRIS_EMPLOYEES E
                 ON(PMV.POSITION_ID = E.POSITION_ID)
-                WHERE PMV.MTH_ID   ={$id['MTH_ID']}
-                AND PMV.MONTH_ID   ={$id['MONTH_ID']}
-                AND E.EMPLOYEE_ID  = {$id['EMPLOYEE_ID']}
+                WHERE PMV.MTH_ID   =:mthId
+                AND PMV.MONTH_ID   =:monthId
+                AND E.EMPLOYEE_ID  =:employeeId
                 ";
 
-        $statement = $this->adapter->query($sql);
-        $rawResult = $statement->execute();
-        return $rawResult->current();
+        $boundedParameter = [];
+        $boundedParameter['mthId'] = $id['MTH_ID'];
+        $boundedParameter['monthId'] = $id['MONTH_ID'];
+        $boundedParameter['employeeId'] = $id['EMPLOYEE_ID'];
+        return $this->rawQuery($sql, $boundedParameter)[0];
+        // $statement = $this->adapter->query($sql);
+        // $rawResult = $statement->execute();
+        // return $rawResult->current();
     }
 
     public function getPositionMonthlyValue($monthId) {
+      $boundedParameter = [];
+      $boundedParameter['monthId'] = $monthId;
         $sql = "
             SELECT *
             FROM
-              ( SELECT MTH_ID,POSITION_ID,ASSIGNED_VALUE FROM HRIS_POSITION_MONTHLY_VALUE WHERE MONTH_ID ={$monthId}
+              ( SELECT MTH_ID,POSITION_ID,ASSIGNED_VALUE FROM HRIS_POSITION_MONTHLY_VALUE WHERE MONTH_ID =:monthId
               ) PIVOT ( MAX(ASSIGNED_VALUE) FOR MTH_ID IN ({$this->fetchMonthlyValueAsDbArray()}) )";
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     private function fetchMonthlyValueAsDbArray() {
@@ -91,12 +102,17 @@ class PositionMonthlyValueRepo extends HrisRepository {
     }
 
     public function setPositionMonthlyValue($monthId, $positionId, $mthId, $assignedValue) {
+        $boundedParameter = [];
+        $boundedParameter['monthId'] = $monthId;
+        $boundedParameter['mthId'] = $mthId;
+        $boundedParameter['positionId'] = $positionId;
+        $boundedParameter['assignedValue'] = $assignedValue;
         $sql = "
                 DECLARE
-                  V_MONTH_ID HRIS_POSITION_MONTHLY_VALUE.MONTH_ID%TYPE             := {$monthId};
-                  V_MTH_ID HRIS_POSITION_MONTHLY_VALUE.MTH_ID%TYPE                 := {$mthId};
-                  V_POSITION_ID HRIS_POSITION_MONTHLY_VALUE.POSITION_ID%TYPE       := {$positionId};
-                  V_ASSIGNED_VALUE HRIS_POSITION_MONTHLY_VALUE.ASSIGNED_VALUE%TYPE := {$assignedValue};
+                  V_MONTH_ID HRIS_POSITION_MONTHLY_VALUE.MONTH_ID%TYPE             := :monthId;
+                  V_MTH_ID HRIS_POSITION_MONTHLY_VALUE.MTH_ID%TYPE                 := :mthId;
+                  V_POSITION_ID HRIS_POSITION_MONTHLY_VALUE.POSITION_ID%TYPE       := :positionId;
+                  V_ASSIGNED_VALUE HRIS_POSITION_MONTHLY_VALUE.ASSIGNED_VALUE%TYPE := :assignedValue;
                   V_OLD_ASSIGNED_VALUE HRIS_POSITION_MONTHLY_VALUE.ASSIGNED_VALUE%TYPE;
                 BEGIN
                   SELECT ASSIGNED_VALUE
@@ -129,7 +145,7 @@ class PositionMonthlyValueRepo extends HrisRepository {
                     );
                 END;";
         $statement = $this->adapter->query($sql);
-        return $statement->execute();
+        return $statement->execute($boundedParameter);
     }
 
 }

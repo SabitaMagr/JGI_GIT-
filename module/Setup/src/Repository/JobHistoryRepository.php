@@ -208,12 +208,16 @@ class JobHistoryRepository implements RepositoryInterface {
 
                 WHERE EMPLOYEE_ID=$empId
                 AND JOB_HISTORY_ID NOT IN
-                  (SELECT JOB_HISTORY_ID FROM HRIS_SALARY_DETAIL WHERE EMPLOYEE_ID=$empId
+                  (SELECT JOB_HISTORY_ID FROM HRIS_SALARY_DETAIL WHERE EMPLOYEE_ID=:empId
                   )";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        $result = Helper::extractDbData($result);
-        return $result;
+
+        $boundedParameter = [];
+        $boundedParameter['empId'] = $empId;
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // $result = Helper::extractDbData($result);
+        // return $result;
     }
 
     function fetchLatestJobHistory($employeeId) {

@@ -15,10 +15,13 @@ class PayslipPreviousRepository extends HrisRepository {
         $sql = "SELECT PERIOD_DT_CODE AS mcode,
                   DT_EDESC            AS mname
                 FROM HR_PERIOD_DETAIL
-                WHERE COMPANY_CODE='{$companyCode}'
+                WHERE COMPANY_CODE=:companyCode
                 AND BRANCH_CODE='{$companyCode}.01'
                 ORDER BY to_number(PERIOD_DT_CODE)";
-        return $this->rawQuery($sql);
+
+        $boundedParameter = [];
+        $boundedParameter = ['companyCode'] = $companyCode;
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function getArrearsList($companyCode) {
@@ -27,7 +30,10 @@ class PayslipPreviousRepository extends HrisRepository {
                 FROM HR_ARREARS_SETUP
                 WHERE COMPANY_CODE='{$companyCode}'
                 AND BRANCH_CODE='{$companyCode}.01'";
-        return $this->rawQuery($sql);
+        
+        $boundedParameter = [];
+        $boundedParameter = ['companyCode'] = $companyCode;
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function getPayslipDetail($companyCode, $employeeCode, $periodDtCode, $salaryType) {
@@ -41,19 +47,19 @@ class PayslipPreviousRepository extends HrisRepository {
                 WHERE 1          = 1
                 AND SHEET_NO                =(SELECT HSS.SHEET_NO
                     FROM   HR_SALARY_SHEET HSS, HR_EMPLOYEE_SETUP HES, HR_SALARY_SHEET_DETAIL SSD                    
-                    WHERE HSS.PERIOD_DT_CODE ='{$periodDtCode}'
-                    AND HSS.COMPANY_CODE     ='{$companyCode}'
+                    WHERE HSS.PERIOD_DT_CODE =:periodDtCode
+                    AND HSS.COMPANY_CODE     =:companyCode
                     AND HSS.BRANCH_CODE      ='{$companyCode}.01'
-                    AND HES.EMPLOYEE_CODE    ='{$employeeCode}'
-                    AND HSS.SALARY_TYPE ='{$salaryType}'
+                    AND HES.EMPLOYEE_CODE    =:employeeCode
+                    AND HSS.SALARY_TYPE =:salaryType
                     AND HSS.CONFIRM_FLAG ='Y'
 					AND SSD.SHEET_NO= HSS.SHEET_NO
                     AND SSD.EMPLOYEE_CODE= HES.EMPLOYEE_CODE
                     AND SSD.COMPANY_CODE= HSS.COMPANY_CODE
                     AND SSD.COMPANY_CODE= HES.COMPANY_CODE
 					)
-                AND EMPLOYEE_CODE         ='{$employeeCode}'
-                AND COMPANY_CODE ='{$companyCode}'
+                AND EMPLOYEE_CODE         =:employeeCode
+                AND COMPANY_CODE =:companyCode
                 AND BRANCH_CODE  ='{$companyCode}.01'
                 AND DELETED_FLAG ='N'
                 UNION ALL
@@ -68,18 +74,18 @@ class PayslipPreviousRepository extends HrisRepository {
                 WHERE 1                     = 1
                 AND SHEET_NO                =(SELECT HSS.SHEET_NO
                     FROM   HR_SALARY_SHEET HSS, HR_EMPLOYEE_SETUP HES, HR_SALARY_SHEET_DETAIL SSD   
-                    WHERE HSS.PERIOD_DT_CODE ='{$periodDtCode}'
-                    AND HSS.COMPANY_CODE     ='{$companyCode}'
+                    WHERE HSS.PERIOD_DT_CODE =:periodDtCode
+                    AND HSS.COMPANY_CODE     =:companyCode
                     AND HSS.BRANCH_CODE      ='{$companyCode}.01'
-                    AND HES.EMPLOYEE_CODE    ='{$employeeCode}'
-                    AND HSS.SALARY_TYPE ='{$salaryType}'
+                    AND HES.EMPLOYEE_CODE    =:employeeCode
+                    AND HSS.SALARY_TYPE =:salaryType
                     AND HSS.CONFIRM_FLAG ='Y'
 					AND SSD.SHEET_NO= HSS.SHEET_NO
                     AND SSD.EMPLOYEE_CODE= HES.EMPLOYEE_CODE
                     AND SSD.COMPANY_CODE= HSS.COMPANY_CODE
                     AND SSD.COMPANY_CODE= HES.COMPANY_CODE)
-                AND A.EMPLOYEE_CODE         ='{$employeeCode}'
-                AND A.COMPANY_CODE          ='{$companyCode}'
+                AND A.EMPLOYEE_CODE         =:employeeCode
+                AND A.COMPANY_CODE          =:companyCode
                 AND A.BRANCH_CODE           ='{$companyCode}.01'
                 AND A.DELETED_FLAG          ='N'
                 AND A.PAY_CODE              =B.PAY_CODE
@@ -88,7 +94,13 @@ class PayslipPreviousRepository extends HrisRepository {
                 AND A.PAY_TYPE_FLAG        IN ('A','D')
                 AND B.INVISIBLE_ON_PAY_SLIP = 'N'
                 ORDER BY PRIORITY_INDEX";
-        return $this->rawQuery($sql);
+        
+        $boundedParameter = [];
+        $boundedParameter = ['companyCode'] = $companyCode;
+        $boundedParameter = ['periodDtCode'] = $periodDtCode;
+        $boundedParameter = ['employeeCode'] = $companyCode;
+        $boundedParameter = ['salaryType'] = $salaryType;
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function getSalarySheetDetail($companyCode, $employeeCode, $periodDtCode, $salaryType) {
@@ -107,19 +119,25 @@ class PayslipPreviousRepository extends HrisRepository {
                 WHERE HSSD.SHEET_NO =
                   (SELECT HSS.SHEET_NO
                   FROM HR_SALARY_SHEET HSS, HR_EMPLOYEE_SETUP HES, HR_SALARY_SHEET_DETAIL SSD
-                   WHERE HSS.PERIOD_DT_CODE ='{$periodDtCode}'
-                    AND HSS.COMPANY_CODE     ='{$companyCode}'
+                   WHERE HSS.PERIOD_DT_CODE =:periodDtCode
+                    AND HSS.COMPANY_CODE     =:companyCode
                     AND HSS.BRANCH_CODE      ='{$companyCode}.01'
-                    AND HES.EMPLOYEE_CODE    ='{$employeeCode}'
-                    AND HSS.SALARY_TYPE ='{$salaryType}'
+                    AND HES.EMPLOYEE_CODE    =:employeeCode
+                    AND HSS.SALARY_TYPE =:salaryType
 					AND SSD.SHEET_NO= HSS.SHEET_NO
                     AND SSD.EMPLOYEE_CODE= HES.EMPLOYEE_CODE
                     AND SSD.COMPANY_CODE= HSS.COMPANY_CODE
                     AND SSD.COMPANY_CODE= HES.COMPANY_CODE
                   )
-                AND HSSD.EMPLOYEE_CODE='{$employeeCode}' 
-                AND E.COMPANY_CODE='{$companyCode}'";
-        return $this->rawQuery($sql);
+                AND HSSD.EMPLOYEE_CODE=:employeeCode 
+                AND E.COMPANY_CODE=:companyCode";
+        
+        $boundedParameter = [];
+        $boundedParameter = ['companyCode'] = $companyCode;
+        $boundedParameter = ['periodDtCode'] = $periodDtCode;
+        $boundedParameter = ['employeeCode'] = $companyCode;
+        $boundedParameter = ['salaryType'] = $salaryType;
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
 }

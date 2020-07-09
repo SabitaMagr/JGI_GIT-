@@ -3,6 +3,7 @@
 namespace LeaveManagement\Repository;
 
 use Application\Helper\EntityHelper;
+use Application\Repository\HrisRepository;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
@@ -14,10 +15,10 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
-class LeaveCarryForwardRepository implements RepositoryInterface {
+class LeaveCarryForwardRepository extends HrisRepository implements RepositoryInterface {
 
-    private $tableGateway;
-    private $adapter;
+    protected $tableGateway;
+    protected $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->tableGateway = new TableGateway(LeaveCarryForward::TABLE_NAME, $adapter);
@@ -104,9 +105,14 @@ public function carryForward($data)
     
     public function getDetailsById($id){
         $sql = "SELECT HE.ID AS ID, HS.LEAVE_ENAME AS LEAVE_ENAME, HR.FULL_NAME AS FULL_NAME,HE.ENCASH_DAYS,HE.CARRY_FORWARD_DAYS from HRIS_EMP_SELF_LEAVE_CLOSING HE join "
-                   . " HRIS_LEAVE_MASTER_SETUP HS on (HE.LEAVE_ID=HS.LEAVE_ID) join HRIS_EMPLOYEES HR ON(HE.EMPLOYEE_ID=HR.EMPLOYEE_ID) WHERE ID = $id ";
-        $statement = $this->adapter->query($sql);
-        return $statement->execute();
+                   . " HRIS_LEAVE_MASTER_SETUP HS on (HE.LEAVE_ID=HS.LEAVE_ID) join HRIS_EMPLOYEES HR ON(HE.EMPLOYEE_ID=HR.EMPLOYEE_ID) WHERE ID = :id ";
+        
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+
+        return $this->rawQuery($sql, $boundedParameter);
+        // $statement = $this->adapter->query($sql);
+        // return $statement->execute();
     }
     
     public function deleteRecord($id) {
@@ -136,12 +142,17 @@ public function carryForward($data)
     }
     
     public function getIds($id){
-        $sql = "select employee_id, leave_id from HRIS_EMP_SELF_LEAVE_CLOSING where id = $id";
-        $statement = $this->adapter->query($sql);
-        $data = $statement->execute();
-        $data = Helper::extractDbData($data);
-        return $data;
-    
+        $sql = "select employee_id, leave_id from HRIS_EMP_SELF_LEAVE_CLOSING where id = :id";
+        
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+
+        return $this->rawQuery($sql, $boundedParameter);
+
+        // $statement = $this->adapter->query($sql);
+        // $data = $statement->execute();
+        // $data = Helper::extractDbData($data);
+        // return $data;
     }
     
 
@@ -181,7 +192,8 @@ public function carryForward($data)
     public function getLeaveDetail($employeeId, $leaveId, $startDate = null) {
         $date = "TRUNC(SYSDATE)";
         if ($startDate != null) {
-            $date = "TO_DATE('{$startDate}','DD-MON-YYYY')";
+            $date = "TO_DATE(:startDate,'DD-MON-YYYY')";
+            $boundedParameter['startDate'] = $startDate;
         }
         $sql = "SELECT LA.EMPLOYEE_ID       AS EMPLOYEE_ID,
                   LA.BALANCE                AS BALANCE,
@@ -212,8 +224,8 @@ public function carryForward($data)
                  TRUNC(SYSDATE)  BETWEEN START_DATE AND END_DATE) LY  
                  ON(1=1)
                 WHERE L.STATUS               ='E'
-                AND LA.EMPLOYEE_ID           ={$employeeId}
-                AND L.LEAVE_ID               ={$leaveId}
+                AND LA.EMPLOYEE_ID           =:employeeId
+                AND L.LEAVE_ID               =:leaveId
                 AND (LA.FISCAL_YEAR_MONTH_NO =
                   CASE
                     WHEN (L.IS_MONTHLY='Y')
@@ -225,8 +237,15 @@ public function carryForward($data)
                   END
                 OR LA.FISCAL_YEAR_MONTH_NO IS NULL ) 
                 AND {$date} BETWEEN LY.START_DATE AND LY.END_DATE";
-        $statement = $this->adapter->query($sql);
-        return $statement->execute()->current();
+
+        $boundedParameter = [];
+        $boundedParameter['employeeId'] = $employeeId;
+        $boundedParameter['leaveId'] = $leaveId;
+
+        return $this->rawQuery($sql, $boundedParameter)[0];
+
+        // $statement = $this->adapter->query($sql);
+        // return $statement->execute()->current();
     }
 
     //to get the leave list based on assigned employee id for select option
@@ -429,9 +448,15 @@ public function carryForward($data)
                 ELSE
                 'BD'
                 END AS DATE_STATUS
-                FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE ID={$id}";
-        $statement = $this->adapter->query($sql);
-        return $statement->execute()->current();
+                FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE ID=:id";
+
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+
+        return $this->rawQuery($sql, $boundedParameter)[0];
+
+        // $statement = $this->adapter->query($sql);
+        // return $statement->execute()->current();
     }
 
 }

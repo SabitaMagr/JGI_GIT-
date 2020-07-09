@@ -41,7 +41,9 @@ protected $adapter;
 
     public function fetchSpecialRules($id){
       $sql = "SELECT PAY_ID, SALARY_TYPE_ID, FORMULA, FLAG FROM HRIS_PAY_SETUP_SPECIAL WHERE PAY_ID = $id";
-      return $this->rawQuery($sql);
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+      return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function fetchSalaryTypes(){
@@ -59,6 +61,9 @@ protected $adapter;
                 else 'N' 
             end) as RECORD_EXISTS
           from dual";
-      return $this->rawQuery($sql);
+        $boundedParameter = [];
+        $boundedParameter['payId'] = $payId;
+        $boundedParameter['salaryType'] = $salaryType;
+      return $this->rawQuery($sql, $boundedParameter);
     }
 }

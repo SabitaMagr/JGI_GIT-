@@ -14,6 +14,7 @@ class LoanlistRepository {
     }
 
     public function fetchLoanList($employeeId) {
+        $boundedParams = [];
         $sql = "
             SELECT DISTINCT LR.LOAN_ID,
             E.FULL_NAME,
@@ -23,15 +24,16 @@ class LoanlistRepository {
             ON LR.EMPLOYEE_ID = E.EMPLOYEE_ID
             LEFT JOIN HRIS_LOAN_MASTER_SETUP LMS 
             ON LR.LOAN_ID = LMS.LOAN_ID
-            WHERE LR.EMPLOYEE_ID = {$employeeId} 
+            WHERE LR.EMPLOYEE_ID = :employeeId
             AND LR.STATUS = 'AP'
             ";
 
 //        $sql = "select * from HRIS_LOAN_PAYMENT_DETAIL WHERE LOAN_REQUEST_ID = 2 AND PAID_FLAG = 'Y' ";
 
+        $boundedParams['employeeId'] = $employeeId;
 
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return Helper::extractDbData($result);
     }
 

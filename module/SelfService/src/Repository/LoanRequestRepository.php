@@ -116,9 +116,11 @@ class LoanRequestRepository implements RepositoryInterface {
     }
     
     public function getDefaultInterestRate($loan_id){
-        $sql = "SELECT INTEREST_RATE FROM HRIS_LOAN_MASTER_SETUP WHERE LOAN_ID = $loan_id";
-        $statement = $this->adapter->query($sql);
-        return $statement->execute();
+        $sql = "SELECT INTEREST_RATE FROM HRIS_LOAN_MASTER_SETUP WHERE LOAN_ID = :loan_id";
+
+        $boundedParameter = [];
+        $boundedParameter['loan_id'] = $loan_id;
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function getLoanDetails(){

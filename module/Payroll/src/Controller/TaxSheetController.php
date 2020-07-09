@@ -33,6 +33,7 @@ class TaxSheetController extends HrisController {
         $salarySheetRepo = new SalarySheetRepo($this->adapter);
         $data['ruleList'] = iterator_to_array($ruleRepo->fetchAll(), false);
         $data['salarySheetList'] = iterator_to_array($salarySheetRepo->fetchAll(), false);
+        $data['acl'] = $this->acl;
         return $data;
     }
 

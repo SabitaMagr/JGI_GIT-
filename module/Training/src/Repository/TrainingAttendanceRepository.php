@@ -14,11 +14,12 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
+use Application\Repository\HrisRepository;
 
-class TrainingAttendanceRepository implements RepositoryInterface {
+class TrainingAttendanceRepository extends HrisRepository implements RepositoryInterface {
 
-    private $tableGateway;
-    private $adapter;
+    protected $tableGateway;
+    protected $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->tableGateway = new TableGateway(TrainingAttendance::TABLE_NAME, $adapter);
@@ -94,9 +95,13 @@ class TrainingAttendanceRepository implements RepositoryInterface {
                 FROM HRIS_EMPLOYEE_TRAINING_ASSIGN ET
                 JOIN HRIS_EMPLOYEES E
                 ON (ET.EMPLOYEE_ID   = E.EMPLOYEE_ID)
-                WHERE ET.TRAINING_ID ={$id} AND ET.STATUS='E'";
-        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
-        return Helper::extractDbData($result);
+                WHERE ET.TRAINING_ID =:id AND ET.STATUS='E'";
+
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+        return $this->rawQuery($sql, $boundedParameter);
+        // $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        // return Helper::extractDbData($result);
     }
 
     public function updateTrainingAtd($data, $trainingId) {
@@ -134,17 +139,27 @@ class TrainingAttendanceRepository implements RepositoryInterface {
                   (SELECT T.*,
                     (TRUNC(T.END_DATE)-TRUNC(START_DATE)) AS DIFF
                   FROM HRIS_TRAINING_MASTER_SETUP T
-                  WHERE T.TRAINING_ID={$id}
+                  WHERE T.TRAINING_ID=:id
                   ) TR
                   CONNECT BY ROWNUM <=TR.DIFF+1";
-        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
-        return Helper::extractDbData($result);
+
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+        return $this->rawQuery($sql, $boundedParameter);
+
+        // $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        // return Helper::extractDbData($result);
     }
 
     public function fetchAttendance($id) {
-        $sql = "SELECT EMPLOYEE_ID,TO_CHAR(TRAINING_DT,'DD-MON-YYYY') AS TRAINING_DT,ATTENDANCE_STATUS FROM HRIS_EMP_TRAINING_ATTENDANCE WHERE TRAINING_ID ={$id}";
-        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
-        return Helper::extractDbData($result);
+        $sql = "SELECT EMPLOYEE_ID,TO_CHAR(TRAINING_DT,'DD-MON-YYYY') AS TRAINING_DT,ATTENDANCE_STATUS FROM HRIS_EMP_TRAINING_ATTENDANCE WHERE TRAINING_ID =:id";
+
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+        return $this->rawQuery($sql, $boundedParameter);
+
+        // $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        // return Helper::extractDbData($result);
     }
 
 }

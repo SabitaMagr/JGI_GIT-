@@ -68,15 +68,20 @@ class SalarySheetRepo extends HrisRepository {
     }
 
     public function generateSalShReport($sheetNo) {
+        $boundedParameter = [];
+        $boundedParameter['sheetNo'] = $sheetNo;
         $this->executeStatement("BEGIN
-                            HRIS_GEN_SAL_SH_REPORT({$sheetNo});
-                        END;");
+                            HRIS_GEN_SAL_SH_REPORT(:sheetNo);
+                        END;", $boundedParameter);
     }
 
     public function updateLoanPaymentFlag($employeeId, $sheetNo) {
+        $boundedParameter = [];
+        $boundedParameter['sheetNo'] = $sheetNo;
+        $boundedParameter['employeeId'] = $employeeId;
         $this->executeStatement("BEGIN
-                            hris_loan_payment_flag_change({$employeeId},{$sheetNo});
-                        END;");
+                            hris_loan_payment_flag_change(:employeeId,:sheetNo);
+                        END;", $boundedParameter);
     }
 
     public function fetchAllSalaryType() {
@@ -90,6 +95,10 @@ class SalarySheetRepo extends HrisRepository {
     }
     
     public function fetchEmployeeByGroup($monthId,$group,$salaryTypeId) {
+        $boundedParameter = [];
+        
+        $boundedParameter['salaryTypeId'] = $salaryTypeId;
+        $boundedParameter['monthId'] = $monthId;
         $sql = "SELECT 
             employee_id,employee_code,full_name,'Y' AS CHECKED_FLAG
             FROM HRIS_EMPLOYEES 
@@ -97,13 +106,18 @@ class SalarySheetRepo extends HrisRepository {
             STATUS='E' AND 
 employee_id not in (SELECT employee_id FROM HRIS_SALARY_SHEET_EMP_DETAIL SED
 JOIN HRIS_SALARY_SHEET SS ON (SS.SHEET_NO=SED.SHEET_NO) 
-where SS.month_id={$monthId} AND SS.SALARY_TYPE_ID=$salaryTypeId)            
+where SS.month_id=:monthId AND SS.SALARY_TYPE_ID=:salaryTypeId)            
 AND GROUP_ID IN ({$group})";
-        $data = $this->rawQuery($sql);
+        
+        $data = $this->rawQuery($sql, $boundedParameter);
         return $data;
     }
     
     public function fetchGeneratedSheetByGroup($monthId,$group,$salaryTypeId){
+        $boundedParameter = [];
+        
+        $boundedParameter['salaryTypeId'] = $salaryTypeId;
+        $boundedParameter['monthId'] = $monthId;
         $sql="select 
                 ss.sheet_no,ssg.Group_Name,Mc.Month_Edesc,St.Salary_Type_Name,
                 ss.approved, ss.locked 
@@ -111,22 +125,27 @@ AND GROUP_ID IN ({$group})";
                 join hris_salary_sheet_group ssg on (ssg.group_id=ss.group_id)
                 join Hris_Month_Code mc on (mc.month_id=ss.month_id)
                 join HRIS_SALARY_TYPE st on (St.Salary_Type_Id=Ss.Salary_Type_Id)
-                where ss.Month_Id={$monthId} and ss.salary_type_id=$salaryTypeId  and ss.Group_Id in ($group)";
-        $data = $this->rawQuery($sql);
+                where ss.Month_Id=:monthId and ss.salary_type_id=:salaryTypeId  and ss.Group_Id in ($group)";
+        
+        $data = $this->rawQuery($sql, $boundedParameter);
         return $data;
     }
     
     public function insertPayrollEmp($empList,$monthId,$salaryTypeId) {
         $deleteSql = "delete from HRIS_PAYROLL_EMP_LIST";
         $this->executeStatement($deleteSql);
+        $boundedParameter = [];
+        $boundedParameter['salaryTypeId'] = $salaryTypeId;
+        $boundedParameter['monthId'] = $monthId;
         foreach ($empList as $employeeId) {
+            $boundedParameter['employeeId'] = $employeeId;
 //            $tempSql = "INSERT INTO HRIS_PAYROLL_EMP_LIST VALUES ({$employeeId})";
             $tempSql = "INSERT INTO HRIS_PAYROLL_EMP_LIST 
-                    select * from (select {$employeeId} as employee_id from dual) 
+                    select * from (select :employeeId as employee_id from dual) 
 where employee_id not in (select employee_id from Hris_Salary_Sheet_Emp_Detail ssed
 join HRIS_SALARY_SHEET ss on (ss.SHEET_NO=ssed.SHEET_NO)
-where ss.month_id={$monthId} and ss.SALARY_TYPE_ID={$salaryTypeId})";
-            $this->executeStatement($tempSql);
+where ss.month_id=:monthId and ss.SALARY_TYPE_ID=:salaryTypeId)";
+            $this->executeStatement($tempSql, $boundedParameter);
         }
         $toGenerateGroupSql="select  distinct group_id 
                 from 
@@ -139,33 +158,43 @@ where ss.month_id={$monthId} and ss.SALARY_TYPE_ID={$salaryTypeId})";
     public function deleteSheetBySheetNo($sheetNo){
         $sql="
         BEGIN            
-        delete from HRIS_TAX_SHEET where sheet_no={$sheetNo};
-        delete from HRIS_SALARY_SHEET_DETAIL where sheet_no={$sheetNo};
-        delete from HRIS_SALARY_SHEET_EMP_DETAIL where sheet_no={$sheetNo};
-        delete from HRIS_SALARY_SHEET where sheet_no={$sheetNo};
+        delete from HRIS_TAX_SHEET where sheet_no=:sheetNo;
+        delete from HRIS_SALARY_SHEET_DETAIL where sheet_no=:sheetNo;
+        delete from HRIS_SALARY_SHEET_EMP_DETAIL where sheet_no=:sheetNo;
+        delete from HRIS_SALARY_SHEET where sheet_no=:sheetNo;
         END;
 ";
-        $this->executeStatement($sql);
+        $boundedParameter = [];
+        $boundedParameter['sheetNo'] = $sheetNo;
+        $this->executeStatement($sql, $boundedParameter);
         return true;
     }
 
     public function bulkApproveLock($sheetNo, $col, $val){
-        $sql = "UPDATE HRIS_SALARY_SHEET set $col = '$val' where sheet_no={$sheetNo}";
-        $this->executeStatement($sql);
+        $sql = "UPDATE HRIS_SALARY_SHEET set $col = :val where sheet_no=:sheetNo";
+        $boundedParameter = [];
+        $boundedParameter['sheetNo'] = $sheetNo;
+        //$boundedParameter['col'] = $col;
+        $boundedParameter['val'] = $val;
+        $this->executeStatement($sql, $boundedParameter);
         return true;
     }
 
     public function checkApproveLock($sheetNo){
-        $sql = "SELECT SHEET_NO, APPROVED, LOCKED FROM HRIS_SALARY_SHEET WHERE SHEET_NO = $sheetNo";
-        $data = $this->rawQuery($sql);
-        return Helper::extractDbData($data);
+        $sql = "SELECT SHEET_NO, APPROVED, LOCKED FROM HRIS_SALARY_SHEET WHERE SHEET_NO = :sheetNo";
+        $boundedParameter = [];
+        $boundedParameter['sheetNo'] = $sheetNo;
+        return $this->rawQuery($sql, $boundedParameter);
+        //return Helper::extractDbData($data);
     }
     
     public function fetchSheetWiseEmployeeList($sheetNo){
         $sql = "select SS.SHEET_NO,SS.MONTH_ID,SS.SALARY_TYPE_ID,SSED.EMPLOYEE_ID from HRIS_SALARY_SHEET SS
 JOIN HRIS_SALARY_SHEET_EMP_DETAIL SSED ON (SS.SHEET_NO=SSED.SHEET_NO)
-where SS.SHEET_NO={$sheetNo}";
-        $data = $this->rawQuery($sql);
-        return Helper::extractDbData($data);
+where SS.SHEET_NO=:sheetNo";
+        $boundedParameter = [];
+        $boundedParameter['sheetNo'] = $sheetNo;
+        return $this->rawQuery($sql, $boundedParameter);
+        //return Helper::extractDbData($data);
     }
 }

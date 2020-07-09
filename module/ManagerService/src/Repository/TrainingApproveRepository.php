@@ -469,14 +469,18 @@ class TrainingApproveRepository extends HrisRepository {
         $status = $search['status'];
         $functionalTypeId = $search['functionalTypeId'];
         $employeeTypeId = $search['employeeTypeId'];
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, null, null, $functionalTypeId);
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, null, null, $functionalTypeId);
+        $boundedParameter = [];
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
         
         $condition = "";
         if (isset($search['fromDate']) && $search['fromDate'] != null) {
-            $condition .= " AND TR.START_DATE>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";
+            $condition .= " AND TR.START_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY') ";
+            $boundedParameter['fromDate'] = $fromDate;
         }
         if (isset($search['fromDate']) && $search['toDate'] != null) {
-            $condition .= " AND TR.END_DATE<=TO_DATE('{$search['toDate']}','DD-MM-YYYY') ";
+            $condition .= " AND TR.END_DATE<=TO_DATE(:toDate,'DD-MM-YYYY') ";
+            $boundedParameter['toDate'] = $toDate;
         }
 
 
@@ -577,9 +581,9 @@ class TrainingApproveRepository extends HrisRepository {
                 ON (RA.RECOMMEND_BY=RAR.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
-                WHERE 1          =1 {$searchConditon} {$condition}";
+                WHERE 1          =1 {$searchCondition['sql']} {$condition}";
                 
         $finalSql = $this->getPrefReportQuery($sql);
-        return $this->rawQuery($finalSql);
+        return $this->rawQuery($finalSql, $boundedParameter);
     }
 }

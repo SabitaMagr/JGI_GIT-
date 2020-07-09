@@ -13,12 +13,13 @@ use Setup\Model\Designation;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use Application\Repository\HrisRepository;
 use Zend\Db\TableGateway\TableGateway;
 
-class NewsRepository implements RepositoryInterface {
+class NewsRepository extends HrisRepository implements RepositoryInterface {
 
-    private $tableGateway;
-    private $adapter; 
+    protected $tableGateway;
+    protected $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -94,25 +95,28 @@ class NewsRepository implements RepositoryInterface {
         return $designationList;
     }
 
-    public function fetchForEmployee($employeeId, $date) {
-        $rawResult = EntityHelper::rawQueryResult($this->adapter, "
-        SELECT N.*
+    public function fetchForEmployee($employeeId, $newsDate) {
+        $sql = "SELECT N.*
         FROM HRIS_NEWS N,
           (SELECT COMPANY_ID,   
             BRANCH_ID,
             DEPARTMENT_ID,
             DESIGNATION_ID
           FROM HRIS_EMPLOYEES
-          WHERE EMPLOYEE_ID=$employeeId
+          WHERE EMPLOYEE_ID=:employeeId
           ) E
         WHERE (N.COMPANY_ID=E.COMPANY_ID
         OR N.BRANCH_ID     =E.BRANCH_ID
         OR N.DEPARTMENT_ID =E.DEPARTMENT_ID
         OR N.DESIGNATION_ID=E.DESIGNATION_ID)
         AND (N.STATUS      ='E') 
-        AND N.NEWS_DATE=$date"
-        );
-        return $rawResult;
+        AND N.NEWS_DATE=:newsDate";
+
+        $boundedParameter = [];
+        $boundedParameter['newsDate'] = $newsDate;
+        $boundedParameter['employeeId'] = $employeeId;
+
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function allNewsTypeWise($typeId, $employeeId) {
@@ -129,8 +133,8 @@ class NewsRepository implements RepositoryInterface {
                     N.STATUS
                   FROM HRIS_NEWS N
                   WHERE N.STATUS     ='E'
-                  AND N.NEWS_TYPE    ={$typeId}
-                  AND {$employeeId} IN
+                  AND N.NEWS_TYPE    =:typeId
+                  AND :employeeId IN
                     (SELECT NE.EMPLOYEE_ID FROM HRIS_NEWS_EMPLOYEE NE WHERE NE.NEWS_ID=N.NEWS_ID
                     )
                   ) AA
@@ -154,9 +158,16 @@ class NewsRepository implements RepositoryInterface {
                 AND NEWS_DATE     <=TRUNC(SYSDATE)
                 AND NEWS_EXPIRY_DT>=TRUNC(SYSDATE)
                 ORDER BY NEWS_DATE DESC";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+
+        $boundedParameter = [];
+        $boundedParameter['typeId'] = $typeId;
+        $boundedParameter['employeeId'] = $employeeId;
+
+        return $this->rawQuery($sql, $boundedParameter);        
+
+        // $statement = $this->adapter->query($sql);
+        // $result = $statement->execute();
+        // return Helper::extractDbData($result);
     }
 
     public function newsAssign(int $newsId, array $assignedTo) {

@@ -109,17 +109,20 @@ class RulesRepository extends HrisRepository {
                   INITCAP(P.PAY_EDESC) AS PAY_EDESC,
                   INITCAP(P.PAY_LDESC) AS PAY_LDESC
                 FROM HRIS_PAY_SETUP P";
+                return $this->rawQuery($sql);
         } else {
             $sql = "
                 SELECT P.PAY_ID,
                   INITCAP(P.PAY_EDESC) AS PAY_EDESC,
                   INITCAP(P.PAY_LDESC) AS PAY_LDESC
                 FROM HRIS_PAY_SETUP P,
-                  (SELECT PRIORITY_INDEX FROM HRIS_PAY_SETUP WHERE PAY_ID=$payId
+                  (SELECT PRIORITY_INDEX FROM HRIS_PAY_SETUP WHERE PAY_ID=:payId
                   ) PS
                 WHERE P.PRIORITY_INDEX < PS.PRIORITY_INDEX";
+                $boundedParameter = [];
+                $boundedParameter['payId'] = $payId;
+                return $this->rawQuery($sql, $boundedParameter);
         }
-        return $this->rawQuery($sql);
     }
 
     public function fetchSSRules(): array {
@@ -191,12 +194,15 @@ class RulesRepository extends HrisRepository {
                   ,PSS.FORMULA AS TYPE_FORMULA
                   ,PSS.FLAG AS TYPE_FLAG
                 FROM HRIS_PAY_SETUP PS
-                left join (select SALARY_TYPE_ID from Hris_Salary_Sheet where sheet_no={$sheetNo}) SS on (1=1)
+                left join (select SALARY_TYPE_ID from Hris_Salary_Sheet where sheet_no=:sheetNo) SS on (1=1)
                 LEFT JOIN HRIS_PAY_SETUP_SPECIAL PSS ON (PSS.SALARY_TYPE_ID=SS.SALARY_TYPE_ID AND PS.PAY_ID=PSS.PAY_ID)
                 WHERE PS.STATUS ='E' ORDER BY PRIORITY_INDEX";
 
+        $boundedParameter = [];
+        $boundedParameter['sheetNo'] = $sheetNo;
+
         $statement = $this->adapter->query($query);
-        return $statement->execute();
+        return $statement->execute($boundedParameter);
     }
 
 }
