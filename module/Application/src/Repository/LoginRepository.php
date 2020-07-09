@@ -55,13 +55,16 @@ class LoginRepository implements RepositoryInterface {
     }
 
     public function checkPasswordExpire($userName,$pwd=NULL) {
-        $where = "and USER_NAME='$userName'";
+        $boundedParameter=[];
+         $boundedParameter['userName']=$userName;
+        $where = "and USER_NAME=:userName";
         if($pwd!=null){
-            $where.=" AND FN_DECRYPT_PASSWORD(PASSWORD)='{$pwd}'";
+         $boundedParameter['pwd']=$pwd;
+            $where.=" AND FN_DECRYPT_PASSWORD(PASSWORD)=:pwd";
         }
         $sql = "select EMPLOYEE_ID,USER_NAME,ROLE_ID,STATUS,CREATED_DT,MODIFIED_DT,IS_LOCKED,TRUNC(SYSDATE) AS CURRENTDATE,TRUNC(SYSDATE)-CREATED_DT AS CREATED_DAYS,TRUNC(SYSDATE)-MODIFIED_DT AS MODIFIED_DAYS from hris_users where status='E' " . $where;
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute()->current();
+        $result = $statement->execute($boundedParameter)->current();
         return $result;
     }
 
@@ -70,7 +73,7 @@ class LoginRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns(array(new Expression('FN_DECRYPT_PASSWORD(PASSWORD) AS PASSWORD')));
         $select->from(UserSetup::TABLE_NAME);
-        $select->where(["USER_NAME='" . $userName . "'"]);
+        $select->where(["USER_NAME" =>$userName]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current()['PASSWORD'];

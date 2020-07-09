@@ -305,9 +305,9 @@ class AuthController extends AbstractActionController {
     }
 
     public function checkIfAccountLocked($account) {
-        if (!($this->preference->allowAccountLock == 'Y')) {
-            return false;
-        }
+//        if (!($this->preference->allowAccountLock == 'Y')) {
+//            return false;
+//        }
         if ($account->IS_LOCKED == 'Y') {
             $this->flashmessenger()->clearCurrentMessages();
             $this->flashmessenger()->addMessage('The account ' . $account->USER_NAME . ' has been locked Please contact the Admin');
