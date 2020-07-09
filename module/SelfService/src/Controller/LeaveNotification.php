@@ -72,7 +72,7 @@ class LeaveNotification extends HrisController {
                 $this->flashmessenger()->addMessage("Substitute Work Request Approved!!!");
             } else if ($action == 'Reject') {
                 $leaveSubstitute->approvedFlag = "N";
-                $leaveRequestRepository->delete($id);
+                $leaveRequestRepository->cancelFromSubstitue($id);
                 $this->flashmessenger()->addMessage("Substitute Work Request Rejected!!!");
             }
             $this->repository->edit($leaveSubstitute, $id);

@@ -466,5 +466,9 @@ and Sub_Ref_Id is not null
         return Helper::extractDbData($result);
     }
     
-
+    public function cancelFromSubstitue($id) {
+        $currentDate = Helper::getcurrentExpressionDate();
+        $this->tableGateway->update([LeaveApply::STATUS => 'C', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
+    }
+    
 }
