@@ -342,8 +342,19 @@ class LeaveApproveRepository implements RepositoryInterface {
                   LS.APPROVED_FLAG                                        AS APPROVED_FLAG,
                   INITCAP(TO_CHAR(LS.APPROVED_DATE, 'DD-MON-YYYY'))       AS SUB_APPROVED_DATE,
                   LS.EMPLOYEE_ID                                          AS SUB_EMPLOYEE_ID,
-                  REC_APP_ROLE(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
-                  REC_APP_ROLE_NAME(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
+                  REC_APP_ROLE(U.EMPLOYEE_ID,
+                  CASE WHEN L.ENABLE_OVERRIDE='Y'  THEN RAO.RECOMMENDER
+                  WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
+                  CASE WHEN L.ENABLE_OVERRIDE='Y'  THEN RAO.APPROVER
+                  WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
+                  )      AS ROLE,
+                  REC_APP_ROLE_NAME(U.EMPLOYEE_ID,
+                  CASE WHEN L.ENABLE_OVERRIDE='Y'  THEN RAO.RECOMMENDER
+                  WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
+                  CASE WHEN L.ENABLE_OVERRIDE='Y'  THEN RAO.APPROVER
+                  WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
+                  ) AS YOUR_ROLE,
+                  CASE WHEN ( ALR.R_A_ID IS NOT NULL OR ALA.R_A_ID  IS NOT NULL ) THEN 'SECONDARY' ELSE 'PRIMARY' END AS PRI_SEC
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON L.LEAVE_ID=LA.LEAVE_ID
@@ -357,12 +368,53 @@ class LeaveApproveRepository implements RepositoryInterface {
                 ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
                 LEFT JOIN HRIS_LEAVE_SUBSTITUTE LS
                 ON LA.ID              = LS.LEAVE_REQUEST_ID
+                LEFT JOIN HRIS_ALTERNATE_R_A ALR
+                ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALR.R_A_ID={$id})
+                LEFT JOIN HRIS_ALTERNATE_R_A ALA
+                ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALA.R_A_ID={$id})
+                -- CHANGES
+                LEFT JOIN hris_rec_app_override RAO ON E.EMPLOYEE_ID=RAO.EMPLOYEE_ID
                 LEFT JOIN HRIS_EMPLOYEES U
-                ON(U.EMPLOYEE_ID   = RA.RECOMMEND_BY
-                OR U.EMPLOYEE_ID   =RA.APPROVED_BY)
+                ON(
+                (
+                (U.EMPLOYEE_ID   = RA.RECOMMEND_BY
+                OR U.EMPLOYEE_ID   =RA.APPROVED_BY
+                OR U.EMPLOYEE_ID   =ALR.R_A_ID
+                OR U.EMPLOYEE_ID   =ALA.R_A_ID)
+               AND L.ENABLE_OVERRIDE='N' )
+               OR
+               (
+                (U.EMPLOYEE_ID   = RAO.recommender
+                OR U.EMPLOYEE_ID   =RAO.approver
+               ) AND L.ENABLE_OVERRIDE='Y' 
+               )
+               
+                )
+                
+             -- CHANGES
+                
+                
                 WHERE E.STATUS        ='E'
                 AND E.RETIRED_FLAG    ='N'
-                AND ((RA.RECOMMEND_BY= U.EMPLOYEE_ID AND LA.STATUS IN ('CP')) OR (RA.APPROVED_BY= U.EMPLOYEE_ID AND LA.STATUS IN ('CR')) )
+                AND ((
+                (
+                (
+                (RA.RECOMMEND_BY= U.EMPLOYEE_ID)
+                OR(ALR.R_A_ID= U.EMPLOYEE_ID)
+                AND L.ENABLE_OVERRIDE='N'
+                ) OR (RAO.recommender=U.EMPLOYEE_ID AND L.ENABLE_OVERRIDE='Y' )
+                )
+                AND LA.STATUS IN ('CR')) 
+                OR (
+                (
+                (
+                (RA.APPROVED_BY= U.EMPLOYEE_ID)
+                OR(ALA.R_A_ID= U.EMPLOYEE_ID)
+                AND L.ENABLE_OVERRIDE='N'
+                )
+                OR ( RAO.APPROVER=U.EMPLOYEE_ID AND L.ENABLE_OVERRIDE='N' )
+                )
+                AND LA.STATUS IN ('CP')) )
                 AND U.EMPLOYEE_ID={$id}
                 AND (LS.APPROVED_FLAG =
                   CASE

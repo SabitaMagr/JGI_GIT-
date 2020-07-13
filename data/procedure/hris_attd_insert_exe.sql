@@ -66,7 +66,8 @@ BEGIN
               v_employee_id,
                p_attendance_dt,
                 p_attendance_time,
-                p_remarks
+                p_remarks,
+                v_purpose
            );
         END IF;
     END;
