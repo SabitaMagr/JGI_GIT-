@@ -19,6 +19,7 @@ class DashboardController extends AbstractActionController {
     private $adapter;
 
     public function __construct(ContainerInterface $container) {
+        die();
         $this->container = $container;
         $this->adapter = $this->container->get(AdapterInterface::class);
     }
