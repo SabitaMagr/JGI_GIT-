@@ -28,7 +28,7 @@ class leaveAssign extends HrisController {
             ->setTableName(LeaveMaster::TABLE_NAME)
             ->setColumnList([LeaveMaster::LEAVE_ID, LeaveMaster::LEAVE_ENAME])
             ->setWhere([LeaveMaster::STATUS => 'E'])
-            ->setOrder([LeaveMaster::LEAVE_ENAME => Select::ORDER_ASCENDING])
+            ->setOrder([LeaveMaster::VIEW_ORDER => Select::ORDER_ASCENDING,LeaveMaster::LEAVE_ENAME => Select::ORDER_ASCENDING])
             ->setKeyValue(LeaveMaster::LEAVE_ID, LeaveMaster::LEAVE_ENAME)
             ->result();
         $config = [

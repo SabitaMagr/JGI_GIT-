@@ -126,4 +126,28 @@ class HrisRepository {
                 ON (E.BRANCH_ID = B.BRANCH_ID)";
         return $finalSql;
     }
+    
+    public function getBoundedForArray($arrayValues, $stringName) {
+        $returnData=[];
+        $boundedParameter = [];
+        $boundedString = "";
+        if (gettype($arrayValues) === "array") {
+            $lengthValue = sizeof($arrayValues);
+            for ($i = 0; $i < $lengthValue; $i++) {
+                $boundedName = $stringName . $i;
+                $boundedParameter [$boundedName] = $arrayValues[$i];
+                if ($i + 1 == $lengthValue) {
+                    $boundedString .= ":{$boundedName}";
+                } else {
+                    $boundedString .= ":{$boundedName},";
+                }
+            }
+        }else{
+            $boundedParameter[$stringName] = $arrayValues;
+            $boundedString .= ":{$stringName}";
+        }
+        $returnData['sql']=$boundedString;
+        $returnData['parameter']=$boundedParameter;
+        return $returnData;
+    }
 }

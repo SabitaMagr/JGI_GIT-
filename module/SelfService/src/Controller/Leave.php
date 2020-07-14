@@ -36,7 +36,7 @@ class Leave extends HrisController {
             }
         }
         $leaveMonthDataSql = "SELECT * FROM HRIS_LEAVE_MONTH_CODE 
-                    WHERE LEAVE_YEAR_ID=(SELECT LEAVE_YEAR_ID from HRIS_LEAVE_YEARS WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE) ORDER BY LEAVE_YEAR_MONTH_NO";
+                    WHERE LEAVE_YEAR_ID=(SELECT max(LEAVE_YEAR_ID) from HRIS_LEAVE_YEARS) ORDER BY LEAVE_YEAR_MONTH_NO";
         $leaveMonthData = EntityHelper::rawQueryResult($this->adapter, $leaveMonthDataSql);
         $currentMonth = Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, "SELECT NVL(MAX(LEAVE_YEAR_MONTH_NO),0) AS MONTH_NO FROM HRIS_LEAVE_MONTH_CODE WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE"));
         return new ViewModel([

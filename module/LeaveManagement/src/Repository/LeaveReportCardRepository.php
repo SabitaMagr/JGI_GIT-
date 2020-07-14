@@ -13,17 +13,22 @@ class LeaveReportCardRepository extends HrisRepository {
   public function fetchLeaveReportCard($by){
     $leaveId = $by['data']['leaveId'];
     $leaveIdFilter = "";
+    $boundedParameter = [];
     if($leaveId != '' && $leaveId != null){
-        $leaveId = implode($leaveId, ',');
-      $leaveIdFilter.=" and l.leave_id IN ($leaveId)";
+        $leaveData=$this->getBoundedForArray($leaveId,'leaveId');
+        $boundedParameter=array_merge($boundedParameter,$leaveData['parameter']);
+        $leaveIdFilter = " and l.leave_id IN ({$leaveData['sql']})";
     }
+    
     $employees = $by['data']['employeeId'];
+    $boundedParameter['employees']=$employees;
     //$employees = implode(',', $employees);
     
     $leaveYear = $by['data']['leaveYear'];
     
     if ($leaveYear != null) {
-            $leaveYearStatusCondition = "( ( L.STATUS ='E' OR L.OLD_LEAVE='Y' ) AND L.LEAVE_YEAR= {$leaveYear} )";
+            $boundedParameter['leaveYear']=$leaveYear;
+            $leaveYearStatusCondition = "( ( L.STATUS ='E' OR L.OLD_LEAVE='Y' ) AND L.LEAVE_YEAR= :leaveYear )";
         } else {
             $leaveYearStatusCondition = "L.STATUS ='E'";
         }
@@ -59,7 +64,7 @@ class LeaveReportCardRepository extends HrisRepository {
     RECM.EMPLOYEE_ID=RA.RECOMMEND_BY LEFT JOIN HRIS_EMPLOYEES APRV ON APRV.EMPLOYEE_ID=RA.APPROVED_BY 
     LEFT JOIN HRIS_DESIGNATIONS D ON E.DESIGNATION_ID = D.DESIGNATION_ID  
     LEFT JOIN HRIS_DEPARTMENTS HD ON E.DEPARTMENT_ID = HD.DEPARTMENT_ID
-    WHERE {$leaveYearStatusCondition} and la.status in ( 'AP','CP','CR')  AND E.EMPLOYEE_ID IN ($employees) {$leaveIdFilter}"
+    WHERE {$leaveYearStatusCondition} and la.status in ( 'AP','CP','CR')  AND E.EMPLOYEE_ID IN (:employees) {$leaveIdFilter}"
     . " union
 
 
@@ -127,26 +132,31 @@ LEFT JOIN HRIS_DESIGNATIONS D
 ON E.DESIGNATION_ID = D.DESIGNATION_ID
 LEFT JOIN HRIS_DEPARTMENTS HD
 ON E.DEPARTMENT_ID = HD.DEPARTMENT_ID
-where {$leaveYearStatusCondition} and E.EMPLOYEE_ID IN ($employees) {$leaveIdFilter})
+where {$leaveYearStatusCondition} and E.EMPLOYEE_ID IN (:employees) {$leaveIdFilter})
 ORDER BY REQUESTED_DT_AD ASC
 ";  
 //                            echo $sql; die;
-    return $this->rawQuery($sql);    
+    return $this->rawQuery($sql,$boundedParameter);    
   }
 
   public function fetchLeaves($empId, $leaveId,$leaveYear){
+      $boundedParameter = [];
     $leaveIdFilter = "";
     if($leaveId != '' && $leaveId != null){
-      $leaveId = implode($leaveId, ',');
-      $leaveIdFilter.=" and lms.leave_id IN ($leaveId)";
+        $leaveData=$this->getBoundedForArray($leaveId,'leaveId');
+        $boundedParameter=array_merge($boundedParameter,$leaveData['parameter']);
+        $leaveIdFilter = " and lms.leave_id IN ({$leaveData['sql']})";
     }
     
     
     if ($leaveYear != null) {
-            $leaveYearStatusCondition = "( ( lms.STATUS ='E' OR lms.OLD_LEAVE='Y' ) AND lms.LEAVE_YEAR= {$leaveYear} )";
+        $boundedParameter['leaveYear']=$leaveYear;
+            $leaveYearStatusCondition = "( ( lms.STATUS ='E' OR lms.OLD_LEAVE='Y' ) AND lms.LEAVE_YEAR= :leaveYear )";
         } else {
             $leaveYearStatusCondition = "lms.STATUS ='E'";
         }
+        
+        $boundedParameter['empId']=$empId;
     
     $sql = "select 
     Lms.Leave_Ename,Lms.LEAVE_ID,
@@ -156,7 +166,7 @@ ORDER BY REQUESTED_DT_AD ASC
     la.Total_Days + case when lms.is_monthly='Y' then 0 else nvl(la.PREVIOUS_YEAR_BAL, 0) end as Balance
     from hris_leave_master_setup lms
     left join Hris_Employee_Leave_Assign la on (lms.leave_id=la.leave_id )
-    where {$leaveYearStatusCondition} and la.employee_id= $empId 
+    where {$leaveYearStatusCondition} and la.employee_id= :empId 
         and
     (la.FISCAL_YEAR_MONTH_NO =
                   CASE
@@ -176,6 +186,6 @@ ORDER BY REQUESTED_DT_AD ASC
     {$leaveIdFilter}
     order by Lms.VIEW_ORDER asc";
 //    echo $sql; die;
-    return $this->rawQuery($sql);
+    return $this->rawQuery($sql,$boundedParameter);
   }
 } 

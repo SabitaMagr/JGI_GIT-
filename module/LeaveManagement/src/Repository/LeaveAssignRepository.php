@@ -23,10 +23,14 @@ class LeaveAssignRepository extends HrisRepository {
 
     public function edit(Model $model, $id) {
         $this->tableGateway->update($model->getArrayCopyForDB(), [LeaveAssign::LEAVE_ID => $id[0], LeaveAssign::EMPLOYEE_ID => $id[1]]);
-        EntityHelper::rawQueryResult($this->adapter, "
-            BEGIN
-              HRIS_RECALCULATE_LEAVE({$id[1]},{$id[0]});
-            END;");
+              
+        $boundedParameter = [];
+        $boundedParameter['leaveId'] = $id[0];
+        $boundedParameter['employeeId'] = $id[1];
+        $sql="BEGIN
+              HRIS_RECALCULATE_LEAVE(:employeeId,:leaveId);
+            END;";
+        $this->executeStatement($sql, $boundedParameter);
     }
 
     public function fetchAll() {

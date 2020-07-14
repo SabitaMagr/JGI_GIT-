@@ -80,7 +80,7 @@ class LeaveCarryForward extends HrisController {
         }
 
         return Helper::addFlashMessagesToArray($this, [
-                    'leaveMaxEncash' => $this->preference[leaveEncashMaxDays],
+                    'leaveMaxEncash' => $this->preference['leaveEncashMaxDays'],
                     'form' => $this->form,
                     'employeeId' => $this->employeeId,
                     'leave' => $this->repository->getLeaveList($this->employeeId),
@@ -108,7 +108,7 @@ class LeaveCarryForward extends HrisController {
         $ad = $details['ENCASH_DAYS']+$balance[0]['BALANCE'];
        
        return $this->stickFlashMessagesTo([
-          'leaveMaxEncash' => $this->preference[leaveEncashMaxDays],
+          'leaveMaxEncash' => $this->preference['leaveEncashMaxDays'],
              'form' => $this->form,
             'employeeId' => $this->employeeId,
            'availabledays' => $ad,
@@ -174,10 +174,10 @@ class LeaveCarryForward extends HrisController {
         try {
             $request = $this->getRequest();
             if ($request->isPost()) {
-                $postedData = $request->getPost();
-                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
-                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId'], $postedData['halfDay'], $postedData['leaveId']);
-                return new CustomViewModel(['success' => true, 'data' => $availableDays, 'error' => '']);
+//                $postedData = $request->getPost();
+//                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+//                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId'], $postedData['halfDay'], $postedData['leaveId']);
+                return new CustomViewModel(['success' => true, 'data' => [], 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
