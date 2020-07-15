@@ -49,12 +49,17 @@ class AttendanceDeviceRepository implements RepositoryInterface {
     }
 
     public function fetchByIP($ipList, $fromDate = null, $toDate = null): array {
-        $condition = EntityHelper::conditionBuilder($ipList, "A." . Attendance::IP_ADDRESS, "AND", true);
+        $boundedParameter = [];
+        $attendanceCondition = EntityHelper::conditionBuilderBounded($ipList, "A." . Attendance::IP_ADDRESS, "AND", true);
+        $condition =$attendanceCondition['sql'];
+        $boundedParameter=array_merge($boundedParameter,$attendanceCondition['parameter']);
         if ($fromDate != null) {
-            $condition .= " AND A.ATTENDANCE_DT >= TO_DATE('{$fromDate}','DD-MON-YYYY') ";
+        $boundedParameter['fromDate']=$fromDate;
+            $condition .= " AND A.ATTENDANCE_DT >= TO_DATE(:fromDate,'DD-MON-YYYY') ";
         };
         if ($toDate != null) {
-            $condition .= " AND A.ATTENDANCE_DT <= TO_DATE('{$toDate}','DD-MON-YYYY') ";
+        $boundedParameter['toDate']=$toDate;
+            $condition .= " AND A.ATTENDANCE_DT <= TO_DATE(:toDate,'DD-MON-YYYY') ";
         }
         $sql = "SELECT A.IP_ADDRESS,
                   A.THUMB_ID,
@@ -67,7 +72,7 @@ class AttendanceDeviceRepository implements RepositoryInterface {
                 ON (A.EMPLOYEE_ID = E.EMPLOYEE_ID)
                 WHERE 1           =1 {$condition} ORDER BY A.ATTENDANCE_DT DESC, A.ATTENDANCE_TIME DESC, A.THUMB_ID ASC";
         $statement = $this->adapter->query($sql);
-        $iterator = $statement->execute();
+        $iterator = $statement->execute($boundedParameter);
         return iterator_to_array($iterator, false);
     }
 

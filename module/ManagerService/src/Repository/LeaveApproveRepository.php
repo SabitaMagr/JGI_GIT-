@@ -28,6 +28,8 @@ class LeaveApproveRepository implements RepositoryInterface {
     }
 
     public function getAllRequest($id) {
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
         $sql = "
                 SELECT 
                   LA.ID                  AS ID,
@@ -87,9 +89,9 @@ class LeaveApproveRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_LEAVE_SUBSTITUTE LS
                 ON LA.ID              = LS.LEAVE_REQUEST_ID
                 LEFT JOIN HRIS_ALTERNATE_R_A ALR
-                ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALR.R_A_ID={$id})
+                ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALR.R_A_ID=:id)
                 LEFT JOIN HRIS_ALTERNATE_R_A ALA
-                ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALA.R_A_ID={$id})
+                ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALA.R_A_ID=:id)
                 -- CHANGES
                 LEFT JOIN hris_rec_app_override RAO ON E.EMPLOYEE_ID=RAO.EMPLOYEE_ID
                 LEFT JOIN HRIS_EMPLOYEES U
@@ -133,7 +135,7 @@ class LeaveApproveRepository implements RepositoryInterface {
                 OR ( RAO.APPROVER=U.EMPLOYEE_ID AND L.ENABLE_OVERRIDE='N' )
                 )
                 AND LA.STATUS IN ('RC')) )
-                AND U.EMPLOYEE_ID={$id}
+                AND U.EMPLOYEE_ID=:id
                 AND (LS.APPROVED_FLAG =
                   CASE
                     WHEN LS.EMPLOYEE_ID IS NOT NULL
@@ -143,13 +145,17 @@ class LeaveApproveRepository implements RepositoryInterface {
                 OR LA.STATUS IN ('CP','CR'))
                 ORDER BY LA.REQUESTED_DT DESC";
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
         return $result;
     }
 
     public function edit(Model $model, $id) {
         $temp = $model->getArrayCopyForDB();
         $this->tableGateway->update($temp, [LeaveApply::ID => $id]);
+        
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+        
         EntityHelper::rawQueryResult($this->adapter, "
                    DECLARE
                       V_ID HRIS_EMPLOYEE_LEAVE_REQUEST.ID%TYPE;
@@ -169,12 +175,12 @@ class LeaveApproveRepository implements RepositoryInterface {
                         V_END_DATE,
                         V_EMPLOYEE_ID
                       FROM HRIS_EMPLOYEE_LEAVE_REQUEST
-                      WHERE ID                                    = {$id};
+                      WHERE ID                                    = :id;
                       IF(V_STATUS IN ('AP','C','R')) THEN
                         HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
                       END IF;
                     END;
-    ");
+    ",$boundedParameter);
     }
 
     public function fetchAll() {
@@ -182,6 +188,8 @@ class LeaveApproveRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
         $sql = "SELECT INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
                   INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY'))    AS REQUESTED_DT,
                   INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY'))     AS APPROVED_DT,
@@ -264,7 +272,7 @@ class LeaveApproveRepository implements RepositoryInterface {
                 LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID)) SLR ON (SLR.ID=LA.SUB_REF_ID AND SLR.EMPLOYEE_ID=LA.EMPLOYEE_ID),
                   HRIS_LEAVE_MONTH_CODE MTH,
                   HRIS_EMPLOYEE_LEAVE_ASSIGN ELA
-                WHERE LA.ID = {$id}
+                WHERE LA.ID = :id 
                 AND TRUNC(LA.START_DATE) BETWEEN MTH.FROM_DATE AND MTH.TO_DATE
                 AND LA.EMPLOYEE_ID            =ELA.EMPLOYEE_ID
                 AND LA.LEAVE_ID               =ELA.LEAVE_ID
@@ -286,13 +294,15 @@ class LeaveApproveRepository implements RepositoryInterface {
                 OR ELA.FISCAL_YEAR_MONTH_NO IS NULL)";
 
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
         return $result->current();
     }
 
     public function fetchAttachmentsById($id){
-      $sql = "SELECT * FROM HRIS_LEAVE_FILES WHERE LEAVE_ID = $id";
-      $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+      $sql = "SELECT * FROM HRIS_LEAVE_FILES WHERE LEAVE_ID = :id";
+      $result = EntityHelper::rawQueryResult($this->adapter, $sql,$boundedParameter);
       return Helper::extractDbData($result);
     }
 
@@ -310,6 +320,8 @@ class LeaveApproveRepository implements RepositoryInterface {
     }
 
     public function getAllCancelRequest($id) {
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
         $sql = "
                 SELECT 
                   LA.ID                  AS ID,
@@ -369,9 +381,9 @@ class LeaveApproveRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_LEAVE_SUBSTITUTE LS
                 ON LA.ID              = LS.LEAVE_REQUEST_ID
                 LEFT JOIN HRIS_ALTERNATE_R_A ALR
-                ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALR.R_A_ID={$id})
+                ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALR.R_A_ID=:id)
                 LEFT JOIN HRIS_ALTERNATE_R_A ALA
-                ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALA.R_A_ID={$id})
+                ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALA.R_A_ID=:id)
                 -- CHANGES
                 LEFT JOIN hris_rec_app_override RAO ON E.EMPLOYEE_ID=RAO.EMPLOYEE_ID
                 LEFT JOIN HRIS_EMPLOYEES U
@@ -415,7 +427,7 @@ class LeaveApproveRepository implements RepositoryInterface {
                 OR ( RAO.APPROVER=U.EMPLOYEE_ID AND L.ENABLE_OVERRIDE='N' )
                 )
                 AND LA.STATUS IN ('CP')) )
-                AND U.EMPLOYEE_ID={$id}
+                AND U.EMPLOYEE_ID=:id
                 AND (LS.APPROVED_FLAG =
                   CASE
                     WHEN LS.EMPLOYEE_ID IS NOT NULL
@@ -425,11 +437,15 @@ class LeaveApproveRepository implements RepositoryInterface {
                 OR LA.STATUS IN ('CP','CR'))
                 ORDER BY LA.REQUESTED_DT DESC";
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
         return $result;
     }
 
     public function fetchByIdWithEmployeeId($id, $employeeId) {
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+        $boundedParameter['employeeId'] = $employeeId;
+        
         $sql = "SELECT INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
                   INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY'))    AS REQUESTED_DT,
                   INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY'))     AS APPROVED_DT,
@@ -485,8 +501,8 @@ INITCAP(L.LEAVE_ENAME)||'('||SLR.SUB_NAME||')' END AS LEAVE_ENAME
                 ON RECM.EMPLOYEE_ID=RA.RECOMMEND_BY
                 LEFT JOIN HRIS_EMPLOYEES APRV
                 ON APRV.EMPLOYEE_ID=RA.APPROVED_BY
-                LEFT JOIN HRIS_ALTERNATE_R_A ALR ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALR.R_A_ID={$employeeId})
-                LEFT JOIN HRIS_ALTERNATE_R_A ALA ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALA.R_A_ID={$employeeId})
+                LEFT JOIN HRIS_ALTERNATE_R_A ALR ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALR.R_A_ID=:employeeId)
+                LEFT JOIN HRIS_ALTERNATE_R_A ALA ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=LA.EMPLOYEE_ID AND ALA.R_A_ID=:employeeId)
                 LEFT JOIN HRIS_EMPLOYEES ALR_E ON(ALR.R_A_ID=ALR_E.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES ALA_E ON(ALA.R_A_ID=ALA_E.EMPLOYEE_ID)
                 LEFT JOIN hris_rec_app_override RAO ON E.EMPLOYEE_ID = RAO.EMPLOYEE_ID
@@ -513,7 +529,7 @@ INITCAP(L.LEAVE_ENAME)||'('||SLR.SUB_NAME||')' END AS LEAVE_ENAME
                 LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID)) SLR ON (SLR.ID=LA.SUB_REF_ID AND SLR.EMPLOYEE_ID=LA.EMPLOYEE_ID),
                   HRIS_LEAVE_MONTH_CODE MTH,
                   HRIS_EMPLOYEE_LEAVE_ASSIGN ELA
-                WHERE LA.ID = {$id}
+                WHERE LA.ID = :id
                 AND TRUNC(LA.START_DATE) BETWEEN MTH.FROM_DATE AND MTH.TO_DATE
                 AND LA.EMPLOYEE_ID            =ELA.EMPLOYEE_ID
                 AND LA.LEAVE_ID               =ELA.LEAVE_ID
@@ -534,20 +550,24 @@ INITCAP(L.LEAVE_ENAME)||'('||SLR.SUB_NAME||')' END AS LEAVE_ENAME
                   END
                 OR ELA.FISCAL_YEAR_MONTH_NO IS NULL)";
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
         return $result->current();
     }
     
      public function getSameDateApprovedStatus($employeeId, $startDate, $endDate) {
+         $boundedParameter = [];
+         $boundedParameter['startDate'] = $startDate;
+         $boundedParameter['endDate'] = $endDate;
+         $boundedParameter['employeeId'] = $employeeId;
         $sql = "SELECT COUNT(*) as LEAVE_COUNT
   FROM HRIS_EMPLOYEE_LEAVE_REQUEST
-  WHERE (('{$startDate}' BETWEEN START_DATE AND END_DATE)
-  OR ('{$endDate}' BETWEEN START_DATE AND END_DATE))
+  WHERE ((:startDate BETWEEN START_DATE AND END_DATE)
+  OR (:endDate BETWEEN START_DATE AND END_DATE))
   AND STATUS  IN ('AP','CP','CR')
-  AND EMPLOYEE_ID = $employeeId
+  AND EMPLOYEE_ID = :employeeId
                 ";
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
         return $result->current();
     }
 

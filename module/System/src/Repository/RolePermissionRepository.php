@@ -65,7 +65,7 @@ class RolePermissionRepository implements RepositoryInterface {
 
         $select->where([
             "RP.STATUS='E'",
-            "RP.MENU_ID=" . $menuId
+            "RP.MENU_ID"=>$menuId
         ]);
 
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -95,7 +95,7 @@ class RolePermissionRepository implements RepositoryInterface {
         $select->from(['M' => MenuSetup::TABLE_NAME])
                 ->join(['RP' => RolePermission::TABLE_NAME], 'M.' . MenuSetup::MENU_ID . "=RP." . RolePermission::MENU_ID, []);
 
-        $select->where(["RP." . RolePermission::ROLE_ID . "=" . $roleId]);
+        $select->where(["RP." . RolePermission::ROLE_ID => $roleId]);
         $select->where(["RP." . RolePermission::STATUS . "='E'"]);
         $select->where(["M." . MenuSetup::STATUS . "='E'"]);
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -104,11 +104,15 @@ class RolePermissionRepository implements RepositoryInterface {
     }
 
     public function menuRoleAssign($menuId, $roleId, $assignFlag) {
+        $boundedParameter = [];
+        $boundedParameter['menuId']=$menuId;
+        $boundedParameter['roleId']=$roleId;
+        $boundedParameter['assignFlag']=$assignFlag;
         $sql = "BEGIN
-                  HRIS_MENU_ROLE_ASSIGN({$menuId},{$roleId},'{$assignFlag}');
+                  HRIS_MENU_ROLE_ASSIGN(:menuId,:roleId,:assignFlag);
                 END;";
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
         return $result;
     }
 

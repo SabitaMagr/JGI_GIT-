@@ -104,16 +104,18 @@ class UserSetupRepository implements RepositoryInterface {
 
     //to get the employee list for select option
     public function getEmployeeList($employeeId = null) {
+        $boundedParameter = [];
 
         $sql = "SELECT EMPLOYEE_CODE||'-'||FULL_NAME  AS FULL_NAME,EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND EMPLOYEE_ID NOT IN (SELECT EMPLOYEE_ID FROM HRIS_USERS WHERE STATUS='E'AND EMPLOYEE_ID IS NOT NULL)";
 
         if ($employeeId != null) {
+            $boundedParameter['employeeId']=$employeeId;
             $sql = " 
-        SELECT FULL_NAME,EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE STATUS='E' AND EMPLOYEE_ID IN (" . $employeeId . ")";
+        SELECT EMPLOYEE_CODE||'-'||FULL_NAME  AS FULL_NAME,EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE STATUS='E' AND EMPLOYEE_ID IN (:employeeId)";
         }
 
         $statement = $this->adapter->query($sql);
-        $resultset = $statement->execute();
+        $resultset = $statement->execute($boundedParameter);
 
         $entitiesArray = array();
         foreach ($resultset as $result) {
@@ -204,14 +206,17 @@ class UserSetupRepository implements RepositoryInterface {
     }
 
     public function checkUserNameAvailability($userName,$userId) {
-        $sql = "SELECT * FROM HRIS_USERS WHERE LOWER(USER_NAME)=LOWER('{$userName}') ";
+        $boundedParameter = [];
+        $boundedParameter['userName']=$userName;
+        $sql = "SELECT * FROM HRIS_USERS WHERE LOWER(USER_NAME)=LOWER(:userName) ";
         
         if($userId){
-        $sql .= "AND USER_ID!={$userId}";
+            $boundedParameter['userId']=$userId;
+        $sql .= "AND USER_ID!=:userId";
         }
         
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
         return $result->current();
     }
 

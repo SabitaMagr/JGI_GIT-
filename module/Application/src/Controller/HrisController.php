@@ -171,14 +171,14 @@ class HrisController extends AbstractActionController {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-            $fromDate = Helper::getExpressionDate($data['FROM_DATE'])->getExpression();
+            $boundedParameter = [];
+            $boundedParameter['employeeId']=$data['EMPLOYEE_ID'];
+            $boundedParameter['fromDate']=$data['FROM_DATE'];
             $toDateQuery = "";
             if (isset($data['TO_DATE'])) {
-                $toDate = Helper::getExpressionDate($data['TO_DATE'])->getExpression();
-                $toDateQuery = $toDateQuery . ",{$toDate}";
+            $boundedParameter['toDate']=$data['TO_DATE'];
             }
-            $employeeId = $data['EMPLOYEE_ID'];
-            EntityHelper::rawQueryResult($this->adapter, "BEGIN HRIS_REATTENDANCE({$fromDate},{$employeeId}{$toDateQuery}); END;");
+            EntityHelper::rawQueryResult($this->adapter, "BEGIN HRIS_REATTENDANCE(:fromDate,:employeeId,:toDate); END;",$boundedParameter);
             return new JsonModel(['success' => true, 'data' => null, 'message' => "Reattendance successful."]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
@@ -186,23 +186,27 @@ class HrisController extends AbstractActionController {
     }
 
     public function checkUniqueAction() {
-        try {
-            $request = $this->getRequest();
-            $postedData = $request->getPost();
-            $sql = "SELECT {$postedData['columnName']}
-                    FROM {$postedData['tableName']}
-                    WHERE {$postedData['columnName']} = {$postedData['columnValue']}
-                    AND ( {$postedData['columnName']}  !=
-                      (SELECT {$postedData['columnName']}
-                      FROM {$postedData['tableName']}
-                      WHERE {$postedData['pkName']} = {$postedData['pkValue']} ) or 1=1)";
-            $result = EntityHelper::rawQueryResult($this->adapter, $sql);
-            $data['notUnique'] = count($result) > 0;
-            $data['message'] = "Already Reserved";
-            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
-        } catch (Exception $e) {
-            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
-        }
+//        note
+//        dont use this function security Concern
+//        
+//        
+//        try {
+//            $request = $this->getRequest();
+//            $postedData = $request->getPost();
+//            $sql = "SELECT {$postedData['columnName']}
+//                    FROM {$postedData['tableName']}
+//                    WHERE {$postedData['columnName']} = {$postedData['columnValue']}
+//                    AND ( {$postedData['columnName']}  !=
+//                      (SELECT {$postedData['columnName']}
+//                      FROM {$postedData['tableName']}
+//                      WHERE {$postedData['pkName']} = {$postedData['pkValue']} ) or 1=1)";
+//            $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+//            $data['notUnique'] = count($result) > 0;
+//            $data['message'] = "Already Reserved";
+//            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+//        } catch (Exception $e) {
+//            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+//        }
     }
 
     public function getEmpListFromSearchValues($data) {

@@ -223,7 +223,7 @@ class LeaveApply extends HrisController {
             if ($request->isPost()) {
                 $postedData = $request->getPost();
                 $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
-                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId'], $postedData['halfDay'], $postedData['leaveId']);
+                $availableDays = $leaveRequestRepository->fetchAvailableDays($postedData['startDate'], $postedData['endDate'], $postedData['employeeId'], $postedData['halfDay'], $postedData['leaveId']);
                 return new CustomViewModel(['success' => true, 'data' => $availableDays, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
@@ -239,7 +239,7 @@ class LeaveApply extends HrisController {
             if ($request->isPost()) {
                 $postedData = $request->getPost();
                 $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
-                $error = $leaveRequestRepository->validateLeaveRequest(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId']);
+                $error = $leaveRequestRepository->validateLeaveRequest($postedData['startDate'], $postedData['endDate'], $postedData['employeeId']);
                 return new CustomViewModel(['success' => true, 'data' => $error, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");

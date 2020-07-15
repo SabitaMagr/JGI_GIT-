@@ -54,8 +54,10 @@ class AttendanceDeviceController extends HrisController {
             if ($this->form->isValid()) {
                 $attendanceDevice = new AttendanceDevice();
                 $attendanceDevice->exchangeArrayFromForm($this->form->getData());
+                $boundedParameter=[];
+                $boundedParameter['deviceIp']=$attendanceDevice->deviceIp;
                 $sameIp = EntityHelper::rawQueryResult($this->adapter, "SELECT * FROM HRIS_ATTD_DEVICE_MASTER 
-                WHERE DEVICE_IP='{$attendanceDevice->deviceIp}' ")->current();
+                WHERE DEVICE_IP=:deviceIp",$boundedParameter)->current();
                 if (!$sameIp) {
                   
                     $attendanceDevice->deviceId = ((int) Helper::getMaxId($this->adapter, AttendanceDevice::TABLE_NAME, AttendanceDevice::DEVICE_ID)) + 1;
@@ -85,9 +87,12 @@ class AttendanceDeviceController extends HrisController {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $attendanceDevice->exchangeArrayFromForm($this->form->getData());
-
+                
+                $boundedParameter=[];
+                $boundedParameter['deviceIp']=$attendanceDevice->deviceIp;
+                $boundedParameter['id']=$id;
                 $sameIp = EntityHelper::rawQueryResult($this->adapter, "SELECT * FROM HRIS_ATTD_DEVICE_MASTER 
-                WHERE DEVICE_IP='{$attendanceDevice->deviceIp}' AND DEVICE_ID NOT IN ({$id}) ")->current();
+                WHERE DEVICE_IP=:deviceIp AND DEVICE_ID NOT IN (:id) ",$boundedParameter)->current();
                 if (!$sameIp) {
                     $this->repository->edit($attendanceDevice, $id);
                     $this->flashmessenger()->addMessage("Attendance Device Successfully Updated!!!");
@@ -118,7 +123,7 @@ class AttendanceDeviceController extends HrisController {
         $branchSE = $this->form->get('branchId');
         $branchSE->setValueOptions($branchList);
         
-        $employeeList = EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::EMPLOYEE_ID ,   HrEmployees::FULL_NAME], ["STATUS" => "E"], HrEmployees::FULL_NAME, "ASC", null, true, TRUE);
+        $employeeList = EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::EMPLOYEE_CODE ,   HrEmployees::FULL_NAME], ["STATUS" => "E"], HrEmployees::FULL_NAME, "ASC", null, true, TRUE);
         $employeeSE = $this->form->get('branchManager');
         $employeeSE->setValueOptions($employeeList);
     }

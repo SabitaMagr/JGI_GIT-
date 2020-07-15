@@ -342,7 +342,7 @@ class Leave extends AbstractActionController {
 
     private function calculateDays($data) {
         $request = new LeaveRequestRepository($this->adapter);
-        return $request->fetchAvailableDays(Helper::getExpressionDate($data->START_DATE)->getExpression(), Helper::getExpressionDate($data->END_DATE)->getExpression(), $data->EMPLOYEE_ID,$data->HALF_DAY,$data->LEAVE_ID);
+        return $request->fetchAvailableDays($data->START_DATE, $data->END_DATE, $data->EMPLOYEE_ID,$data->HALF_DAY,$data->LEAVE_ID);
     }
     
     private function approvalGet() {
@@ -469,7 +469,7 @@ class Leave extends AbstractActionController {
     
      private function validateDays($data) {
         $request = new LeaveRequestRepository($this->adapter);
-        return $request->validateLeaveRequest(Helper::getExpressionDate($data->START_DATE)->getExpression(), Helper::getExpressionDate($data->END_DATE)->getExpression(), $data->EMPLOYEE_ID);
+        return $request->validateLeaveRequest($data->START_DATE, $data->END_DATE, $data->EMPLOYEE_ID);
     }
 
 }

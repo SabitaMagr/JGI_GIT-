@@ -90,10 +90,14 @@ class LeaveRequestRepository implements RepositoryInterface {
 
     //to get the leave detail based on assigned employee id
     public function getLeaveDetail($employeeId, $leaveId, $startDate = null) {
-        $date = "TRUNC(SYSDATE)";
-        if ($startDate != null) {
-            $date = "TO_DATE('{$startDate}','DD-MON-YYYY')";
-        }
+        $boundedParameter = [];
+//        $date = "TRUNC(SYSDATE)";
+//        if ($startDate != null) {
+//            $boundedParameter['startDate']=$startDate;
+//            $date = "TO_DATE(:startDate,'DD-MON-YYYY')";
+//        }
+        $boundedParameter['leaveId']=$leaveId;
+        $boundedParameter['employeeId']=$employeeId;
         $sql = "SELECT LA.EMPLOYEE_ID       AS EMPLOYEE_ID,
                   LA.BALANCE - 
                 (select 
@@ -106,7 +110,7 @@ class LeaveRequestRepository implements RepositoryInterface {
                 end
                 ),0)
                 from hris_employee_leave_request where status in ('RQ','RC') 
-                and  leave_id={$leaveId} and employee_id={$employeeId})                  AS BALANCE,
+                and  leave_id=:leaveId and employee_id=:employeeId)                  AS BALANCE,
                   LA.FISCAL_YEAR            AS FISCAL_YEAR,
                   LA.FISCAL_YEAR_MONTH_NO   AS FISCAL_YEAR_MONTH_NO,
                   LA.LEAVE_ID               AS LEAVE_ID,
@@ -132,14 +136,14 @@ class LeaveRequestRepository implements RepositoryInterface {
                 THEN 'N'
                 ELSE 'Y' 
                 END AS BYPASS FROM HRIS_SUB_MAN_BYPASS 
-                WHERE LEAVE_ID={$leaveId} AND EMPLOYEE_ID={$employeeId}
+                WHERE LEAVE_ID=:leaveId AND EMPLOYEE_ID=:employeeId
                 ) LBP ON (1=1)
                 LEFT JOIN (SELECT * FROM HRIS_LEAVE_YEARS WHERE 
                  TRUNC(SYSDATE)  BETWEEN START_DATE AND END_DATE) LY  
                  ON(1=1)
                 WHERE L.STATUS               ='E'
-                AND LA.EMPLOYEE_ID           ={$employeeId}
-                AND L.LEAVE_ID               ={$leaveId}
+                AND LA.EMPLOYEE_ID           =:employeeId
+                AND L.LEAVE_ID               =:leaveId
                 AND (LA.FISCAL_YEAR_MONTH_NO =
                   CASE
                     WHEN (L.IS_MONTHLY='Y')
@@ -160,7 +164,7 @@ class LeaveRequestRepository implements RepositoryInterface {
                 OR LA.FISCAL_YEAR_MONTH_NO IS NULL ) 
                 ";
         $statement = $this->adapter->query($sql);
-        return $statement->execute()->current();
+        return $statement->execute($boundedParameter)->current();
     }
 
     //to get the leave list based on assigned employee id for select option
@@ -175,7 +179,7 @@ class LeaveRequestRepository implements RepositoryInterface {
                 ->join(['L' => 'HRIS_LEAVE_MASTER_SETUP'], "L.LEAVE_ID=LA.LEAVE_ID", ['LEAVE_CODE', 'LEAVE_ENAME' => new Expression("INITCAP(L.LEAVE_ENAME)")]);
         $select->where([
             "L.STATUS='E'",
-            "LA.EMPLOYEE_ID=" . $employeeId,
+            "LA.EMPLOYEE_ID"=>$employeeId,
             $selfRequestCondition
         ]);
 
@@ -212,6 +216,8 @@ class LeaveRequestRepository implements RepositoryInterface {
             $this->tableGateway->update([LeaveApply::STATUS => 'C', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
         } else {
             $this->tableGateway->update([LeaveApply::STATUS => 'CP', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
+            $boundedParameter = [];
+            $boundedParameter['id']=$id;
             EntityHelper::rawQueryResult($this->adapter, "
                    DECLARE
                       V_ID HRIS_EMPLOYEE_LEAVE_REQUEST.ID%TYPE;
@@ -231,12 +237,12 @@ class LeaveRequestRepository implements RepositoryInterface {
                         V_END_DATE,
                         V_EMPLOYEE_ID
                       FROM HRIS_EMPLOYEE_LEAVE_REQUEST
-                      WHERE ID                                    = {$id};
+                      WHERE ID                                    = :id;
                       IF(V_STATUS IN ('AP','C') AND V_START_DATE <=TRUNC(SYSDATE)) THEN
                         HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
                       END IF;
                     END;
-    ");
+    ",$boundedParameter);
         }
     }
 
@@ -323,9 +329,11 @@ JOIN Hris_Employee_Work_Holiday WH ON (LA.WOH_ID=WH.ID)
 LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID))"], "SLR.ID=LA.SUB_REF_ID AND SLR.EMPLOYEE_ID=LA.EMPLOYEE_ID", [], "left");
         
         if($leaveYear!=null){
-        $select->where([
-            "( ( L.STATUS ='E' OR L.OLD_LEAVE='Y' ) AND L.LEAVE_YEAR= {$leaveYear} )"
-        ]);
+            $select->where([
+                "(( L.STATUS ='E' OR L.OLD_LEAVE='Y' )",
+                "L.LEAVE_YEAR" => $leaveYear,
+                "1=1)"
+            ]);
         }else{
         $select->where([
             "L.STATUS='E'"
@@ -333,7 +341,7 @@ LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID))"], "SLR.I
         }
         
         $select->where([
-            "E.EMPLOYEE_ID=" . $employeeId
+            "E.EMPLOYEE_ID" =>  $employeeId
         ]);
 
         if ($leaveId != null && $leaveId != -1) {
@@ -354,10 +362,10 @@ LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID))"], "SLR.I
         }
 
         if ($fromDate != null) {
-            $select->where("LA.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')");
+            $select->where->greaterThanOrEqualTo("LA.START_DATE",$fromDate);
         }
         if ($toDate != null) {
-            $select->where(["LA.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')"]);
+            $select->where->lessThanOrEqualTo("LA.END_DATE",$toDate);
         }
         $select->order("LA.REQUESTED_DT DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -366,12 +374,23 @@ LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID))"], "SLR.I
     }
 
     public function fetchAvailableDays($fromDate, $toDate, $employeeId, $halfDay, $leaveId) {
-        $rawResult = EntityHelper::rawQueryResult($this->adapter, "SELECT HRIS_AVAILABLE_LEAVE_DAYS({$fromDate},{$toDate},{$employeeId},'{$leaveId}','{$halfDay}') AS AVAILABLE_DAYS FROM DUAL");
+        $boundedParameter = [];
+        $boundedParameter['fromDate']=$fromDate;
+        $boundedParameter['toDate']=$toDate;
+        $boundedParameter['employeeId']=$employeeId;
+        $boundedParameter['leaveId']=$leaveId;
+        $boundedParameter['halfDay']=$halfDay;
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, "SELECT HRIS_AVAILABLE_LEAVE_DAYS(:fromDate,:toDate,:employeeId,:leaveId,:halfDay) AS AVAILABLE_DAYS FROM DUAL",$boundedParameter);
         return $rawResult->current();
+        
     }
 
     public function validateLeaveRequest($fromDate, $toDate, $employeeId) {
-        $rawResult = EntityHelper::rawQueryResult($this->adapter, "SELECT HRIS_VALIDATE_LEAVE_REQUEST({$fromDate},{$toDate},{$employeeId}) AS ERROR FROM DUAL");
+        $boundedParameter = [];
+        $boundedParameter['fromDate']=$fromDate;
+        $boundedParameter['toDate']=$toDate;
+        $boundedParameter['employeeId']=$employeeId;
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, "SELECT HRIS_VALIDATE_LEAVE_REQUEST(:fromDate,:toDate,:employeeId) AS ERROR FROM DUAL",$boundedParameter);
         return $rawResult->current();
     }
 
@@ -385,6 +404,8 @@ LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID))"], "SLR.I
         return $result;
     }
     public function getLeaveFrontOrBack($id) {
+        $boundedParameter = [];
+        $boundedParameter['id']=$id;
         $sql = "SELECT START_DATE,TRUNC(SYSDATE) AS CURDATE,
             CASE WHEN
             STATUS IN ('RQ','RC') THEN 'NA'
@@ -399,12 +420,16 @@ LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID))"], "SLR.I
                 ELSE
                 'BD'
                 END AS DATE_STATUS
-                FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE ID={$id}";
+                FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE ID=:id";
         $statement = $this->adapter->query($sql);
-        return $statement->execute()->current();
+        return $statement->execute($boundedParameter)->current();
     }
 
     public function getSubstituteList($leaveId, $employeeId,$maxSubDays=500) {
+        $boundedParameter = [];
+        $boundedParameter['leaveId']=$leaveId;
+        $boundedParameter['employeeId']=$employeeId;
+        $boundedParameter['maxSubDays']=$maxSubDays;
         $sql = " 
         SELECT 
 sl.*
@@ -417,16 +442,16 @@ WOD_ID AS ID
 ,NO_OF_DAYS
 ,WD.FROM_DATE||' - '||WD.TO_DATE AS SUB_NAME
 ,WD.TO_DATE AS SUB_END_DATE
-,WD.TO_DATE+{$maxSubDays} AS SUB_VALIDATE_DAYS
+,WD.TO_DATE+:maxSubDays AS SUB_VALIDATE_DAYS
 --,WD.* 
 from 
 HRIS_EMPLOYEE_LEAVE_ADDITION LA
 JOIN Hris_Employee_Work_Dayoff WD ON (LA.WOD_ID=WD.ID) 
 where 
-LA.employee_id={$employeeId}
-and LA.leave_id={$leaveId}
+LA.employee_id=:employeeId
+and LA.leave_id=:leaveId
 AND WD.STATUS='AP'
---AND WD.TO_DATE>TRUNC(SYSDATE-{$maxSubDays})
+--AND WD.TO_DATE>TRUNC(SYSDATE-:maxSubDays)
 UNION
 select 
 WOH_ID AS ID
@@ -434,16 +459,16 @@ WOH_ID AS ID
 ,NO_OF_DAYS
 ,WH.FROM_DATE||' - '||WH.TO_DATE AS SUB_NAME
 ,WH.TO_DATE AS SUB_END_DATE
-,WH.TO_DATE+{$maxSubDays} AS SUB_VALIDATE_DAYS
+,WH.TO_DATE+:maxSubDays AS SUB_VALIDATE_DAYS
 --,WH.* 
 from 
 HRIS_EMPLOYEE_LEAVE_ADDITION LA
 JOIN Hris_Employee_Work_Holiday WH ON (LA.WOH_ID=WH.ID) 
 where 
-LA.employee_id={$employeeId}
-and LA.leave_id={$leaveId}
+LA.employee_id=:employeeId
+and LA.leave_id=:leaveId
 AND WH.STATUS='AP'
---AND WH.TO_DATE>TRUNC(SYSDATE-{$maxSubDays})
+--AND WH.TO_DATE>TRUNC(SYSDATE-:maxSubDays)
 ) sl
 left join (
 SELECT Sub_Ref_Id,
@@ -454,15 +479,15 @@ THEN NO_OF_DAYS/2
 ELSE NO_OF_DAYS
 END) AS TAKEN_DAYS
 FROM HRIS_EMPLOYEE_LEAVE_REQUEST
-WHERE EMPLOYEE_ID={$employeeId}
-AND LEAVE_ID={$leaveId}
+WHERE EMPLOYEE_ID=:employeeId
+AND LEAVE_ID=:leaveId
 AND STATUS IN ('AP','RQ','RC','CP','CR')
 and Sub_Ref_Id is not null
  group by Sub_Ref_Id) lt on (lt.Sub_Ref_Id=sl.id)
             
             ";
         $statement = $this->adapter->query($sql);
-        $result=$statement->execute();
+        $result=$statement->execute($boundedParameter);
         return Helper::extractDbData($result);
     }
     

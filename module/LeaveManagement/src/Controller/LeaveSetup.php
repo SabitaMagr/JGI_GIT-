@@ -62,7 +62,7 @@ class LeaveSetup extends HrisController {
                     'form' => $this->form,
                     'customRenderer' => Helper::renderCustomView(),
                     'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", NULL, TRUE, TRUE),
-                    'fiscalYears' => EntityHelper::getTableKVList($this->adapter, "HRIS_LEAVE_YEARS", "LEAVE_YEAR_ID", ["LEAVE_YEAR_NAME"], null),
+                    'fiscalYears' => EntityHelper::getTableKVList($this->adapter, "HRIS_LEAVE_YEARS", "LEAVE_YEAR_ID", ["LEAVE_YEAR_NAME"], null,null,null,"LEAVE_YEAR_ID",'DESC'),
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                         ]
                 )
