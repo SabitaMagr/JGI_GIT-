@@ -84,9 +84,9 @@ class EmployeeRelationRepo implements RepositoryInterface {
             new Expression("R.RELATION_NAME AS RELATION_NAME"),
             new Expression("ER.STATUS AS STATUS")],TRUE);
         $select->from(['ER'=> EmployeeRelation::TABLE_NAME]);
-        $select->join(['R'=> "Hris_Relations"], "ER.RELATION_ID=R.RELATION_ID");
-        $select->where(["ER." . EmployeeRelation::EMPLOYEE_ID . "=$employeeId"]);
-        $select->where(["ER." . EmployeeRelation::STATUS . "='E'"]);
+        $select->join(['R'=> "HRIS_RELATIONS"], "ER.RELATION_ID=R.RELATION_ID");
+        $select->where(["ER." . EmployeeRelation::EMPLOYEE_ID => $employeeId]);
+        $select->where(["ER." . EmployeeRelation::STATUS =>'E']);
         $select->order("ER.".EmployeeRelation::E_R_ID);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

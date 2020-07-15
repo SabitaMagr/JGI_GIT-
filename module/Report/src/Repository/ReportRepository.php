@@ -835,26 +835,32 @@ EOT;
     }
 
     public function reportWithOT($data) {
+        $boundedParams = [];
         $fromCondition = "";
         $toCondition = "";
 
         $otFromCondition = "";
         $otToCondition = "";
 
-        $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], $data['genderId'], $data['locationId'], $data['functionalTypeId']);
+        $condition = EntityHelper::getSearchConditonBounded($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], $data['genderId'], $data['locationId'], $data['functionalTypeId']);
+        $boundedParams=array_merge($boundedParams,$condition['parameter']);
 
         if (isset($data['fromDate']) && $data['fromDate'] != null && $data['fromDate'] != -1) {
-            $fromDate = Helper::getExpressionDate($data['fromDate']);
-            $fromCondition = "AND A.ATTENDANCE_DT >= {$fromDate->getExpression()}";
-            $otFromCondition = "AND OVERTIME_DATE >= {$fromDate->getExpression()} ";
+            $fromDate = $data['fromDate'];
+            $fromCondition = "AND A.ATTENDANCE_DT >= :fromDate";
+            $otFromCondition = "AND OVERTIME_DATE >= :fromDate ";
+            $boundedParams['fromDate'] = $fromDate;
         }
         if (isset($data['toDate']) && $data['toDate'] != null && $data['toDate'] != -1) {
-            $toDate = Helper::getExpressionDate($data['toDate']);
-            $toCondition = "AND A.ATTENDANCE_DT <= {$toDate->getExpression()}";
-            $otToCondition = "AND OVERTIME_DATE <= {$toDate->getExpression()} ";
+            $toDate = $data['toDate'];
+            $toCondition = "AND A.ATTENDANCE_DT <= :toDate";
+            $otToCondition = "AND OVERTIME_DATE <= :toDate ";
+            $boundedParams['toDate'] = $toDate;
+
         }
 
         $monthId = $data['monthId'];
+        $boundedParams['monthId'] = $monthId;
 
         $sql = <<<EOT
             SELECT C.COMPANY_NAME,
@@ -1006,14 +1012,14 @@ GROUP BY
             LEFT JOIN HRIS_DEPARTMENTS D
             ON (E.DEPARTMENT_ID= D.DEPARTMENT_ID)
             LEFT JOIN HRIS_OVERTIME_A_D AD
-            ON (A.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = {$monthId})
-            WHERE 1            =1 {$condition}
+            ON (A.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = :monthId)
+            WHERE 1            =1 {$condition['sql']}
             ORDER BY C.COMPANY_NAME,
               D.DEPARTMENT_NAME,
               E.FULL_NAME 
 EOT;
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return Helper::extractDbData($result);
     }
 

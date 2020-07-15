@@ -58,7 +58,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
     }
 
     public function filterRecord($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate = null, $toDate = null, $status = null, $presentStatus = null, $min = null, $max = null, $presentType = null) {
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId,null, $functionalTypeId);
+        $boundedParams = [];
+        $searchConditon = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId,null, $functionalTypeId);
+        $boundedParams = array_merge($boundedParams, $searchConditon['parameter']);
         $fromDateCondition = "";
         $toDateCondition = "";
         $statusCondition = '';
@@ -66,10 +68,12 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $presentTypeCondition = "";
         $rowNums = '';
         if ($fromDate != null) {
-            $fromDateCondition = " AND A.ATTENDANCE_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
+            $fromDateCondition = " AND A.ATTENDANCE_DT >= :fromDate";
+            $boundedParams['fromDate'] = $fromDate;
         }
         if ($toDate != null) {
-            $toDateCondition = " AND A.ATTENDANCE_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY') ";
+            $toDateCondition = " AND A.ATTENDANCE_DT <= :toDate";
+            $boundedParams['toDate'] = $toDate;
         }
 
         $statusMap = [
@@ -269,7 +273,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 ON (OM.ATTENDANCE_DATE=A.ATTENDANCE_DT AND OM.EMPLOYEE_ID=A.EMPLOYEE_ID)
                 LEFT JOIN HRIS_PROVINCES BP on (BP.PROVINCE_ID=BR.PROVINCE_ID)
                 WHERE 1=1 {$presentTypeCondition} 
-                {$searchConditon}
+                {$searchConditon['sql']}
                 {$fromDateCondition}
                 {$toDateCondition}
                 {$statusCondition}
@@ -279,7 +283,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 {$rowNums}
                 ";
 
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute($boundedParams);
+        return Helper::extractDbData($result);
     }
 
 
