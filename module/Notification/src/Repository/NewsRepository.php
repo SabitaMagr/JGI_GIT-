@@ -177,7 +177,9 @@ class NewsRepository extends HrisRepository implements RepositoryInterface {
             $item['NEWS_ID'] = $newsId;
             $newsAssignGateway->insert($item);
         }
-        EntityHelper::rawQueryResult($this->adapter, "BEGIN HRIS_NEWS_TO_PROC({$newsId}); END;");
+        $boundedParameter = [];
+        $boundedParameter['newsId'] = $newsId;
+        EntityHelper::rawQueryResult($this->adapter, "BEGIN HRIS_NEWS_TO_PROC(:newsId); END;",$boundedParameter);
     }
 
     public function getAssignedToList(int $newsId) {
@@ -242,14 +244,17 @@ class NewsRepository extends HrisRepository implements RepositoryInterface {
             $id .= ($counter == $noOfUploads) ? $data : $data . ',';
             $counter++;
         }
-        $updateSql = ($noOfUploads == 0) ? "" : "UPDATE HRIS_NEWS_FILE SET NEWS_ID={$newsId} WHERE NEWS_FILE_ID IN ({$id});";
+        $boundedParameter = [];
+        $boundedParameter['newsId'] = $newsId;
+        $boundedParameter['id'] = $id;
+        $updateSql = ($noOfUploads == 0) ? "" : "UPDATE HRIS_NEWS_FILE SET NEWS_ID=:newsId WHERE NEWS_FILE_ID IN (:id);";
 
         $sql = "BEGIN
-            UPDATE HRIS_NEWS_FILE SET NEWS_ID=NULL WHERE NEWS_ID={$newsId};
+            UPDATE HRIS_NEWS_FILE SET NEWS_ID=NULL WHERE NEWS_ID=:newsId;
             {$updateSql}
             END;";
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
     }
 
 }

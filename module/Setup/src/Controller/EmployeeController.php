@@ -3,6 +3,7 @@ namespace Setup\Controller;
 
 use Application\Controller\HrisController;
 use Application\Factory\ConfigInterface;
+use Application\Helper\EntityHelper;
 use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\Helper;
 use Application\Model\HrisQuery;
@@ -11,6 +12,9 @@ use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\ShiftAssignRepository;
 use Exception;
 use LeaveManagement\Model\LeaveMaster;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Setup\Form\HrEmployeesFormTabEight;
 use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
@@ -24,12 +28,22 @@ use Setup\Model\AcademicCourse;
 use Setup\Model\AcademicDegree;
 use Setup\Model\AcademicProgram;
 use Setup\Model\AcademicUniversity;
+use Setup\Model\Branch;
+use Setup\Model\Company;
+use Setup\Model\Department;
+use Setup\Model\Designation;
 use Setup\Model\EmployeeExperience;
 use Setup\Model\EmployeeFile as EmployeeFileModel;
 use Setup\Model\EmployeeQualification;
 use Setup\Model\EmployeeTraining;
+use Setup\Model\FunctionalTypes;
+use Setup\Model\Gender;
 use Setup\Model\HrEmployees;
+use Setup\Model\Location;
+use Setup\Model\Position;
 use Setup\Model\RecommendApprove;
+use Setup\Model\ServiceEventType;
+use Setup\Model\ServiceType;
 use Setup\Repository\AcademicCourseRepository;
 use Setup\Repository\AcademicDegreeRepository;
 use Setup\Repository\AcademicProgramRepository;
@@ -43,26 +57,9 @@ use Setup\Repository\JobHistoryRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\JsonModel;
-use Zend\Db\Sql\Expression;
-use Setup\Model\Branch;
-use Setup\Model\Company;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\FunctionalTypes;
-use Setup\Model\Gender;
-use Setup\Model\Location;
-use Setup\Model\Position;
-use Setup\Model\ServiceEventType;
-use Setup\Model\ServiceType;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xls;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Writer\IWriter;
-use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class EmployeeController extends HrisController {
 
@@ -1422,4 +1419,29 @@ class EmployeeController extends HrisController {
         $writer->save(Helper::UPLOAD_DIR . "/Employees_List.xlsx");
         return new JsonModel(['success' => true, 'message' => null]);
     }
+    
+    public function checkUniqueAction() {
+        try {
+            $request = $this->getRequest();
+            $postedData = $request->getPost();
+            $boundedParameter = [];
+            $boundedParameter['colVal']=$postedData['columnValue'];
+            $boundedParameter['pkValue']=$postedData['pkValue'];
+            $sql = "SELECT ID_THUMB_ID
+                    FROM HRIS_EMPLOYEES
+                    WHERE ID_THUMB_ID = :colVal
+                    AND ( ID_THUMB_ID  != 
+                      (SELECT ID_THUMB_ID
+                      FROM HRIS_EMPLOYEES
+                      WHERE EMPLOYEE_ID = :pkValue ) and 1=1)";
+            $result = EntityHelper::rawQueryResult($this->adapter, $sql,$boundedParameter);
+            $data['notUnique'] = count($result) > 0;
+            $data['message'] = "Already Reserved";
+            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+    
+    
 }
