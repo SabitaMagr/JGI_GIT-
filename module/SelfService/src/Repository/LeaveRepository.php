@@ -54,9 +54,13 @@ class LeaveRepository extends HrisRepository {
                 FROM HRIS_EMPLOYEE_LEAVE_ASSIGN LA
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS
                 ON (LA.LEAVE_ID     =LMS.LEAVE_ID)
-                WHERE LA.EMPLOYEE_ID={$employeeId} AND LMS.STATUS ='E' AND LMS.IS_MONTHLY = 'N' ORDER BY LMS.LEAVE_ENAME ASC)";
+                WHERE LA.EMPLOYEE_ID=:employeeId AND LMS.STATUS ='E' AND LMS.IS_MONTHLY = 'N' ORDER BY LMS.LEAVE_ENAME ASC)";
+        
+        $boundedParameter = [];
+        $boundedParameter['employeeId'] = $employeeId;
+        
         $statement = $this->adapter->query($sql);
-        return $statement->execute();
+        return $statement->execute($boundedParameter);
     }
 
     function monthlyLeaveStatus($employeeId, $fiscalYearMonthNo) {
@@ -125,7 +129,9 @@ class LeaveRepository extends HrisRepository {
         $boundedParameter = [];
         $boundedParameter['employeeId'] = $employeeId;
         $boundedParameter['fiscalYearMonthNo'] = $fiscalYearMonthNo;
-        return $this->rawQuery($sql, $boundedParameter);
+        
+        $statement = $this->adapter->query($sql);
+        return $statement->execute($boundedParameter);
     }
 
 }

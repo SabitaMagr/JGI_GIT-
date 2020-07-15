@@ -10,6 +10,7 @@ use Setup\Model\HrEmployees;
 use System\Repository\SystemUtilityRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\View\Model\JsonModel;
 
 class SystemUtility extends HrisController {
@@ -24,7 +25,7 @@ class SystemUtility extends HrisController {
 
     public function reAttendanceAction() {
         return $this->stickFlashMessagesTo([
-                    'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"]),
+                    'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [new Expression(HrEmployees::EMPLOYEE_ID." AS ".HrEmployees::EMPLOYEE_ID),new Expression("EMPLOYEE_CODE||'-'||FULL_NAME AS FULL_NAME")], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"]),
                     'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
@@ -108,6 +109,8 @@ class SystemUtility extends HrisController {
         $request = $this->getRequest();
 
         if ($request->isPost()) {
+            echo 'Not available due to security reasons';
+            die();
             try {
                 $data = $_POST['query'];
                 $queryResult = $this->repository->runQuery($data);

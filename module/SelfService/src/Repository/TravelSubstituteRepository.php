@@ -80,7 +80,7 @@ class TravelSubstituteRepository implements RepositoryInterface{
             ->join(['TS'=>"HRIS_TRAVEL_SUBSTITUTE"],"TS.TRAVEL_ID=TR.TRAVEL_ID",['SUB_EMPLOYEE_ID'=>'EMPLOYEE_ID','SUB_APPROVED_DATE'=>new Expression("INITCAP(TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY'))"),'SUB_REMARKS'=>"REMARKS",'SUB_APPROVED_FLAG'=>"APPROVED_FLAG"],"left");
 
         $select->where([
-            "TS.EMPLOYEE_ID=".$employeeId
+            "TS.EMPLOYEE_ID" => $employeeId
         ]);
 
         $statement = $sql->prepareStatementForSqlObject($select);

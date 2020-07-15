@@ -110,13 +110,16 @@ class MenuSetupRepository implements RepositoryInterface {
     }
 
     public function getHierarchicalMenuWithRoleId($parent_menu = null) {
+        $boundedParameter = [];
+        $boundedParameter['roleId']=$this->roleId;
         $where = "";
         if ($parent_menu == null) {
             $where .= " AND PARENT_MENU IS NULL";
         } else {
-            $where .= " AND PARENT_MENU=" . $parent_menu;
+            $boundedParameter['parentMenu']=$parent_menu;
+            $where .= " AND PARENT_MENU=:parentMenu ";
         }
-        $where .= " AND HR.ROLE_ID = " . $this->roleId;
+        $where .= " AND HR.ROLE_ID = :roleId " ;
 
         $sql = "SELECT IS_VISIBLE,MENU_NAME,HM.MENU_ID,PARENT_MENU,ROUTE,ACTION,ICON_CLASS
 			             FROM HRIS_MENUS HM, HRIS_ROLE_PERMISSIONS HR
@@ -127,7 +130,7 @@ class MenuSetupRepository implements RepositoryInterface {
 			ORDER BY HM.MENU_INDEX ASC";
 
         $statement = $this->adapter->query($sql);
-        $resultset = $statement->execute();
+        $resultset = $statement->execute($boundedParameter);
         return $resultset;
     }
 

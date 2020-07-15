@@ -6,13 +6,16 @@ use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Repository\TravelRequestRepository;
 use Setup\Model\HrEmployees;
 use Travel\Form\TravelItnaryForm;
 use Travel\Model\ItnaryDetails;
 use Travel\Model\ItnaryMembers;
 use Travel\Model\TravelItnary;
-use Travel\Model\TravelRequest;
+use SelfService\Model\TravelRequest;
+//use Travel\Model\TravelRequest;
 use Travel\Repository\TravelItnaryRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -60,6 +63,14 @@ class TravelItnaryRequest extends HrisController {
         ]);
     }
 
+    public function deleteAction(){
+        $id = (int) $this->params()->fromRoute('id');
+        if ($id === 0) {
+            return $this->redirect()->toRoute("travelItnary");
+        }
+        $this->repository->cancel($id, $this->employeeId);
+        return $this->redirect()->toRoute("travelItnary");
+    }
 
     public function addAction() {
 //        $this->initializeForm(TravelRequestForm::class);
@@ -106,15 +117,23 @@ class TravelItnaryRequest extends HrisController {
             $travelRequestRepo=new TravelRequestRepository($this->adapter);
              
             foreach($postData['employeeId'] as $empList){
-             $itnaryMemberModel->employeeId=$empList;
-                $this->repository->addItnaryMembers($itnaryMemberModel);
-                
-//             for tavel request
-            $travelRequestModel->travelId = ((int) Helper::getMaxId($this->adapter, TravelRequest::TABLE_NAME, TravelRequest::TRAVEL_ID)) + 1; 
-            $travelRequestModel->travelCode = $model->itnaryCode;
-            $travelRequestModel->employeeId= $empList;
-            
-            $travelRequestRepo->add($travelRequestModel);
+                $itnaryMemberModel->employeeId=$empList;
+                    $this->repository->addItnaryMembers($itnaryMemberModel);
+                    
+    //             for tavel request
+                $travelRequestModel->travelId = ((int) Helper::getMaxId($this->adapter, TravelRequest::TABLE_NAME, TravelRequest::TRAVEL_ID)) + 1; 
+                $travelRequestModel->travelCode = $model->itnaryCode;
+                $travelRequestModel->employeeId= $empList;
+                if($empList != $this->employeeId){
+                     $travelRequestModel->requestedAmount = 0;
+                }
+                $travelRequestRepo->add($travelRequestModel);
+                try {
+                    HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $travelRequestModel, $this->adapter, $this);
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
+                $travelRequestModel->requestedAmount = $model->floatMoney;
             }
             
 //            to add itnary details
@@ -227,7 +246,7 @@ class TravelItnaryRequest extends HrisController {
             return $this->redirect()->toRoute("travelItnary");
         }
 
-        $itnaryDtl = $this->repository->fetchItnary($id);
+        $itnaryDtl = $this->repository->fetchItnary($id, $this->employeeId);
         $itnaryMembersDtl = $this->repository->fetchItnaryMembers($id);
         $itnaryTravelDtl = $this->repository->fetchItnaryDetails($id);
         

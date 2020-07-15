@@ -138,7 +138,8 @@ class TravelStatus extends HrisController {
                     'advanceAmount' => $advanceAmount,
                     'itnaryId' => $detail['ITNARY_ID'],
                     'travelItnaryDet' => $travelItnaryDet,
-                    'travelItnaryMemDet' => $travelItnaryMemDet
+                    'travelItnaryMemDet' => $travelItnaryMemDet,
+                    'acl' => $this->acl
                         //'files' => $fileDetails
         ]);
     }

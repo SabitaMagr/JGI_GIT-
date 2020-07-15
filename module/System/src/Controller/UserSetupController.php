@@ -58,7 +58,6 @@ class UserSetupController extends HrisController {
         }
         return $this->stickFlashMessagesTo([
                     'form' => $this->form,
-                    'userStatus' => $detail['STATUS'],
                     'employeeList' => $this->repository->getEmployeeList(),
                     'roleList' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ROLES", "ROLE_ID", ["ROLE_NAME"], ["STATUS" => "E"], "ROLE_NAME", "ASC", null, false, true),
                     'customRenderer' => Helper::renderCustomView(),

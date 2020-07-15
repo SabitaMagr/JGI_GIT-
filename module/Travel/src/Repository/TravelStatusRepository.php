@@ -32,19 +32,23 @@ class TravelStatusRepository extends HrisRepository {
                 $csv = "";
                 for ($i = 0; $i < sizeof($search['status']); $i++) {
                     if ($i == 0) {
-                        $csv = "'{$search['status'][$i]}'";
+                        $csv = ":status".$i;
+                        $boundedParameter["status".$i] = $search['status'][$i];
                     } else {
-                        $csv .= ",'{$search['status'][$i]}'";
+                        $csv .= ",:status".$i;
+                        $boundedParameter["status".$i] = $search['status'][$i];
                     }
                 }
                 $condition['sql'] .= "AND TR.STATUS IN ({$csv})";
             } else {
-                $condition['sql'] .= "AND TR.STATUS IN ('{$search['status']}')";
+                $condition['sql'] .= "AND TR.STATUS IN (:status)";
+                $boundedParameter['status'] = $search['status'];
             }
         }
         
         if (isset($search['itnaryId']) && $search['itnaryId'] != null && $search['itnaryId'] != -1) {
-            $condition['sql'] .= "AND TR.ITNARY_ID IN ({$search['itnaryId']})";
+            $condition['sql'] .= "AND TR.ITNARY_ID IN (:itnaryId)";
+            $boundedParameter['itnaryId'] = $search['itnaryId'];
         }
  
         $sql = "SELECT TR.TRAVEL_ID                        AS TRAVEL_ID,

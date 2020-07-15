@@ -114,20 +114,25 @@ class TravelItnaryRepository extends HrisRepository implements RepositoryInterfa
         $condition = "";
         if (isset($search['fromDate']) && $search['fromDate'] != null) {
             $condition .= " AND TI.FROM_DT>=TO_DATE(:fromDate,'DD-MM-YYYY') ";
-            $boundedParameter['fromDate'] = $fromDate;
+            $boundedParameter['fromDate'] = $search['fromDate'];
         }
         if (isset($search['fromDate']) && $search['toDate'] != null) {
             $condition .= " AND TI.TO_DT<=TO_DATE(:toDate,'DD-MM-YYYY') ";
-            $boundedParameter['toDate'] = $toDate;
+            $boundedParameter['toDate'] = $search['toDate'];
         }
-        $boundedParameter['employeeId'] = $employeeId;
+        $boundedParameter['employeeId'] = $search['employeeId'];
         
         $sql="
             select 
+            LEAVE_STATUS_DESC(tr.status) as TRAVEL_STATUS,
+            (case when tr.status in('C', 'R') then 'N' else 'Y' end) ALLOW_DELETE,
+            tr.REQUESTED_AMOUNT,
 TI.*,IMD.EMPLOYEE_ID_LIST,IMD.FULL_NAME_LIST
 ,TT.TRANSPORT_NAME AS TRANSPORT_TYPE_FULL_FORM
 from HRIS_TRAVEL_ITNARY TI
 LEFT JOIN HRIS_TRANSPORT_TYPES TT ON (TI.TRANSPORT_TYPE=TT.TRANSPORT_CODE)
+LEFT JOIN hris_employee_travel_request tr on (tr.employee_id = :employeeId
+    and tr.itnary_id = ti.itnary_id)
 LEFT JOIN (
 SELECT 
 IM.ITNARY_ID,
@@ -136,7 +141,8 @@ LISTAGG(IME.EMPLOYEE_CODE||'-'||IME.FULL_NAME, ','||rpad(' ',4,' ')) WITHIN GROU
 FROM HRIS_ITNARY_MEMBERS IM
 JOIN HRIS_EMPLOYEES IME ON (IM.EMPLOYEE_ID=IME.EMPLOYEE_ID )
 GROUP BY IM.ITNARY_ID ) IMD ON (IMD.ITNARY_ID=TI.ITNARY_ID)
-WHERE TI.CREATED_BY=:employeeId {$condition} 
+WHERE (TI.CREATED_BY=:employeeId or IMD.ITNARY_ID in(select ITNARY_ID from
+hris_itnary_members where EMPLOYEE_ID = :employeeId)) {$condition} 
 ";
 
         $finalSql = $this->getPrefReportQuery($sql);
@@ -266,7 +272,7 @@ WHERE TI.CREATED_BY=:employeeId {$condition}
         $this->tableGatewayItnaryDetails->insert($addData);
     }
     
-    public function fetchItnary($id){
+    public function fetchItnary($id, $employeeId = null){
          $sql = "
              SELECT  
 ITNARY_ID,
@@ -276,7 +282,8 @@ INITCAP(TO_CHAR(FROM_DT, 'DD-MON-YYYY')) AS FROM_DT,
 INITCAP(TO_CHAR(FROM_DT, 'DD-MON-YYYY')) AS TO_DT,
 NO_OF_DAYS,
 PURPOSE,
-FLOAT_MONEY,
+(select requested_amount from hris_employee_travel_request where itnary_id = :id
+    and employee_id = :employeeId) float_money,
 TRANSPORT_TYPE,
 TOTAL_DAYS,
 REMARKS,
@@ -294,6 +301,7 @@ WHERE ITNARY_ID=:id
 
         $boundedParameter = [];
         $boundedParameter['id'] = $id;
+        $boundedParameter['employeeId'] = $employeeId;
 
         return $this->rawQuery($sql, $boundedParameter)[0];
 
@@ -360,6 +368,15 @@ WHERE ITD.ITNARY_ID=:id ORDER BY ITD.SNO asc
 
     public function fetchById($id) {
         
+    }
+
+    public function cancel($id, $employeeId){
+      $sql = "UPDATE HRIS_EMPLOYEE_TRAVEL_REQUEST SET STATUS = 'C' WHERE EMPLOYEE_ID = :employeeId AND ITNARY_ID = :id";
+      $boundedParameter = [];
+      $boundedParameter['id'] = $id;
+      $boundedParameter['employeeId'] = $employeeId;
+
+      $this->rawQuery($sql, $boundedParameter);
     }
 
 }

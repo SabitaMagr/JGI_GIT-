@@ -46,7 +46,7 @@ class MapsController extends HrisController {
 
         foreach ($period as $dt) {
             $checkInLoc = $this->repository->fetchCheckInLocation($employeeId, $dt->format("d-M-y"));
-            $locData1 = $checkInLoc->current();
+            $locData1 = $checkInLoc[0];
             if(isset($locData1) && $locData1 != null && $locData1 != 'null' && $locData1 != false && !empty($locData1)){
                 $locData1 = json_encode($locData1);
                 $location1 = json_decode($locData1)->LOCATION;
@@ -56,7 +56,7 @@ class MapsController extends HrisController {
             }
 
             $checkOutLoc = $this->repository->fetchCheckOutLocation($employeeId, $dt->format("d-M-y"));
-            $locData2 = $checkOutLoc->current();
+            $locData2 = $checkOutLoc[0];
             if(isset($locData2) && $locData2 != null && $locData2 != 'null' && $locData2 != false && !empty($locData2)){
                 $locData2 = json_encode($locData2);
                 $location2 = json_decode($locData2)->LOCATION;

@@ -184,7 +184,9 @@ print $this->form()->openTag($form);
                     </div>
                 </div>
 
+                
                 <div class=" row">
+                    <?php if(!$itnaryId){ ?>
                      <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($departure); ?>
@@ -199,6 +201,7 @@ print $this->form()->openTag($form);
                             <?php print $this->formElementErrors()->render($destination, ['class' => 'help-block']); ?>
                         </div>               
                     </div>
+                    <?php } ?>
 
                     <div class="col-sm-4">
                         <div class="form-group">

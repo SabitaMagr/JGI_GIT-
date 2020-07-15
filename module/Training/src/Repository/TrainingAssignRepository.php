@@ -31,8 +31,11 @@ class TrainingAssignRepository extends HrisRepository implements RepositoryInter
     }
 
     public function delete($id) {
-        $this->tableGateway->update([TrainingAssign::STATUS => 'D'], [TrainingAssign::EMPLOYEE_ID . "=$id[0]", TrainingAssign::TRAINING_ID . " =$id[1]"]);
-        EntityHelper::rawQueryResult($this->adapter, "BEGIN  HRIS_TRAINING_LEAVE_REWARD({$id[0]},{$id[1]}); END;");
+        $this->tableGateway->update([TrainingAssign::STATUS => 'D'], [TrainingAssign::EMPLOYEE_ID => $id[0], TrainingAssign::TRAINING_ID => $id[1]]);
+        $boundedParameter = [];
+        $boundedParameter['id0'] = $id[0];
+        $boundedParameter['id1'] = $id[1];
+        $this->executeStatement("BEGIN  HRIS_TRAINING_LEAVE_REWARD(:id0,:id1); END;", $boundedParameter);
     }
 
     public function getDetailByEmployeeID($employeeId, $trainingId) {
@@ -182,7 +185,7 @@ class TrainingAssignRepository extends HrisRepository implements RepositoryInter
     }
 
     public function edit(Model $model, $id) {
-        $this->tableGateway->update($model->getArrayCopyForDB(), [TrainingAssign::EMPLOYEE_ID . "=$id[0]", TrainingAssign::TRAINING_ID . " =$id[1]"]);
+        $this->tableGateway->update($model->getArrayCopyForDB(), [TrainingAssign::EMPLOYEE_ID => $id[0], TrainingAssign::TRAINING_ID => $id[1]]);
         $this->leaveReward($id[0], $id[1]);
     }
 
@@ -200,11 +203,13 @@ class TrainingAssignRepository extends HrisRepository implements RepositoryInter
         $select->columns([TrainingAssign::TRAINING_ID]);
         $select->from(['TA' => TrainingAssign::TABLE_NAME])
                 ->join(['T' => Training::TABLE_NAME], "TA." . TrainingAssign::TRAINING_ID . " = " . "T." . Training::TRAINING_ID, []);
-        $select->where(["TA." . TrainingAssign::EMPLOYEE_ID . "=$employeeId"]);
+        $select->where(["TA." . TrainingAssign::EMPLOYEE_ID . "=:employeeId"]);
         $select->where(["TA." . TrainingAssign::STATUS . "= 'E'"]);
         $select->where([$date->getExpression() . " BETWEEN " . "T." . Training::START_DATE . " AND T." . Training::END_DATE]);
+        $boundedParams = [];
+        $boundedParams['employeeId'] = $employeeId;
         $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return $result->current();
     }
     
