@@ -55,6 +55,8 @@ class TrainingApproveRepository extends HrisRepository {
 //                  DBMS_OUTPUT.PUT('NO DATA FOUND FOR ID =>'|| V_REQUEST_ID);
 //                END;
 //");
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
 
         $this->executeStatement("
                 DECLARE
@@ -63,7 +65,7 @@ class TrainingApproveRepository extends HrisRepository {
                   V_END_DATE HRIS_EMPLOYEE_TRAINING_REQUEST.END_DATE%TYPE;
                   V_EMPLOYEE_ID HRIS_EMPLOYEE_TRAINING_REQUEST.EMPLOYEE_ID%TYPE;
                   V_STATUS HRIS_EMPLOYEE_TRAINING_REQUEST.STATUS%TYPE;
-                  V_REQUEST_ID HRIS_EMPLOYEE_TRAINING_REQUEST.REQUEST_ID%TYPE:= {$id};
+                  V_REQUEST_ID HRIS_EMPLOYEE_TRAINING_REQUEST.REQUEST_ID%TYPE:= :id;
                   V_ASSIGNED CHAR(1 BYTE)                                    :=NULL;
                   V_DURATION HRIS_EMPLOYEE_TRAINING_REQUEST.DURATION%TYPE;
                 BEGIN
@@ -146,7 +148,7 @@ class TrainingApproveRepository extends HrisRepository {
                 WHEN NO_DATA_FOUND THEN
                   DBMS_OUTPUT.PUT('NO DATA FOUND FOR ID =>'|| V_REQUEST_ID);
                 END;
-");
+", $boundedParameter);
     }
 
     public function fetchById($id) {
@@ -299,9 +301,9 @@ class TrainingApproveRepository extends HrisRepository {
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
                 LEFT JOIN HRIS_ALTERNATE_R_A ALR
-                ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALR.R_A_ID={$search['userId']})
+                ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALR.R_A_ID=:userId)
                 LEFT JOIN HRIS_ALTERNATE_R_A ALA
-                ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALA.R_A_ID={$search['userId']})
+                ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALA.R_A_ID=:userId)
                 LEFT JOIN HRIS_EMPLOYEES U
                 ON(U.EMPLOYEE_ID = RA.RECOMMEND_BY
                 OR U.EMPLOYEE_ID =RA.APPROVED_BY
@@ -319,33 +321,41 @@ class TrainingApproveRepository extends HrisRepository {
                 OR(ALA.R_A_ID= U.EMPLOYEE_ID)
                 )
                 AND TR.STATUS IN ('RC')) )
-                AND U.EMPLOYEE_ID={$search['userId']}";
-        return $this->rawQuery($sql);
+                AND U.EMPLOYEE_ID=:userId";
+                $boundedParameter = [];
+                $boundedParameter['userId'] = $search['userId'];
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function getAllList($search): array {
         $condition = "";
+        $boundedParameter = [];
         if (isset($search['fromDate']) && $search['fromDate'] != null) {
-            $condition .= " AND TR.START_DATE>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";
+            $condition .= " AND TR.START_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY') ";
+            $boundedParameter['fromDate'] = $search['fromDate'];
         }
-        if (isset($search['fromDate']) && $search['toDate'] != null) {
-            $condition .= " AND TR.END_DATE<=TO_DATE('{$search['toDate']}','DD-MM-YYYY') ";
+        if (isset($search['toDate']) && $search['toDate'] != null) {
+            $condition .= " AND TR.END_DATE<=TO_DATE(:toDate,'DD-MM-YYYY') ";
+            $boundedParameter['toDate'] = $search['toDate'];
         }
-
+        $boundedParameter['userId'] = $search['userId'];
 
         if (isset($search['status']) && $search['status'] != null && $search['status'] != -1) {
             if (gettype($search['status']) === 'array') {
                 $csv = "";
                 for ($i = 0; $i < sizeof($search['status']); $i++) {
                     if ($i == 0) {
-                        $csv = "'{$search['status'][$i]}'";
+                        $csv = ":status".$i;
+                        $boundedParameter["status".$i] = $search['status'][$i];
                     } else {
-                        $csv .= ",'{$search['status'][$i]}'";
+                        $csv .= ",:status".$i;
+                        $boundedParameter["status".$i] = $search['status'][$i];
                     }
                 }
                 $condition .= "AND TR.STATUS IN ({$csv})";
             } else {
-                $condition .= "AND TR.STATUS IN ('{$search['status']}')";
+                $condition .= "AND TR.STATUS IN (:status)";
+                $boundedParameter['status'] = $search['status'];
             }
         }
 
@@ -450,8 +460,8 @@ class TrainingApproveRepository extends HrisRepository {
                 OR U.EMPLOYEE_ID   =ALR.R_A_ID
                 OR U.EMPLOYEE_ID   =ALA.R_A_ID)
                 WHERE 1          =1
-                AND U.EMPLOYEE_ID={$search['userId']} {$condition}";
-        return $this->rawQuery($sql);
+                AND U.EMPLOYEE_ID= :userId {$condition}";
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function getListAdmin($search) {
@@ -489,14 +499,17 @@ class TrainingApproveRepository extends HrisRepository {
                 $csv = "";
                 for ($i = 0; $i < sizeof($search['status']); $i++) {
                     if ($i == 0) {
-                        $csv = "'{$search['status'][$i]}'";
+                        $csv = ":status".$i;
+                        $boundedParameter["status".$i] = $search['status'][$i];
                     } else {
-                        $csv .= ",'{$search['status'][$i]}'";
+                        $csv .= ",:status".$i;
+                        $boundedParameter["status".$i] = $search['status'][$i];
                     }
                 }
                 $condition .= "AND TR.STATUS IN ({$csv})";
             } else {
-                $condition .= "AND TR.STATUS IN ('{$search['status']}')";
+                $condition .= "AND TR.STATUS IN (:status)";
+                $boundedParameter['status'] = $search['status'];
             }
         }
 

@@ -71,9 +71,10 @@ class TravelExpenseDtlRepository implements RepositoryInterface {
                 ->join(['T' => TravelRequest::TABLE_NAME], "T." . TravelRequest::TRAVEL_ID . "=TR." . TravelExpenseDetail::TRAVEL_ID, [TravelRequest::TRAVEL_CODE]);
 
         $select->where([
-            "TR.TRAVEL_ID=" . $travelId,
-            "TR.STATUS='E'"
+            "TR.TRAVEL_ID" => $travelId,
+            "TR.STATUS" => 'E'
         ]);
+
         $select->order("TR.ID");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

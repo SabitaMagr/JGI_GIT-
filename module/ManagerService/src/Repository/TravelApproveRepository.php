@@ -11,11 +11,12 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 use Application\Helper\Helper;
+use Application\Repository\HrisRepository;
 
-class TravelApproveRepository implements RepositoryInterface {
+class TravelApproveRepository extends HrisRepository implements RepositoryInterface {
 
-    private $tableGateway;
-    private $adapter;
+    protected $tableGateway;
+    protected $adapter;
  
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -38,11 +39,13 @@ class TravelApproveRepository implements RepositoryInterface {
         $temp = $model->getArrayCopyForDB();
         $this->tableGateway->update($temp, [TravelRequest::TRAVEL_ID => $id]);
         IF ($model->status == 'AP') {
+          $boundedParameter = [];
+          $boundedParameter['id'] = $id;
             try {
-                EntityHelper::rawQueryResult($this->adapter, "
+                $this->rawQuery("
                 BEGIN
-                    hris_travel_leave_reward({$id});
-                END;");
+                    hris_travel_leave_reward(:id);
+                END;", $boundedParameter);
             } catch (Exception $e) {
                 return $e->getMessage();
             }
@@ -50,11 +53,14 @@ class TravelApproveRepository implements RepositoryInterface {
 
         $link = $model->status == 'AP' ? 'Y' : 'N';
         if ($link == 'Y') {
+          $boundedParameter = [];
+          $boundedParameter['id'] = $id;
+          $boundedParameter['link'] = $link;
             try {
-                EntityHelper::rawQueryResult($this->adapter, "
+                $this->rawQuery("
                 BEGIN
-                    HRIS_TRAVEL_REQUEST_PROC({$id},'{$link}');
-                END;");
+                    HRIS_TRAVEL_REQUEST_PROC(:id,:link);
+                END;", $boundedParameter);
             } catch (Exception $e) {
                 return $e->getMessage();
             }
@@ -135,27 +141,33 @@ class TravelApproveRepository implements RepositoryInterface {
 
     public function getAllFiltered($search) {
         $condition = "";
+        $boundedParameter = [];
         if (isset($search['fromDate']) && $search['fromDate'] != null) {
-            $condition .= " AND TR.FROM_DATE>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";
+          $boundedParameter['fromDate'] = $search['fromDate'];
+            $condition .= " AND TR.FROM_DATE>=TO_DATE(:fromDate','DD-MM-YYYY') ";
         }
-        if (isset($search['fromDate']) && $search['toDate'] != null) {
-            $condition .= " AND TR.TO_DATE<=TO_DATE('{$search['toDate']}','DD-MM-YYYY') ";
+        if (isset($search['toDate']) && $search['toDate'] != null) {
+          $boundedParameter['toDate'] = $search['toDate'];
+            $condition .= " AND TR.TO_DATE<=TO_DATE(:toDate','DD-MM-YYYY') ";
         }
-
+        $boundedParameter['employeeId'] = $search['employeeId'];
 
         if (isset($search['status']) && $search['status'] != null && $search['status'] != -1) {
             if (gettype($search['status']) === 'array') {
                 $csv = "";
                 for ($i = 0; $i < sizeof($search['status']); $i++) {
                     if ($i == 0) {
-                        $csv = "'{$search['status'][$i]}'";
+                        $csv = ":status".$i;
+                        $boundedParameter["status".$i] = $search['status'][$i];
                     } else {
-                        $csv .= ",'{$search['status'][$i]}'";
+                        $csv .= ",:status".$i;
+                        $boundedParameter["status".$i] = $search['status'][$i];
                     }
                 }
                 $condition .= "AND TR.STATUS IN ({$csv})";
             } else {
-                $condition .= "AND TR.STATUS IN ('{$search['status']}')";
+                $condition .= "AND TR.STATUS IN (:status)";
+                $boundedParameter['status'] = $search['status'];
             }
         }
 
@@ -221,9 +233,9 @@ class TravelApproveRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
                 LEFT JOIN HRIS_ALTERNATE_R_A ALR
-                ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALR.R_A_ID={$search['employeeId']})
+                ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALR.R_A_ID=:employeeId)
                 LEFT JOIN HRIS_ALTERNATE_R_A ALA
-                ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALA.R_A_ID={$search['employeeId']})
+                ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALA.R_A_ID=:employeeId)
                 LEFT JOIN HRIS_EMPLOYEES U
                 ON(U.EMPLOYEE_ID      = RA.RECOMMEND_BY
                 OR U.EMPLOYEE_ID      =RA.APPROVED_BY
@@ -236,8 +248,8 @@ class TravelApproveRepository implements RepositoryInterface {
                     THEN ('Y')
                   END
                 OR TS.EMPLOYEE_ID IS NULL)
-                AND U.EMPLOYEE_ID  ={$search['employeeId']} {$condition}";
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+                AND U.EMPLOYEE_ID  =:employeeId {$condition}";
+        return $this->rawQuery($sql, $boundedParameter);
     }
 
     public function getPendingList($employeeId) {
@@ -292,7 +304,8 @@ class TravelApproveRepository implements RepositoryInterface {
                   REC_APP_ROLE_NAME(U.EMPLOYEE_ID,
                   CASE WHEN ALR.R_A_ID IS NOT NULL THEN ALR.R_A_ID ELSE RA.RECOMMEND_BY END,
                   CASE WHEN ALA.R_A_ID IS NOT NULL THEN ALA.R_A_ID ELSE RA.APPROVED_BY END
-                  ) AS YOUR_ROLE
+                  ) AS YOUR_ROLE,
+                  CASE WHEN ( ALR.R_A_ID IS NOT NULL OR ALA.R_A_ID  IS NOT NULL ) THEN 'SECONDARY' ELSE 'PRIMARY' END AS PRI_SEC
                 FROM HRIS_EMPLOYEE_TRAVEL_REQUEST TR
                 LEFT JOIN HRIS_TRAVEL_SUBSTITUTE TS
                 ON TR.TRAVEL_ID = TS.TRAVEL_ID
@@ -309,9 +322,9 @@ class TravelApproveRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
                 LEFT JOIN HRIS_ALTERNATE_R_A ALR
-                ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALR.R_A_ID={$employeeId})
+                ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALR.R_A_ID=:employeeId)
                 LEFT JOIN HRIS_ALTERNATE_R_A ALA
-                ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALA.R_A_ID={$employeeId})
+                ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALA.R_A_ID=:employeeId)
                 LEFT JOIN HRIS_EMPLOYEES U
                 ON(U.EMPLOYEE_ID      = RA.RECOMMEND_BY
                 OR U.EMPLOYEE_ID      =RA.APPROVED_BY
@@ -328,13 +341,16 @@ class TravelApproveRepository implements RepositoryInterface {
                 OR 
                 (((RA.APPROVED_BY    = U.EMPLOYEE_ID)  OR (ALA.R_A_ID = U.EMPLOYEE_ID))
                 AND TR.STATUS         ='RC') )
-                AND U.EMPLOYEE_ID     ={$employeeId}
+                AND U.EMPLOYEE_ID     =:employeeId
                 AND (TS.APPROVED_FLAG =
                   CASE
                     WHEN TS.EMPLOYEE_ID IS NOT NULL
                     THEN ('Y')
                   END
                 OR TS.EMPLOYEE_ID IS NULL)";
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+
+        $boundedParameter = [];
+        $boundedParameter['employeeId'] = $employeeId;
+        return $this->rawQuery($sql, $boundedParameter);
     }
 }

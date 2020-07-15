@@ -10,11 +10,12 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Application\Helper\Helper;
 use Zend\Db\TableGateway\TableGateway;
+use Application\Repository\HrisRepository;
 
-class TravelRequestRepository implements RepositoryInterface {
+class TravelRequestRepository extends HrisRepository implements RepositoryInterface {
 
-    private $tableGateway;
-    private $adapter;
+    protected $tableGateway;
+    protected $adapter;
  
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -59,11 +60,17 @@ class TravelRequestRepository implements RepositoryInterface {
         $this->tableGateway->insert($addData);
         
         if ($addData['STATUS']=='AP' && date('Y-m-d', strtotime($model->fromDate)) <= date('Y-m-d')) {
+
             $sql = "BEGIN 
-            HRIS_REATTENDANCE('{$model->fromDate}',$model->employeeId,'{$model->toDate}');
+            HRIS_REATTENDANCE(:fromDate, :employeeId, :toDate);
                END; ";
 
-            EntityHelper::rawQueryResult($this->adapter, $sql);
+            $boundedParameter = [];
+            $boundedParameter['fromDate'] = $model->fromDate;
+            $boundedParameter['employeeId'] = $model->employeeId;
+            $boundedParameter['toDate'] = $model->toDate;
+
+            $this->rawQuery($sql, $boundedParameter);
         }
         //$this->linkTravelWithFiles();
     }
@@ -220,6 +227,8 @@ class TravelRequestRepository implements RepositoryInterface {
             "E.EMPLOYEE_ID" => $search['employeeId']
         ]);
 
+        $boundedParameter = [];
+
         if ($search['statusId'] != -1) {
             $select->where([
                 "TR.STATUS" => $search['statusId']
@@ -237,31 +246,37 @@ class TravelRequestRepository implements RepositoryInterface {
         }
 
         if ($search['fromDate'] != null) {
+            $boundedParameter['fromDate'] = $search['fromDate'];
             $select->where([
-                "TR.FROM_DATE>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY')"
+                "TR.FROM_DATE>=TO_DATE(:fromDate,'DD-MM-YYYY')"
             ]);
         }
+
         if ($search['toDate'] != null) {
+            $boundedParameter['toDate'] = $search['toDate'];
             $select->where([
-                "TR.TO_DATE<=TO_DATE('{$search['toDate']}','DD-MM-YYYY')"
+                "TR.TO_DATE<=TO_DATE(:toDate,'DD-MM-YYYY')"
             ]);
         }
+
         if (isset($search['requestedType'])) {
             $select->where([
-                "LOWER(TR.REQUESTED_TYPE) = '{$search['requestedType']}'"
+                "LOWER(TR.REQUESTED_TYPE)" => $search['requestedType']
             ]);
         }
         $select->order("TR.REQUESTED_DATE DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
         return $result;
     }
     
     public function checkAllowEdit($id){
         $sql = "SELECT (CASE WHEN STATUS = 'RQ' THEN 'Y' ELSE 'N' END)"
                 . " AS ALLOW_EDIT FROM HRIS_EMPLOYEE_TRAVEL_REQUEST WHERE "
-                . "TRAVEL_ID = $id";
-        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
-        return Helper::extractDbData($result)[0]["ALLOW_EDIT"];
+                . "TRAVEL_ID = :id";
+
+        $boundedParameter = [];
+        $boundedParameter['id'] = $id;
+        return $this->rawQuery($sql, $boundedParameter)[0]["ALLOW_EDIT"];
     }
 }

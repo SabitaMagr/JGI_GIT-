@@ -32,6 +32,11 @@
                 <a class="btn btn-icon-only green" href="${document.viewLink}/#:ITNARY_ID#" style="height:17px;" title="View Detail">
                     <i class="fa fa-search"></i>
                 </a>
+                #if(ALLOW_DELETE == 'Y'){#
+                <a class="btn btn-icon-only red confirmation" href="${document.deleteLink}/#:ITNARY_ID#" style="height:17px;" title="Delete">
+                    <i class="fa fa-times"></i>
+                </a>
+                #}#
             </div>
         `;
         app.initializeKendoGrid($table, [
@@ -70,7 +75,8 @@
 //                    }
                 ]},
             {field: "TRANSPORT_TYPE_FULL_FORM", title: "Transport"},
-            {field: "FLOAT_MONEY", title: "Float Money"},
+            {field: "REQUESTED_AMOUNT", title: "Float Money"},
+            {field: "TRAVEL_STATUS", title: "Status"},
             {field: "FULL_NAME_LIST", title: "Employees", template: "<span><b>#: FULL_NAME_LIST # </b></span>"},
 //            {field: "STATUS_DETAIL", title: "Status"},
             {field: "ITNARY_ID", title: "Action", template: action}
