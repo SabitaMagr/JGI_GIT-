@@ -87,8 +87,8 @@ class PerformanceAppraisal extends AbstractActionController {
         $headingRepo = new HeadingRepository($this->adapter);
 
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($this->employeeId, $appraisalId);
-        $fromDate = Helper::getExpressionDate($assignedAppraisalDetail['FROM_DATE']);
-        $employeeDetail = $employeeRepo->fetchForProfileById($this->employeeId, $fromDate->getExpression());
+        $fromDate = $assignedAppraisalDetail['FROM_DATE'];
+        $employeeDetail = $employeeRepo->fetchForProfileById($this->employeeId, $fromDate);
         $appraisalTypeId = $assignedAppraisalDetail['APPRAISAL_TYPE_ID'];
         $currentStageId = $assignedAppraisalDetail['STAGE_ID'];
         $headingList = $headingRepo->fetchByAppraisalTypeId($appraisalTypeId);

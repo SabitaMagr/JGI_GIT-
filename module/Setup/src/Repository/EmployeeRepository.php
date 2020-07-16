@@ -62,6 +62,7 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function fetchSubstituteEmployees($employeeId = null, $excludeSelf = false, $excludeRecAndApp = false) {
+        die();
         $condition = " WHERE 1=1 ";
         if ($employeeId != null && $excludeSelf && !$excludeRecAndApp) {
             $condition = " WHERE EMPLOYEE != {$employeeId} ";
@@ -158,14 +159,20 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME' => new Expression('(P1.POSITION_NAME)'), "LEVEL_NO" => "P1.LEVEL_NO"], 'left')
                 ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['SERVICE_TYPE_NAME' => new Expression('INITCAP(S1.SERVICE_TYPE_NAME)')], 'left')
                 ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)')], 'left');
-        $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$id"]);
+        $select->where(["E." . HrEmployees::EMPLOYEE_ID => $id]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();
     }
 
     public function fetchForProfileById($employeeId, $date = null) {
-        $dateOn = ($date == null) ? 'TRUNC(SYSDATE)' : $date;
+        $boundedParams = [];
+        $boundedParams['employeeId'] = $employeeId;
+        $boundedParams['date'] = $date;
+        $dateOn =  'TRUNC(SYSDATE)' ;
+        if($date != null) {
+            $dateOn = ':date';
+        }
         $sql = "SELECT EH.*,
                   E.EMPLOYEE_CODE                                                   AS EMPLOYEE_CODE,
                   INITCAP(E.FIRST_NAME)                                             AS FIRST_NAME,
@@ -336,9 +343,10 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 ON REC.EMPLOYEE_ID=RA.RECOMMEND_BY
                 LEFT JOIN HRIS_EMPLOYEES APP
                 ON APP.EMPLOYEE_ID  =RA.APPROVED_BY
-                WHERE EH.EMPLOYEE_ID={$employeeId}";
+                WHERE EH.EMPLOYEE_ID= :employeeId";
+
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return $result->current();
     }
 
@@ -372,7 +380,8 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function getWohRewardFromPosition($positionId) {
-
+        $boundedParams = [];
+        $boundedParams['positionId'] = $positionId;
         if($positionId == null){
             return;
         }
@@ -380,9 +389,9 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
         $sql = "SELECT WOH_FLAG
                     FROM HRIS_POSITIONS
                     WHERE 
-                    POSITION_ID = {$positionId}";
+                    POSITION_ID = :positionId";
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return $result->current();
     }
 
@@ -400,7 +409,9 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $getResult = null, $companyId = null, $employeeTypeId = null) {
-        $condition = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $boundedParams = [];
+        $condition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $boundedParams = array_merge($boundedParams, $condition['parameter']);
         $sql = "SELECT E.EMPLOYEE_ID                                                AS EMPLOYEE_ID,
               E.COMPANY_ID                                                      AS COMPANY_ID,
               E.EMPLOYEE_CODE                                                   AS EMPLOYEE_CODE,
@@ -557,10 +568,10 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
             LEFT JOIN HRIS_FUNCTIONAL_LEVELS FUNL
             ON E.FUNCTIONAL_LEVEL_ID=FUNL.FUNCTIONAL_LEVEL_ID
             WHERE E.STATUS          ='E'
-            {$condition}
+            {$condition['sql']}
             ORDER BY E.FIRST_NAME ASC";
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         if ($getResult != null) {
             return $result;
         } else {
@@ -766,6 +777,7 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
     
     public function getProvinceDtl($id) {
+        $boundedParams = [];
         $sql = "SELECT P1.PROVINCE_NAME AS PERM_PROVINCE,
                 P2.PROVINCE_NAME AS TEMP_PROVINCE
                 FROM HRIS_EMPLOYEES E
@@ -773,9 +785,10 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 ON (E.ADDR_PERM_PROVINCE_ID = P1.PROVINCE_ID)
                 JOIN HRIS_PROVINCES P2
                 ON (E.ADDR_TEMP_PROVINCE_ID = P2.PROVINCE_ID)
-                WHERE EMPLOYEE_ID = {$id}";
+                WHERE EMPLOYEE_ID = :id";
+        $boundedParams['id'] = $id;
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         
         return $result->current();
     }
@@ -846,15 +859,18 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function vdcStringToId($districtId, $vdc) {
+        $boundedParams = [];
         if (!isset($districtId) || $districtId == null || !isset($vdc) || $vdc == null) {
             return null;
         }
         $sql = "
             SELECT VDC_MUNICIPALITY_ID
             FROM HRIS_VDC_MUNICIPALITIES
-            WHERE DISTRICT_ID                      ={$districtId}
-            AND LOWER(TRIM(VDC_MUNICIPALITY_NAME)) = LOWER(TRIM('{$vdc}'))";
-        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+            WHERE DISTRICT_ID                      = :districtId
+            AND LOWER(TRIM(VDC_MUNICIPALITY_NAME)) = LOWER(TRIM(':vdc'))";
+        $boundedParams['districtId'] = $districtId;
+        $boundedParams['vdc'] = $vdc;
+        $result = EntityHelper::rawQueryResult($this->adapter, $sql, $boundedParams);
         $current = $result->current();
 
         if ($current != null) {
@@ -868,14 +884,16 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function vdcIdToString($id) {
+        $boundedParams = [];
         if (!isset($id) || $id == null) {
             return null;
         }
         $sql = "
             SELECT VDC_MUNICIPALITY_NAME
             FROM HRIS_VDC_MUNICIPALITIES
-            WHERE VDC_MUNICIPALITY_ID                ={$id}";
-        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+            WHERE VDC_MUNICIPALITY_ID                = :id";
+        $boundedParams['id'] = $id;
+        $result = EntityHelper::rawQueryResult($this->adapter, $sql, $boundedParams);
         $current = $result->current();
         if ($current != null) {
             return $current['VDC_MUNICIPALITY_NAME'];
@@ -894,6 +912,7 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function employeeDetailSession($id) {
+        $boundedParams = [];
         if(!$id){
             return [];
         }
@@ -1036,19 +1055,22 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 ON E.PROFILE_PICTURE_ID = EF.FILE_CODE
                 LEFT JOIN HRIS_EMPLOYEE_FILE CF
                 ON C.LOGO           =CF.FILE_CODE
-                WHERE E.EMPLOYEE_ID ={$id}
+                WHERE E.EMPLOYEE_ID = :id
 ";
+        $boundedParams['id'] = $id;
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return $result->current();
     }
 
     public function setupEmployee($id) {
+        $boundedParams = [];
         $sql = "BEGIN
-                  HRIS_EMPLOYEE_SETUP_PROC({$id});
+                  HRIS_EMPLOYEE_SETUP_PROC(:id);
                 END;";
+        $boundedParams['id'] = $id;
         $statement = $this->adapter->query($sql);
-        $statement->execute();
+        $statement->execute($boundedParams);
     }
 
     public function updateJobHistory($employeeId) {
