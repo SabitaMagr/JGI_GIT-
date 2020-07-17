@@ -85,23 +85,30 @@ class ShiftGroupRepository implements RepositoryInterface {
     }
 
     public function getShiftsById($id) {
+        $boundedParams = [];
         $sql = "  
-            SELECT SHIFT_ID FROM HRIS_BEST_CASE_SHIFT_MAP WHERE CASE_ID = {$id}";
-        return Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, $sql));
+            SELECT SHIFT_ID FROM HRIS_BEST_CASE_SHIFT_MAP WHERE CASE_ID = :id";
+        $boundedParams['id'] = $id;
+        return Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, $sql, $boundedParams));
     }
 
     public function mapShifts($caseId, $shifts) {
+        $boundedParams = [];
         foreach ($shifts as $shift) {
-            $sql = "INSERT INTO HRIS_BEST_CASE_SHIFT_MAP(CASE_ID, SHIFT_ID) VALUES ({$caseId},{$shift})";
+            $sql = "INSERT INTO HRIS_BEST_CASE_SHIFT_MAP(CASE_ID, SHIFT_ID) VALUES (:caseId, :shift)";
+            $boundedParams['caseId'] = $caseId;
+            $boundedParams['shift'] = $shift;
             $statement = $this->adapter->query($sql);
-            $statement->execute();
+            $statement->execute($boundedParams);
         }
         return;
     }
 
     public function deleteMappedShifts($caseId) {
-        $sql = "DELETE FROM HRIS_BEST_CASE_SHIFT_MAP WHERE CASE_ID = {$caseId}";
-        EntityHelper::rawQueryResult($this->adapter, $sql);
+        $boundedParams = [];
+        $sql = "DELETE FROM HRIS_BEST_CASE_SHIFT_MAP WHERE CASE_ID = :caseId";
+        $boundedParams['caseId'] = $caseId;
+        EntityHelper::rawQueryResult($this->adapter, $sql, $boundedParams);
         return;
     }
 

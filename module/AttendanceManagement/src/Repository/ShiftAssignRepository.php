@@ -2,6 +2,7 @@
 
 namespace AttendanceManagement\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\HrisRepository;
@@ -51,8 +52,9 @@ class ShiftAssignRepository extends HrisRepository {
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $employeeTypeId = $data['employeeTypeId'];
 
-        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
-        
+        $boundedParams = [];
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $boundedParams = array_merge($boundedParams, $searchCondition['parameter']);
         
 //        $companyCondition = "";
 //        $branchCondition = "";
@@ -136,44 +138,59 @@ class ShiftAssignRepository extends HrisRepository {
                 LEFT JOIN HRIS_SHIFTS S
                 ON (SA.SHIFT_ID=S.SHIFT_ID)
                 WHERE 1        =1
-                {$searchCondition}
+                {$searchCondition['sql']}
                 ORDER BY E.FULL_NAME,
                   SA.START_DATE
 EOT;
 
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return Helper::extractDbData($result);
     }
 
     public function bulkEdit($id, $shiftId, $fromDate, $toDate, $createdBy) {
+        $boundedParams = [];
         $sql = <<<EOT
                 BEGIN
-                  HRIS_SHIFT_EDIT({$id},{$shiftId},{$fromDate},{$toDate},{$createdBy});
+                  HRIS_SHIFT_EDIT(:id,:shiftId,:fromDate,:toDate,:createdBy);
                 END;
 EOT;
+        $boundedParams['id'] = $id;
+        $boundedParams['shiftId'] = $shiftId;
+        $boundedParams['fromDate'] = $fromDate;
+        $boundedParams['toDate'] = $toDate;
+        $boundedParams['createdBy'] = $createdBy;
         $statement = $this->adapter->query($sql);
-        $statement->execute();
+        $statement->execute($boundedParams);
     }
 
     public function bulkDelete($id) {
+        $boundedParams = [];
         $sql = <<<EOT
                 BEGIN
-                  HRIS_SHIFT_DELETE({$id});
+                  HRIS_SHIFT_DELETE(:id);
                 END;
 EOT;
+        $boundedParams['id'] = $id;
         $statement = $this->adapter->query($sql);
-        $statement->execute();
+        $statement->execute($boundedParams);
     }
 
     public function bulkAdd($employeeId, $shiftId, $fromDate, $toDate, $createdBy) {
+         $boundedParams = [];
         $sql = <<<EOT
                 BEGIN
-                  HRIS_SHIFT_ADD({$employeeId},{$shiftId},{$fromDate},{$toDate},{$createdBy});
+                  HRIS_SHIFT_ADD(:employeeId,:shiftId,:fromDate,:toDate,:createdBy);
                 END;
 EOT;
+        $boundedParams['employeeId'] = $employeeId;
+        $boundedParams['shiftId'] = $shiftId;
+        $boundedParams['fromDate'] = $fromDate;
+        $boundedParams['toDate'] = $toDate;
+        $boundedParams['createdBy'] = $createdBy;
+
         $statement = $this->adapter->query($sql);
-        $statement->execute();
+        $statement->execute($boundedParams);
     }
 
     public function fetchEmployeeList($data) {
@@ -188,8 +205,10 @@ EOT;
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $employeeTypeId = $data['employeeTypeId'];
 
-        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
-        
+        $boundedParams = [];
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $boundedParams = array_merge($boundedParams, $searchCondition['parameter']);
+
 //        $companyCondition = "";
 //        $branchCondition = "";
 //        $departmentCondition = "";
@@ -257,16 +276,17 @@ EOT;
                 LEFT JOIN HRIS_SERVICE_TYPES ST
                 ON (ST.SERVICE_TYPE_ID=E.SERVICE_TYPE_ID)
                 WHERE 1               =1 AND E.STATUS='E' 
-                {$searchCondition}
+                {$searchCondition['sql']}
                 ORDER BY E.FULL_NAME               
 EOT;
 
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return Helper::extractDbData($result);
     }
 
     public function fetchEmployeeShifts($employeeId) {
+         $boundedParams = [];
         $sql = <<<EOT
                 SELECT S.SHIFT_ENAME,
                   TO_CHAR(SA.START_DATE,'DD-MON-YYYY') AS FROM_DATE_AD,
@@ -276,13 +296,14 @@ EOT;
                 FROM HRIS_EMPLOYEE_SHIFT_ASSIGN SA
                 LEFT JOIN HRIS_SHIFTS S
                 ON SA.SHIFT_ID       = S.SHIFT_ID
-                WHERE SA.EMPLOYEE_ID ={$employeeId}
+                WHERE SA.EMPLOYEE_ID = :employeeId
                 ORDER BY SA.START_DATE ASC,
                   SA.END_DATE DESC       
 EOT;
+        $boundedParams['employeeId'] = $employeeId;
 
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return Helper::extractDbData($result);
     }
 

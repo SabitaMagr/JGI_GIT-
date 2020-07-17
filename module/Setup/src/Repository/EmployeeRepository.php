@@ -1074,15 +1074,17 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function updateJobHistory($employeeId) {
+        $boundedParams = [];
         $sql = "BEGIN
-                  HRIS_UPDATE_JOB_HISTORY({$employeeId});
+                  HRIS_UPDATE_JOB_HISTORY(:employeeId);
                 END;";
+        $boundedParams['employeeId'] = $employeeId;
         $statement = $this->adapter->query($sql);
-        $statement->execute();
+        $statement->execute($boundedParams);
     }
 
     public function updateServiceStatus($data) {
-
+        $boundedParams = [];
         $sql = "INSERT INTO HRIS_JOB_HISTORY (
                 JOB_HISTORY_ID,
                 EMPLOYEE_ID,
@@ -1106,26 +1108,39 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
               VALUES
               (
                 (SELECT MAX(JOB_HISTORY_ID)+1 FROM HRIS_JOB_HISTORY),
-                {$data->employeeId},
-                '{$data->startDate}',
-                '{$data->endDate}',
-                {$data->serviceEventTypeId},
-                {$data->branchId},
-                {$data->departmentId},
-                {$data->designationId},
-                {$data->positionId},
-                {$data->serviceTypeId},
+                :employeeId,
+                TO_DATE(:startDate, 'DD-MON-YY'),
+                TO_DATE(:endDate, 'DD-MON-YY'),
+                :serviceEventTypeId,
+                :branchId,
+                :departmentId,
+                :designationId,
+                :positionId,
+                :serviceTypeId,
                 'E',
-                {$data->createdBy},
+                :createdBy,
                 TRUNC(SYSDATE),
-                (select company_id from hris_employees where employee_id={$data->employeeId}),
-                {$data->salary},
+                (select company_id from hris_employees where employee_id= :employeeId),
+                :salary,
                 'N',
                 'N',
-                '{$data->eventDate}')";
+                TO_DATE(:eventDate, 'DD-MON-YY'))";
+
+        $boundedParams['employeeId'] = $data->employeeId;
+        $boundedParams['startDate'] = $data->startDate;
+        $boundedParams['endDate'] = $data->endDate;
+        $boundedParams['serviceEventTypeId'] = $data->serviceEventTypeId;
+        $boundedParams['branchId'] = $data->branchId;
+        $boundedParams['departmentId'] = $data->departmentId;
+        $boundedParams['designationId'] = $data->designationId;
+        $boundedParams['positionId'] = $data->positionId;
+        $boundedParams['serviceTypeId'] = $data->serviceTypeId;
+        $boundedParams['createdBy'] = $data->createdBy;
+        $boundedParams['salary'] = $data->salary;
+        $boundedParams['eventDate'] = $data->eventDate;
 
         $statement = $this->adapter->query($sql);
-        $statement->execute();
+        $statement->execute($boundedParams);
     }
 
     public function fetchBankAccountList($companyCode = null): array {
@@ -1168,15 +1183,19 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function getCompanyCodeByEmpId($employeeId) {
+        $boundedParams = [];
         $sql = "SELECT NVL(C.COMPANY_CODE,TO_CHAR(C.COMPANY_ID)) AS COMPANY_CODE FROM HRIS_EMPLOYEES E LEFT JOIN HRIS_COMPANY C ON (E.COMPANY_ID=C.COMPANY_ID) "
-                . "WHERE E.EMPLOYEE_ID={$employeeId}";
+                . "WHERE E.EMPLOYEE_ID= :employeeId";
+        $boundedParams['employeeId'] = $employeeId;
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return $result->current();
     }
 
     public function filterRecordsWithAR($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $getResult = null, $companyId = null, $employeeTypeId = null) {
-        $condition = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $boundedParams = [];
+        $condition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $boundedParams = array_merge($boundedParams, $condition['parameter']);
         $sql = "SELECT 
              AR.A_R_ID,AR.A_R_NAME,AA.A_A_ID,AA.A_A_NAME,
 E.EMPLOYEE_ID                                                AS EMPLOYEE_ID,
@@ -1351,10 +1370,10 @@ FROM HRIS_ALTERNATE_R_A IARA
 JOIN HRIS_EMPLOYEES IARAE ON (IARA.R_A_ID=IARAE.EMPLOYEE_ID AND IARA.R_A_FLAG='A')
 GROUP BY IARA.EMPLOYEE_ID) AA ON (AA.EMPLOYEE_ID=E.EMPLOYEE_ID)
             WHERE E.STATUS          ='E'
-            {$condition}
+            {$condition['sql']}
             ORDER BY E.FIRST_NAME ASC";
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         if ($getResult != null) {
             return $result;
         } else {

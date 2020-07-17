@@ -24,26 +24,30 @@ class RecommendApproveRepository implements RepositoryInterface {
     }
 
     public function getDesignationList($employeeId) {
+        $boundedParams = [];
         $sql = "SELECT  DESIGNATION_ID, (DESIGNATION_TITLE) AS DESIGNATION_TITLE, PARENT_DESIGNATION, WITHIN_BRANCH, WITHIN_DEPARTMENT, LEVEL 
                 FROM HRIS_DESIGNATIONS WHERE (LEVEL=2 OR LEVEL=3)
-                START WITH DESIGNATION_ID = (SELECT E.DESIGNATION_ID FROM HRIS_EMPLOYEES E WHERE E.EMPLOYEE_ID=" . $employeeId . ")
+                START WITH DESIGNATION_ID = (SELECT E.DESIGNATION_ID FROM HRIS_EMPLOYEES E WHERE E.EMPLOYEE_ID=  :employeeId )
                 CONNECT BY PRIOR  PARENT_DESIGNATION=DESIGNATION_ID";
-
+        $boundedParams['employeeId'] = $employeeId;
         $statement = $this->adapter->query($sql);
-        return $statement->execute();
+        return $statement->execute($boundedParams);
     }
 
     //to get recommender and approver based on designation and branch id
     public function getEmployeeList($withinBranch, $withinDepartment, $designationId, $branchId, $departmentId) {
-        $sql = "SELECT EMPLOYEE_ID,INITCAP(FIRST_NAME) AS FIRST_NAME,INITCAP(MIDDLE_NAME) AS MIDDLE_NAME,INITCAP(LAST_NAME) AS LAST_NAME FROM HRIS_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND DESIGNATION_ID=" . $designationId;
+        $boundedParams = [];
+        $sql = "SELECT EMPLOYEE_ID,INITCAP(FIRST_NAME) AS FIRST_NAME,INITCAP(MIDDLE_NAME) AS MIDDLE_NAME,INITCAP(LAST_NAME) AS LAST_NAME FROM HRIS_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND DESIGNATION_ID= :designationId ";
 
         if ($withinBranch != null && $withinBranch != "N") {
-            $sql .= " AND BRANCH_ID=" . $branchId;
+            $sql .= " AND BRANCH_ID= :branchId ";
         }
 
         if ($withinDepartment != null && $withinDepartment != "N") {
-            $sql .= " AND DEPARTMENT_ID=" . $departmentId;
+            $sql .= " AND DEPARTMENT_ID= :departmentId ";
         }
+        $boundedParams['designationId'] = $designationId;
+        $boundedParams['branchId'] = $branchId;
 
         $statement = $this->adapter->query($sql);
         return $statement->execute();
@@ -157,7 +161,8 @@ class RecommendApproveRepository implements RepositoryInterface {
             "RA.STATUS='E'",
             "E.STATUS='E'",
             "E.RETIRED_FLAG='N'",
-            "RA.EMPLOYEE_ID=" . $employeeId . " AND
+            "RA.EMPLOYEE_ID"=>  $employeeId ,
+            " 
               (((E1.STATUS =
                 CASE
                   WHEN E1.STATUS IS NOT NULL
@@ -189,12 +194,12 @@ class RecommendApproveRepository implements RepositoryInterface {
 
         if ($recommenderId != null && $recommenderId != -1) {
             $select->where([
-                "RA.RECOMMEND_BY=" . $recommenderId]);
+                "RA.RECOMMEND_BY" => $recommenderId]);
         }
 
         if ($approverId != null && $approverId != -1) {
             $select->where([
-                "RA.APPROVED_BY=" . $approverId]);
+                "RA.APPROVED_BY" => $approverId]);
         }
 
         $select->order("E.FIRST_NAME ASC");
@@ -288,17 +293,20 @@ GROUP BY IARA.EMPLOYEE_ID) AA ON (AA.EMPLOYEE_ID=E.EMPLOYEE_ID)
     }
 
     public function getEmployeeForOverride($data) {
-        $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId']);
-
+        $boundedParams = [];
+        $condition = EntityHelper::getSearchConditonBounded($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId']);
+        $boundedParams = array_merge($boundedParams, $condition['parameter']);
 
         $typeCondition = "";
         if($data['type'] != null || $data['type'] != ""){
-            $typeCondition = "AND TYPE = '{$data['type']}'";
+            $typeCondition = "AND TYPE = :type";
+            $boundedParams['type'] = $data['type'];
         }
 
         $leaveTypeCondition = "";
         if ($data['type'] == 'LV' && ($data['typeId'] != null || $data['typeId'] != -1)) {
-            $leaveTypeCondition = "AND TYPE_ID = {$data['typeId']}";
+            $leaveTypeCondition = "AND TYPE_ID = :typeId";
+            $boundedParams['typeId'] = $data['typeId'];
         }
 
         if ($typeCondition == "" || $typeCondition == null){
@@ -337,43 +345,48 @@ GROUP BY IARA.EMPLOYEE_ID) AA ON (AA.EMPLOYEE_ID=E.EMPLOYEE_ID)
                 RIGHT JOIN HRIS_EMPLOYEES E
                 ON (E.EMPLOYEE_ID = NN.EMPLOYEE_ID1) 
                 where 1=1 AND E.STATUS = 'E'
-                {$condition} order by type_id
+                {$condition['sql']} order by type_id
                 ";
         }
-//        print_r($sql);
-//        die();
         $statement = $this->adapter->query($sql);
-        return $statement->execute();
+        return $statement->execute($boundedParams);
     }
 
     public function updateStatus($employeeId, $updateData) {
+        $boundedParams = [];
         $leaveTypeCheck = "";
         if($updateData['type'] == 'LV') {
-            $leaveTypeCheck = "AND TYPE_ID = {$updateData['leaveType']}";
+            $leaveTypeCheck = "AND TYPE_ID = :leaveType";
+            $boundedParams['leaveType'] = $updateData['leaveType'];
         }
-        $updateSql = "UPDATE HRIS_REC_APP_OVERRIDE SET STATUS = 'D' where employee_id = {$employeeId} and TYPE = '{$updateData['type']}' {$leaveTypeCheck}";
-        EntityHelper::rawQueryResult($this->adapter, $updateSql);
+        $updateSql = "UPDATE HRIS_REC_APP_OVERRIDE SET STATUS = 'D' where employee_id = :employeeId and TYPE = :type " . $leaveTypeCheck;
+        $boundedParams['employeeId'] = $employeeId;
+        $boundedParams['type'] = $updateData['type'];
+        EntityHelper::rawQueryResult($this->adapter, $updateSql, $boundedParams);
         return;
     }
 
     public function updateOverride($employeeId, $updateData) {
         $sql = '';
-
+        $boundedParams = [];
         $leaveTypeCheck = "";
         if($updateData['type'] == 'LV') {
-            $leaveTypeCheck = "AND TYPE_ID = {$updateData['leaveType']}";
+            $leaveTypeCheck = "AND TYPE_ID = :leaveType";
+            $boundedParams['leaveType'] = $updateData['leaveType'];
         }
 
         if ($updateData['recommender'] == "NULL" && $updateData['approver'] == "NULL") {
-            $sql = "DELETE FROM HRIS_REC_APP_OVERRIDE WHERE EMPLOYEE_ID = {$employeeId} and TYPE = '{$updateData['type']}' {$leaveTypeCheck}";
+            $sql = "DELETE FROM HRIS_REC_APP_OVERRIDE WHERE EMPLOYEE_ID = :employeeId and TYPE = 'type' {$leaveTypeCheck}";
+            $boundedParams['employeeId'] = $employeeId;
+            $boundedParams['type'] = $updateData['type'];
         } else {
             $sql = "
             DECLARE
-                  p_employee_id   NUMBER := {$employeeId};
-                  p_type          VARCHAR2(5) := '{$updateData['type']}';
-                  p_type_id       NUMBER := {$updateData['leaveType']};
-                  p_recommender   NUMBER := {$updateData['recommender']};  
-                  p_approver      NUMBER := {$updateData['approver']};
+                  p_employee_id   NUMBER := :employeeId;
+                  p_type          VARCHAR2(5) := :type;
+                  p_type_id       NUMBER := :leaveType;
+                  p_recommender   NUMBER := :recommender;  
+                  p_approver      NUMBER := :approver;
                   v_update        NUMBER := 1;
                   v_employee_id   NUMBER;
                 BEGIN
@@ -419,8 +432,13 @@ GROUP BY IARA.EMPLOYEE_ID) AA ON (AA.EMPLOYEE_ID=E.EMPLOYEE_ID)
                   COMMIT;
                 END;
             ";
+            $boundedParams['employeeId'] = $employeeId;
+            $boundedParams['type'] = $updateData['type'];
+            $boundedParams['leaveType'] = $updateData['leaveType'];
+            $boundedParams['recommender'] = $updateData['recommender'];
+            $boundedParams['approver'] = $updateData['approver'];
         }
-        EntityHelper::rawQueryResult($this->adapter, $sql);
+        EntityHelper::rawQueryResult($this->adapter, $sql, $boundedParams);
         return;
     }
 }
