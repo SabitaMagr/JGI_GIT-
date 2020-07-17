@@ -79,7 +79,7 @@ class EmployeeExperienceRepository implements RepositoryInterface {
             new Expression("EE.ORGANIZATION_NAME AS ORGANIZATION_NAME"),
             new Expression("EE.POSITION AS POSITION")],TRUE);
         $select->from(['EE'=>EmployeeExperience::TABLE_NAME]); 
-        $select->where(["EE." . EmployeeExperience::EMPLOYEE_ID . "=$employeeId"]);
+        $select->where(["EE." . EmployeeExperience::EMPLOYEE_ID => $employeeId]);
         $select->where(["EE." . EmployeeExperience::STATUS . "='E'"]);
         $select->order("EE.".EmployeeExperience::ID);
         $statement = $sql->prepareStatementForSqlObject($select);
