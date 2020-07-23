@@ -163,7 +163,6 @@
             reset: function () {
                 let acl = document.acl;
                 let aclControlVal='F';
-                    
                     $.each(this.ids, function (key, value) {
 //                    console.log(value);
                         let $company = $('#' + 'companyId');
@@ -177,7 +176,6 @@
 //                    
                         let populateValues = [];
                     if (typeof acl !== 'undefined') {
-                        console.log('sdfsd');
                         aclControlVal = acl['CONTROL'];
 
                         $.each(acl['CONTROL_VALUES'], function (k, v) {
@@ -508,40 +506,42 @@
             var employeeDetail = document.employeeDetail;
             if (typeof acl !== 'undefined' && typeof employeeDetail !== 'undefined') {
 
-                var populateValues = [];
-                $.each(acl['CONTROL_VALUES'], function (k, v) {
-                    if (v.CONTROL == acl['CONTROL']) {
-                        populateValues.push(v.VAL);
-                    }
-                });
-                
+                for(let i = 0; i < acl['CONTROL'].length; i++){
+                    var populateValues = [];
+                    $.each(acl['CONTROL_VALUES'], function (k, v) {
 
-                switch (acl['CONTROL']) {
-                    case 'C':
-                        $company.val((populateValues.length<1)?employeeDetail['COMPANY_ID']:populateValues);
-                        $company.trigger('change');
-                        $company.prop('disabled', true);
-                        break;
-                    case 'B':
-                        $branch.val((populateValues.length<1)?employeeDetail['BRANCH_ID']:populateValues);
-                        $branch.trigger('change');
-                        $branch.prop('disabled', true);
-                        break;
-                    case 'DS':
-                        $designation.val((populateValues.length<1)?employeeDetail['DESIGNATION_ID']:populateValues);
-                        $designation.trigger('change');
-                        $designation.prop('disabled', true);
-                        break;
-                    case 'DP':
-                        $department.val((populateValues.length<1)?employeeDetail['DEPARTMENT_ID']:populateValues);
-                        $department.trigger('change');
-                        $department.prop('disabled', true);
-                        break;
-                    case 'P':
-                        $position.val((populateValues.length<1)?employeeDetail['POSITION_ID']:populateValues);
-                        $position.trigger('change');
-                        $position.prop('disabled', true);
-                        break;
+                        if (v.CONTROL == acl['CONTROL'][i]) {
+                            populateValues.push(v.VAL);
+                        }
+                    });
+                    
+                    switch (acl['CONTROL'][i]) {
+                        case 'C':
+                            $company.val((populateValues.length<1)?employeeDetail['COMPANY_ID']:populateValues);
+                            $company.trigger('change');
+                            $company.prop('disabled', true);
+                            break;
+                        case 'B':
+                            $branch.val((populateValues.length<1)?employeeDetail['BRANCH_ID']:populateValues);
+                            $branch.trigger('change');
+                            $branch.prop('disabled', true);
+                            break;
+                        case 'DS':
+                            $designation.val((populateValues.length<1)?employeeDetail['DESIGNATION_ID']:populateValues);
+                            $designation.trigger('change');
+                            $designation.prop('disabled', true);
+                            break;
+                        case 'DP':
+                            $department.val((populateValues.length<1)?employeeDetail['DEPARTMENT_ID']:populateValues);
+                            $department.trigger('change');
+                            $department.prop('disabled', true);
+                            break;
+                        case 'P':
+                            $position.val((populateValues.length<1)?employeeDetail['POSITION_ID']:populateValues);
+                            $position.trigger('change');
+                            $position.prop('disabled', true);
+                            break;
+                    }
                 }
             }
 
