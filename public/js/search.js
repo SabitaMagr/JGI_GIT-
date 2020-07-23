@@ -1,3 +1,4 @@
+
 (function ($, app) {
     $(document).ready(function () {
         document.searchManager = {
@@ -563,8 +564,5 @@
 
         /* setup change events */
 
-
-
     });
-
 })(window.jQuery, window.app);

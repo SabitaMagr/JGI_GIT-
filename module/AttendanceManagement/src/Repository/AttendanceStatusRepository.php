@@ -210,21 +210,27 @@ class AttendanceStatusRepository extends HrisRepository {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
 
-        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, null, null, $functionalTypeId);
+        $boundedParams = [];
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, null, null, $functionalTypeId);
+        $boundedParams = array_merge($boundedParams, $searchCondition['parameter']);
+
         $statusCondition = "";
         $fromDateCondition = "";
         $toDateCondition = "";
 
         if ($attendanceRequestStatusId != -1) {
-            $statusCondition = "AND AR.STATUS = '{$attendanceRequestStatusId}'";
+            $statusCondition = "AND AR.STATUS = ':attendanceRequestStatusId'";
+            $boundedParams['attendanceRequestStatusId'] = $attendanceRequestStatusId;
         }
 
         if ($fromDate != null) {
-            $fromDateCondition = " AND AR.ATTENDANCE_DT>=TO_DATE('{$fromDate}','DD-MM-YYYY')";
+            $fromDateCondition = " AND AR.ATTENDANCE_DT>= :fromDate";
+            $boundedParams['fromDate'] = $fromDate;
         }
 
         if ($toDate != null) {
-            $toDateCondition = "AND AR.ATTENDANCE_DT<=TO_DATE('{$toDate}','DD-MM-YYYY')";
+            $toDateCondition = "AND AR.ATTENDANCE_DT<= :toDate";
+            $boundedParams['toDate'] = $toDate;
         }
 
         $sql = "SELECT AR.ID                                           AS ID,
@@ -291,8 +297,8 @@ class AttendanceStatusRepository extends HrisRepository {
                     WHEN APRV.STATUS IS NOT NULL
                     THEN ('E')
                   END
-                OR APRV.STATUS IS NULL) {$searchCondition} {$statusCondition} {$fromDateCondition} {$toDateCondition}";
+                OR APRV.STATUS IS NULL) {$searchCondition['sql']} {$statusCondition} {$fromDateCondition} {$toDateCondition}";
         $finalQuery = $this->getPrefReportQuery($sql);
-        return $this->rawQuery($finalQuery);
+        return $this->rawQuery($finalQuery, $boundedParams);
     }
 }

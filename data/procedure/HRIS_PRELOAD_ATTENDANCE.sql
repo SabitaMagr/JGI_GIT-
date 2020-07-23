@@ -273,46 +273,8 @@ BEGIN
       NULL;
     END;
     --
-    BEGIN
-      SELECT LEAVE_ID,
-        HALF_DAY,
-        GRACE_PERIOD
-      INTO V_LEAVE_ID,
-        V_LEAVE_HALFDAY_PERIOD,
-        V_LEAVE_GRACE_PERIOD
-      FROM
-        (SELECT L.LEAVE_ID,
-          (
-          CASE
-            WHEN L.HALF_DAY IS NULL
-            OR L.HALF_DAY    = 'N'
-            THEN NULL
-            ELSE L.HALF_DAY
-          END ) AS HALF_DAY ,
-          L.GRACE_PERIOD
-        FROM HRIS_EMPLOYEE_LEAVE_REQUEST L
-        LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS
-        ON (L.LEAVE_ID      =LMS.LEAVE_ID)
-        WHERE L.EMPLOYEE_ID = V_EMPLOYEE_ID
-        AND V_ATTENDANCE_DATE BETWEEN L.START_DATE AND L.END_DATE
-        AND L.STATUS            = 'AP'
-        AND (V_DAYOFF          !='Y'
-        OR LMS.DAY_OFF_AS_LEAVE ='Y')
-        AND (V_HOLIDAY_ID      IS NULL
-        OR LMS.HOLIDAY_AS_LEAVE ='Y')
-        ORDER BY L.REQUESTED_DT DESC
-        )
-      WHERE ROWNUM        =1;
-      IF V_LEAVE_ID      IS NOT NULL AND V_LEAVE_HALFDAY_PERIOD IS NULL AND V_LEAVE_GRACE_PERIOD IS NULL THEN
-        V_OVERALL_STATUS :='LV';
-      END IF;
-      --       IF V_LEAVE_HALFDAY_PERIOD IS NOT NULL THEN
-      --         V_HALFDAY               := 'Y';
-      --       END IF;
-    EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-      NULL;
-    END;
+    
+    --for training Start
     BEGIN
       SELECT TA.TRAINING_ID,
         'A'
@@ -370,7 +332,52 @@ BEGIN
     WHEN NO_DATA_FOUND THEN
       NULL;
     END;
-    -- CHECK FOR WOD
+    --for training End
+    
+     --for Leave start
+    BEGIN
+      SELECT LEAVE_ID,
+        HALF_DAY,
+        GRACE_PERIOD
+      INTO V_LEAVE_ID,
+        V_LEAVE_HALFDAY_PERIOD,
+        V_LEAVE_GRACE_PERIOD
+      FROM
+        (SELECT L.LEAVE_ID,
+          (
+          CASE
+            WHEN L.HALF_DAY IS NULL
+            OR L.HALF_DAY    = 'N'
+            THEN NULL
+            ELSE L.HALF_DAY
+          END ) AS HALF_DAY ,
+          L.GRACE_PERIOD
+        FROM HRIS_EMPLOYEE_LEAVE_REQUEST L
+        LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS
+        ON (L.LEAVE_ID      =LMS.LEAVE_ID)
+        WHERE L.EMPLOYEE_ID = V_EMPLOYEE_ID
+        AND V_ATTENDANCE_DATE BETWEEN L.START_DATE AND L.END_DATE
+        AND L.STATUS            = 'AP'
+        AND (V_DAYOFF          !='Y'
+        OR LMS.DAY_OFF_AS_LEAVE ='Y')
+        AND (V_HOLIDAY_ID      IS NULL
+        OR LMS.HOLIDAY_AS_LEAVE ='Y')
+        ORDER BY L.REQUESTED_DT DESC
+        )
+      WHERE ROWNUM        =1;
+      IF V_LEAVE_ID      IS NOT NULL AND V_LEAVE_HALFDAY_PERIOD IS NULL AND V_LEAVE_GRACE_PERIOD IS NULL THEN
+        V_OVERALL_STATUS :='LV';
+      END IF;
+      --       IF V_LEAVE_HALFDAY_PERIOD IS NOT NULL THEN
+      --         V_HALFDAY               := 'Y';
+      --       END IF;
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      NULL;
+    END;
+    --for Leave end
+    
+    -- CHECK FOR WOD start
     BEGIN
       SELECT ID
       INTO V_WOD_ID
@@ -394,8 +401,9 @@ BEGIN
     WHEN NO_DATA_FOUND THEN
       NULL;
     END;
-    --
-    -- CHECK OF WOH
+    -- CHECK FOR WOD end
+    
+    -- CHECK OF WOH start
     BEGIN
       SELECT ID
       INTO V_WOH_ID
@@ -419,7 +427,8 @@ BEGIN
     WHEN NO_DATA_FOUND THEN
       NULL;
     END;
-    --
+    -- CHECK OF WOH end
+    
     BEGIN
       INSERT
       INTO HRIS_ATTENDANCE_DETAIL

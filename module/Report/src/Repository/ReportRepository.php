@@ -835,26 +835,32 @@ EOT;
     }
 
     public function reportWithOT($data) {
+        $boundedParams = [];
         $fromCondition = "";
         $toCondition = "";
 
         $otFromCondition = "";
         $otToCondition = "";
 
-        $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], $data['genderId'], $data['locationId'], $data['functionalTypeId']);
+        $condition = EntityHelper::getSearchConditonBounded($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], $data['genderId'], $data['locationId'], $data['functionalTypeId']);
+        $boundedParams=array_merge($boundedParams,$condition['parameter']);
 
         if (isset($data['fromDate']) && $data['fromDate'] != null && $data['fromDate'] != -1) {
-            $fromDate = Helper::getExpressionDate($data['fromDate']);
-            $fromCondition = "AND A.ATTENDANCE_DT >= {$fromDate->getExpression()}";
-            $otFromCondition = "AND OVERTIME_DATE >= {$fromDate->getExpression()} ";
+            $fromDate = $data['fromDate'];
+            $fromCondition = "AND A.ATTENDANCE_DT >= :fromDate";
+            $otFromCondition = "AND OVERTIME_DATE >= :fromDate ";
+            $boundedParams['fromDate'] = $fromDate;
         }
         if (isset($data['toDate']) && $data['toDate'] != null && $data['toDate'] != -1) {
-            $toDate = Helper::getExpressionDate($data['toDate']);
-            $toCondition = "AND A.ATTENDANCE_DT <= {$toDate->getExpression()}";
-            $otToCondition = "AND OVERTIME_DATE <= {$toDate->getExpression()} ";
+            $toDate = $data['toDate'];
+            $toCondition = "AND A.ATTENDANCE_DT <= :toDate";
+            $otToCondition = "AND OVERTIME_DATE <= :toDate ";
+            $boundedParams['toDate'] = $toDate;
+
         }
 
         $monthId = $data['monthId'];
+        $boundedParams['monthId'] = $monthId;
 
         $sql = <<<EOT
             SELECT C.COMPANY_NAME,
@@ -1006,14 +1012,14 @@ GROUP BY
             LEFT JOIN HRIS_DEPARTMENTS D
             ON (E.DEPARTMENT_ID= D.DEPARTMENT_ID)
             LEFT JOIN HRIS_OVERTIME_A_D AD
-            ON (A.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = {$monthId})
-            WHERE 1            =1 {$condition}
+            ON (A.EMPLOYEE_ID = AD.EMPLOYEE_ID AND AD.MONTH_ID = :monthId)
+            WHERE 1            =1 {$condition['sql']}
             ORDER BY C.COMPANY_NAME,
               D.DEPARTMENT_NAME,
               E.FULL_NAME 
 EOT;
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParams);
         return Helper::extractDbData($result);
     }
 
@@ -1202,7 +1208,9 @@ EOT;
     }
 
     public function employeeDailyReport($searchQuery) {
-        $monthDetail = $this->getMonthDetails($searchQuery['monthCodeId']);
+        $fromDate=$searchQuery['fromDate'];
+        $toDate=$searchQuery['toDate'];
+        $monthDetail = $this-> getMonthDetailsByDate($fromDate,$toDate);
 
         $pivotString = '';
         for ($i = 1; $i <= $monthDetail['DAYS']; $i++) {
@@ -1212,54 +1220,16 @@ EOT;
                 $pivotString .= $i . ' AS ' . 'D' . $i;
             }
         }
+        
+        $kendoDetails =$this->getMonthDetailsForKendo($fromDate,$toDate);
 
         $leaveDetails=$this->getLeaveList();
         $leavePivotString = $this->getLeaveCodePivot($leaveDetails);
-        $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId'], null, null, $searchQuery['functionalTypeId']);
-//        $sql = <<<EOT
-//             SELECT PL.*,
-//                CL.PRESENT,
-//                CL.ABSENT,
-//                CL.LEAVE,
-//                CL.DAYOFF,
-//                CL.HOLIDAY,
-//                CL.WORK_DAYOFF,
-//                CL.WORK_HOLIDAY,
-//                 (CL.PRESENT+CL.ABSENT+CL.LEAVE+CL.DAYOFF+CL.HOLIDAY+CL.WORK_DAYOFF+CL.WORK_HOLIDAY) as TOTAL
-//      FROM
-//      (SELECT * FROM 
-//(SELECT 
-//E.FULL_NAME,
-//AD.EMPLOYEE_ID,
-//E.EMPLOYEE_CODE,
-//CASE WHEN AD.OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
-//THEN 'PR' ELSE AD.OVERALL_STATUS END AS OVERALL_STATUS,
-//--AD.ATTENDANCE_DT,
-//(AD.ATTENDANCE_DT-MC.FROM_DATE+1) AS DAY_COUNT
-//FROM HRIS_ATTENDANCE_DETAIL AD
-//LEFT JOIN HRIS_MONTH_CODE MC ON (AD.ATTENDANCE_DT BETWEEN MC.FROM_DATE AND MC.TO_DATE)
-//JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=AD.EMPLOYEE_ID)
-//WHERE MC.MONTH_ID={$searchQuery['monthCodeId']}
-//{$searchConditon}
-//    )
-//PIVOT (MAX (OVERALL_STATUS)  FOR DAY_COUNT
-//                        IN ({$pivotString}))
-//                        ) PL
-//   LEFT JOIN (SELECT
-//    EMPLOYEE_ID,
-//    COUNT(case  when OVERALL_STATUS  IN ('TV','TN','PR','BA','LA','TP','LP','VP') then 1 end) AS PRESENT,
-//    COUNT(case OVERALL_STATUS when 'AB' then 1 end) AS ABSENT,
-//    COUNT(case OVERALL_STATUS when 'LV' then 1 end) AS LEAVE,
-//    COUNT(case OVERALL_STATUS when 'DO' then 1 end) AS DAYOFF,
-//    COUNT(case OVERALL_STATUS when 'HD' then 1 end) AS HOLIDAY,
-//    COUNT(case OVERALL_STATUS when 'WD' then 1 end) AS WORK_DAYOFF,
-//    COUNT(case OVERALL_STATUS when 'WH' then 1 end) AS WORK_HOLIDAY
-//        FROM HRIS_ATTENDANCE_DETAIL
-//        WHERE
-//         ATTENDANCE_DT BETWEEN   TO_DATE('{$monthDetail['FROM_DATE']}','DD-MON-YY') AND   TO_DATE('{$monthDetail['TO_DATE']}','DD-MON-YY')
-//        GROUP BY EMPLOYEE_ID)CL ON (PL.EMPLOYEE_ID=CL.EMPLOYEE_ID)
-//                
-//EOT;
+        $boundedParameter = [];
+        $boundedParameter['fromDate']=$fromDate;
+        $boundedParameter['toDate']=$toDate;
+        $searchCondition = EntityHelper::getSearchConditonBounded($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId'], null, null, $searchQuery['functionalTypeId']);
+        $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
 
         $sql = <<<EOT
                 SELECT PL.*,MLD.*,
@@ -1285,15 +1255,13 @@ EOT;
                ELSE AD.OVERALL_STATUS
              END AS OVERALL_STATUS,
              --AD.ATTENDANCE_DT,
-             (AD.ATTENDANCE_DT-MC.FROM_DATE+1) AS DAY_COUNT
+             (AD.ATTENDANCE_DT-TO_DATE(:fromDate)+1) AS DAY_COUNT
            FROM HRIS_ATTENDANCE_DETAIL AD
            LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS ON (AD.LEAVE_ID=LMS.LEAVE_ID)
-           LEFT JOIN HRIS_MONTH_CODE MC
-           ON (AD.ATTENDANCE_DT BETWEEN MC.FROM_DATE AND MC.TO_DATE)
            JOIN HRIS_EMPLOYEES E
            ON (E.EMPLOYEE_ID =AD.EMPLOYEE_ID)
-           WHERE MC.MONTH_ID = {$searchQuery['monthCodeId']}
-       {$searchConditon}
+           WHERE (AD.ATTENDANCE_DT BETWEEN TO_DATE(:fromDate) AND TO_DATE(:toDate) )
+       {$searchCondition['sql']}
            ) PIVOT (MAX (OVERALL_STATUS) FOR DAY_COUNT IN ({$pivotString})) 
          ) PL
        LEFT JOIN
@@ -1334,7 +1302,7 @@ EOT;
              THEN 1
            END) AS WORK_HOLIDAY
          FROM HRIS_ATTENDANCE_DETAIL
-         WHERE ATTENDANCE_DT BETWEEN TO_DATE('{$monthDetail['FROM_DATE']}','DD-MON-YY') AND TO_DATE('{$monthDetail['TO_DATE']}','DD-MON-YY')
+         WHERE ATTENDANCE_DT BETWEEN TO_DATE(:fromDate,'DD-MON-YY') AND TO_DATE(:toDate,'DD-MON-YY')
          GROUP BY EMPLOYEE_ID
          )CL
        ON (PL.EMPLOYEE_ID=CL.EMPLOYEE_ID)
@@ -1352,10 +1320,9 @@ AD.leave_id,
  else 0.5 end
  ) as LTBM
 from HRIS_ATTENDANCE_DETAIL AD
- LEFT JOIN HRIS_MONTH_CODE MC  ON (AD.ATTENDANCE_DT BETWEEN MC.FROM_DATE AND MC.TO_DATE)  
   WHERE 
  leave_id  is not null and
-   MC.MONTH_ID = {$searchQuery['monthCodeId']}
+   (AD.ATTENDANCE_DT BETWEEN TO_DATE(:fromDate) AND TO_DATE(:toDate) )
    group by AD.employee_id,AD.leave_id
    )
    PIVOT ( MAX (LTBM) FOR LEAVE_ID IN (
@@ -1370,15 +1337,15 @@ EOT;
 //   echo $sql;
 //   die();
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return ['leaveDetails'=>$leaveDetails,'monthDetail' => $monthDetail, 'data' => Helper::extractDbData($result)];
+        $result = $statement->execute($boundedParameter);
+        return ['leaveDetails'=>$leaveDetails,'monthDetail' => $monthDetail,'kendoDetails'=>$kendoDetails,'data' => Helper::extractDbData($result)];
     }
 
     public function getMonthDetails($monthId) {
         $sql = "SELECT 
     FROM_DATE,TO_DATE,TO_DATE-FROM_DATE+1 AS DAYS FROM 
     HRIS_MONTH_CODE WHERE MONTH_ID={$monthId}";
-
+    
         $statement = $this->adapter->query($sql);
         $result = $statement->execute()->current();
         return $result;
@@ -1923,13 +1890,15 @@ FROM
 
         if (isset($data['fromDate']) && $data['fromDate'] != null && $data['fromDate'] != -1) {
             $fromDate = Helper::getExpressionDate($data['fromDate']);
-            $fromCondition = "AND A.ATTENDANCE_DT >= {$fromDate->getExpression()}";
-            $otFromCondition = "AND OVERTIME_DATE >= {$fromDate->getExpression()} ";
+            $fromCondition = "AND A.ATTENDANCE_DT >= :fromDate";
+            $otFromCondition = "AND OVERTIME_DATE >= :fromDate";
+            $boundedParameter['fromDate'] = $fromDate;
         }
         if (isset($data['toDate']) && $data['toDate'] != null && $data['toDate'] != -1) {
             $toDate = Helper::getExpressionDate($data['toDate']);
-            $toCondition = "AND A.ATTENDANCE_DT <= {$toDate->getExpression()}";
-            $otToCondition = "AND OVERTIME_DATE <= {$toDate->getExpression()} ";
+            $toCondition = "AND A.ATTENDANCE_DT <= :toDate";
+            $otToCondition = "AND OVERTIME_DATE <= :toDate";
+            $boundedParameter['todate'] = $toDate;
         }
 
         $monthId = $data['monthId'];
@@ -2133,7 +2102,7 @@ EOT;
 
     public function employeeDailyReportShivam($searchQuery) {
         $monthDetail = $this->getMonthDetails($searchQuery['monthCodeId']);
-
+        
         $pivotString = '';
         for ($i = 1; $i <= $monthDetail['DAYS']; $i++) {
             if ($i != $monthDetail['DAYS']) {
@@ -2330,12 +2299,12 @@ EOT;
         $boundedParameter = [];
 
         if ($fromDate != null) {
-            $fromDateCondition = " AND (S.END_DATE >= TO_DATE(:fromDate,'DD-MM-YYYY') OR S.END_DATE IS NULL)";
+            $fromDateCondition = " AND (S.END_DATE >= :fromDate OR S.END_DATE IS NULL)";
             $boundedParameter['fromDate'] = $fromDate;
         }
 
         if ($toDate != null) {
-            $toDateCondition = "AND (S.END_DATE <= TO_DATE(:toDate,'DD-MM-YYYY') OR S.END_DATE IS NULL) ";
+            $toDateCondition = "AND (S.END_DATE <= :toDate OR S.END_DATE IS NULL) ";
             $boundedParameter['toDate'] = $toDate;
         }
 
@@ -2873,7 +2842,7 @@ END as do_status
         THEN 'O'
         ELSE AD.OVERALL_STATUS
       END                                                         AS OVERALL_STATUS,
-      (AD.ATTENDANCE_DT- to_date('{$data['fromDate']}','DD-Mon-YYYY') +1) AS DAY_COUNT_ATTD
+      (AD.ATTENDANCE_DT- :fromDate +1) AS DAY_COUNT_ATTD
       ,AD.ATTENDANCE_DT
 
 FROM 
@@ -2885,12 +2854,12 @@ WHEN ER.SHIFT_ID IS NOT NULL THEN ER.SHIFT_ID
 WHEN ESA.SHIFT_ID IS NOT NULL THEN ESA.SHIFT_ID
 ELSE DS.SHIFT_ID END AS ASSUMED_SHIFT_ID
 from
-(SELECT TO_DATE('{$data['fromDate']}', 'DD-MON-YY') + RowNum - 1 AS DATES,
+(SELECT TO_DATE(:fromDate, 'DD-MON-YY') + RowNum - 1 AS DATES,
   RowNum                                            AS DAY_COUNT,
-  TO_DATE('{$data['fromDate']}', 'DD-MON-YY')               AS FROM_DATE
+  :fromDate               AS FROM_DATE
 FROM dual d
-  CONNECT BY RowNum <= TO_DATE('{$data['toDate']}', 'DD-MON-YY') 
-  - TO_DATE('{$data['fromDate']}', 'DD-MON-YY') + 1 ) AD
+  CONNECT BY RowNum <= TO_DATE(:toDate, 'DD-MON-YY')
+  - TO_DATE(:fromDate, 'DD-MON-YY') + 1 ) AD
   LEFT JOIN HRIS_EMP_WHEREABOUT_ASN EWA ON (1=1)
   LEFT JOIN HRIS_EMPLOYEE_SHIFT_ROASTER ER ON (ER.FOR_DATE=AD.DATES AND ER.EMPLOYEE_ID=EWA.EMPLOYEE_ID)
   LEFT JOIN HRIS_EMPLOYEE_SHIFT_ASSIGN ESA ON (ER.EMPLOYEE_ID=ESA.EMPLOYEE_ID AND AD.DATES BETWEEN START_DATE AND END_DATE )
@@ -2904,6 +2873,7 @@ FROM dual d
   left JOIN HRIS_BRANCHES B ON (E.BRANCH_ID = B.BRANCH_ID)
   left JOIN HRIS_DESIGNATIONS D ON (E.DESIGNATION_ID = D.DESIGNATION_ID)
   
+  where 1=1 {$searchConditon['sql']}
   )
   FIT
     
@@ -2948,7 +2918,7 @@ LEFT JOIN
       THEN 1
     END) AS TRAVEL
   FROM HRIS_ATTENDANCE_DETAIL
-  WHERE ATTENDANCE_DT BETWEEN to_date('{$data['fromDate']}','DD-Mon-YYYY') AND to_date('{$data['toDate']}','DD-Mon-YYYY')
+  WHERE ATTENDANCE_DT BETWEEN to_date(:fromDate,'DD-Mon-YYYY') AND to_date(:toDate,'DD-Mon-YYYY')
   GROUP BY EMPLOYEE_ID
   )CL
 ON (PL.EMPLOYEE_ID=CL.EMPLOYEE_ID)
@@ -2964,8 +2934,8 @@ LEFT JOIN
         ELSE 0.5
       END ) AS LTBM
     FROM HRIS_ATTENDANCE_DETAIL AD
-    WHERE leave_id IS NOT NULL
-    AND AD.ATTENDANCE_DT BETWEEN to_date('{$data['fromDate']}','DD-Mon-YYYY') AND to_date('{$data['toDate']}','DD-Mon-YYYY')
+    WHERE leave_id IS NOT NULL 
+    AND AD.ATTENDANCE_DT BETWEEN to_date(:fromDate,'DD-Mon-YYYY') AND to_date(:toDate,'DD-Mon-YYYY')
     GROUP BY AD.employee_id,
       AD.leave_id
     ) PIVOT ( MAX (LTBM) FOR LEAVE_ID IN ( {$leavePivotString} ) )
@@ -2975,8 +2945,10 @@ LEFT JOIN HRIS_EMP_WHEREABOUT_ASN W
 ON (PL.EMPLOYEE_ID = W.EMPLOYEE_ID)
 ORDER BY W.ORDER_BY
 EOT;
+        $boundedParameter['fromDate'] = $data['fromDate'];
+        $boundedParameter['toDate'] = $data['toDate'];
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
+        $result = $statement->execute($boundedParameter);
         return ['leaveDetails'=>$leaveDetails, 'data' => Helper::extractDbData($result)];
     }
 
@@ -2995,7 +2967,55 @@ EOT;
         $sql = "SELECT TO_DATE, FROM_DATE, MONTH_EDESC FROM HRIS_MONTH_CODE WHERE MONTH_ID = :monthId";
         $boundedParam['monthId'] = $monthId;
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute($boundedParamf);
+        $result = $statement->execute($boundedParam);
         return Helper::extractDbData($result);
     }
+    
+   public function getMonthDetailsForKendo($fromDate,$toDate){
+        $boundedParam = [];
+        $boundedParam['fromDate']=$fromDate;
+        $boundedParam['toDate']=$toDate;
+        $sql="select 
+FDATES.*,
+CASE WHEN CV.CALENDER_VIEW='E'
+then
+TO_CHAR(TO_DATE(FDATES.DATES),'MON')|| TO_CHAR(TO_DATE(FDATES.DATES),'DD')
+else
+SUBSTR(MC.MONTH_EDESC,0,4)|| SUBSTR(NEPALI_DATE,-2)
+END AS COLUMN_NAME
+from 
+        (SELECT  
+        TO_CHAR(TO_DATE(:fromDate,'DD-MON-YYYY') + ROWNUM -1,'DD-MON-YYYY')  AS DATES,
+        'F'||TO_CHAR((TO_DATE(:fromDate,'DD-MON-YYYY') + ROWNUM -1),'YYYYMMDD') AS FORMATE_DATE,
+         BS_DATE(TO_DATE(:fromDate,'DD-MON-YYYY') + ROWNUM -1) as NEPALI_DATE,
+         'D'||ROWNUM as KENDO_NAME
+        FROM dual D
+        CONNECT BY  rownum <=  TO_DATE(:toDate,'DD-MON-YYYY') -  TO_DATE(:fromDate,'DD-MON-YYYY') + 1 ) 
+        FDATES
+        LEFT JOIN (select VALUE AS CALENDER_VIEW from HRIS_PREFERENCES where upper(key)='CALENDAR_VIEW') CV ON (1=1)
+        LEFT JOIN HRIS_MONTH_CODE MC ON (FDATES.DATES BETWEEN MC.FROM_DATE AND MC.TO_DATE)";
+        
+//        echo $sql;
+//        DIE();
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute($boundedParam);
+        return Helper::extractDbData($result);
+        
+    }
+    
+    public function getMonthDetailsByDate($fromDate,$toDate) {
+        $boundedParam = [];
+        $boundedParam['fromDate']=$fromDate;
+        $boundedParam['toDate']=$toDate;
+         $sql = "SELECT 
+    TO_DATE(:fromDate,'DD-MON-YYYY') AS FROM_DATE,
+    TO_DATE(:toDate,'DD-MON-YYYY') AS TO_DATE,
+    TO_DATE(:toDate,'DD-MON-YYYY')-TO_DATE(:fromDate,'DD-MON-YYYY')+1 AS DAYS FROM 
+    DUAL";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute($boundedParam)->current();
+        return $result;
+    }
+    
 }

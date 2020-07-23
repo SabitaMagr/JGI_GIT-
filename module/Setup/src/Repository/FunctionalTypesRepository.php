@@ -40,7 +40,7 @@ class FunctionalTypesRepository implements RepositoryInterface {
         $select->from(["D1" => FunctionalTypes::TABLE_NAME]);
         $select->where(["D1.STATUS= 'E'"]);
         if ($id != null) {
-            $select->where(["D1.FUNCTIONAL_TYPE_ID != {$id}"]);
+            $select->where->notEqualTo("D1.FUNCTIONAL_TYPE_ID",  $id);
         }
         $select->order(["D1." . FunctionalTypes::FUNCTIONAL_TYPE_EDESC => Select::ORDER_ASCENDING]);
         $statement = $sql->prepareStatementForSqlObject($select);

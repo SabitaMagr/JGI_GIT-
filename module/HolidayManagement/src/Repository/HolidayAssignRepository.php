@@ -15,9 +15,10 @@ class HolidayAssignRepository {
     }
 
     public function filterEmployees($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $companyId, $genderId = null, $employeeTypeId = null) {
-        
-        $searchCondition = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId,$genderId);
-        
+        $boundedParams = [];
+        $searchCondition = EntityHelper::getSearchConditonBounded($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId,$genderId);
+        $boundedParams = array_merge($boundedParams, $searchCondition['parameter']);
+
         $sql = "SELECT 
                   E.EMPLOYEE_ID                                                AS EMPLOYEE_ID,
                   E.EMPLOYEE_CODE                                                   AS EMPLOYEE_CODE,
@@ -72,10 +73,10 @@ class HolidayAssignRepository {
                 LEFT JOIN HRIS_VDC_MUNICIPALITIES VMT
                 ON E.ADDR_TEMP_VDC_MUNICIPALITY_ID=VMT.VDC_MUNICIPALITY_ID
                 WHERE 1                 =1 AND E.STATUS='E' 
-                {$searchCondition} order by E.FULL_NAME  ";
+                {$searchCondition['sql']} order by E.FULL_NAME  ";
                 
                 $statement = $this->adapter->query($sql);
-                $result = $statement->execute();
+                $result = $statement->execute($boundedParams);
                 return Helper::extractDbData($result);
         
         
@@ -186,9 +187,12 @@ class HolidayAssignRepository {
         foreach ($employeeIdList as $empId) {
             $employeeId = $empId[0]->id;
             $status = $empId[0]->s;
-            EntityHelper::rawQueryResult($this->adapter, "DELETE FROM HRIS_EMPLOYEE_HOLIDAY WHERE HOLIDAY_ID={$holidayId} AND EMPLOYEE_ID={$employeeId}");
+            $boundedParams = [];
+            $boundedParams['holidayId'] = $holidayId;
+            $boundedParams['employeeId'] = $employeeId;
+            EntityHelper::rawQueryResult($this->adapter, "DELETE FROM HRIS_EMPLOYEE_HOLIDAY WHERE HOLIDAY_ID= :holidayId AND EMPLOYEE_ID= :employeeId", $boundedParams);
             if ($status == 'A') {
-                EntityHelper::rawQueryResult($this->adapter, "INSERT INTO HRIS_EMPLOYEE_HOLIDAY(HOLIDAY_ID,EMPLOYEE_ID) VALUES({$holidayId},{$employeeId})");
+                EntityHelper::rawQueryResult($this->adapter, "INSERT INTO HRIS_EMPLOYEE_HOLIDAY(HOLIDAY_ID,EMPLOYEE_ID) VALUES(:holidayId,:employeeId)", $boundedParams);
             }
         }
     }

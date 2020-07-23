@@ -1,3 +1,4 @@
+
 <?php
 
 namespace System\Form;
@@ -138,3 +139,4 @@ class RoleSetupForm {
     public $submit;
 
 }
+

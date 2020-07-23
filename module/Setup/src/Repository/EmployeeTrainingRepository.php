@@ -72,7 +72,7 @@ class EmployeeTrainingRepository implements RepositoryInterface {
             new Expression("INITCAP(ET.TRAINING_NAME) AS TRAINING_NAME"),
             new Expression("ET.DESCRIPTION AS DESCRIPTION")],TRUE);
         $select->from(['ET'=>EmployeeTraining::TABLE_NAME]); 
-        $select->where(["ET." . EmployeeTraining::EMPLOYEE_ID . "=$employeeId"]);
+        $select->where(["ET." . EmployeeTraining::EMPLOYEE_ID => $employeeId]);
         $select->where(["ET." . EmployeeTraining::STATUS . "='E'"]);
         $select->order("ET.".EmployeeTraining::ID);
         $statement = $sql->prepareStatementForSqlObject($select);

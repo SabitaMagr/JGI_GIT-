@@ -182,6 +182,9 @@ class Profile extends HrisController {
         $id = (int) $this->params()->fromRoute('id', 0);
         $tab = (int) $this->params()->fromRoute('tab', 1);
 
+        if($id!=$this->employeeId){
+        return $this->redirect()->toRoute('profile', ['action' => 'index']);
+        }
         if (11 === $tab) {
             $this->flashmessenger()->addMessage("Employee Successfully Submitted!!!");
             return $this->redirect()->toRoute('profile', ['action' => 'index']);

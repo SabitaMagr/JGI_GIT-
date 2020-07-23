@@ -212,10 +212,8 @@ class LeaveRequestRepository implements RepositoryInterface {
     public function delete($id) {
         $leaveStatus = $this->getLeaveFrontOrBack($id);
         $currentDate = Helper::getcurrentExpressionDate();
-        if ($leaveStatus['DATE_STATUS'] != 'BD' && $leaveStatus['LEAVE_STATUS'] != 'AP') {
-            $this->tableGateway->update([LeaveApply::STATUS => 'C', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
-        } else {
-            $this->tableGateway->update([LeaveApply::STATUS => 'CP', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
+        $leaveStatusAction=$leaveStatus['CANCEL_ACTION'];
+        $this->tableGateway->update([LeaveApply::STATUS => $leaveStatusAction, LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
             $boundedParameter = [];
             $boundedParameter['id']=$id;
             EntityHelper::rawQueryResult($this->adapter, "
@@ -243,7 +241,6 @@ class LeaveRequestRepository implements RepositoryInterface {
                       END IF;
                     END;
     ",$boundedParameter);
-        }
     }
 
     public function checkEmployeeLeave($employeeId, $date) {
@@ -419,7 +416,17 @@ LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID))"], "SLR.I
                 'FD'
                 ELSE
                 'BD'
-                END AS DATE_STATUS
+                END AS DATE_STATUS,
+                CASE 
+                WHEN STATUS IN ('RQ','RC') THEN
+                'C'
+                WHEN STATUS IN ('AP','CR') and (START_DATE-TRUNC(SYSDATE)<=0) THEN
+                'CP'
+                 WHEN STATUS IN ('AP','CR') and (START_DATE-TRUNC(SYSDATE)>0) THEN
+                'C'
+                ELSE
+                STATUS
+                END AS CANCEL_ACTION
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE ID=:id";
         $statement = $this->adapter->query($sql);
         return $statement->execute($boundedParameter)->current();

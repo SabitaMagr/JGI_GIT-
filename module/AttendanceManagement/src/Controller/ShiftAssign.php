@@ -80,10 +80,10 @@ class ShiftAssign extends HrisController {
             $data = $request->getPost();
             $employeeIds = $data['employeeIds'];
             $shiftId = $data['shiftId'];
-            $fromDate = Helper::getExpressionDate($data['fromDate']);
-            $toDate = Helper::getExpressionDate($data['toDate']);
+            $fromDate = $data['fromDate'];
+            $toDate = $data['toDate'];
             foreach ($employeeIds as $employeeId) {
-                $this->repository->bulkAdd($employeeId, $shiftId, $fromDate->getExpression(), $toDate->getExpression(), $this->employeeId);
+                $this->repository->bulkAdd($employeeId, $shiftId, $fromDate, $toDate, $this->employeeId);
             }
 
             return new JsonModel(['success' => true, 'data' => null, 'error' => '']);
@@ -101,11 +101,11 @@ class ShiftAssign extends HrisController {
             $data = $request->getPost();
             $ids = $data['shiftAssignIds'];
             $shiftId = $data['shiftId'];
-            $fromDate = Helper::getExpressionDate($data['fromDate']);
-            $toDate = Helper::getExpressionDate($data['toDate']);
+            $fromDate = $data['fromDate'];
+            $toDate = $data['toDate'];
 
             foreach ($ids as $id) {
-                $this->repository->bulkEdit($id, $shiftId, $fromDate->getExpression(), $toDate->getExpression(), $this->employeeId);
+                $this->repository->bulkEdit($id, $shiftId, $fromDate, $toDate, $this->employeeId);
             }
 
             return new JsonModel(['success' => true, 'data' => null, 'error' => '']);

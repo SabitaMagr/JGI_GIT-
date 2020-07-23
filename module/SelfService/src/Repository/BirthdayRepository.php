@@ -2,6 +2,7 @@
 
 namespace SelfService\Repository;
 
+use Application\Helper\EntityHelper;
 use SelfService\Model\BirthdayModel;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
@@ -115,7 +116,7 @@ class BirthdayRepository {
 
         $boundedParameter = [];
         $boundedParameter['employeeId'] = $employeeId;
-        return $this->rawQuery($sql, $boundedParameter);
+        return EntityHelper::rawQueryResult($this->adapter, $sql, $boundedParameter);
     }
 
     public function checkMessagePosted($fromEmployee, $toEmployee) {
