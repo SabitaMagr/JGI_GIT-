@@ -75,12 +75,16 @@ class RoleSetupController extends AbstractActionController {
                 $roleControlModel = new RoleControl();
                 $roleControlRepo = new RoleControlRepository($this->adapter);
                 $roleControlModel->roleId = $roleSetup->roleId;
-                $roleControlModel->control = $request->getPost('control');
-                foreach ($request->getPost('selectOptions') as $controlList) {
-                    $roleControlModel->val = $controlList;
-                    $roleControlRepo->add($roleControlModel);
+                foreach ($roleSetup->control as $value) {
+                    $roleControlModel->control = $value;
+                    foreach($request->getPost('selectOptions'.$value) as $val){
+                        $roleControlModel->val = $val;
+                        $roleControlRepo->add($roleControlModel);
+                    }
                 }
                 //to insert data into roleControl end
+                $roleSetup->control = implode(',', $roleSetup->control);
+                if($roleSetup->control == null){ $roleSetup->control = 'F'; }
                 $this->repository->add($roleSetup);
 
                 $this->flashmessenger()->addMessage("Role Successfully Added!!!");
