@@ -1700,3 +1700,5 @@ show_leave_form char(1) default 'N',
 view_order number(2,0),
 report_show_default char(1) DEFAULT 'Y'
 );
+
+alter table hris_roles modify control varchar2(100 byte);

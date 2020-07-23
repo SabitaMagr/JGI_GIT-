@@ -1,6 +1,4 @@
-
 <?php
-
 namespace System\Form;
 
 use Zend\Form\Annotation;
