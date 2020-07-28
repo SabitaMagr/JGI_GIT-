@@ -78,11 +78,12 @@
 
         $control.change(function(){
             var a = $control.val();
-            if(a == null){ return; }
             var populateValues = [];
-            populateValues = controlOptions1.filter(function(item, i){
-                return a.includes(item.key);
-            });
+            if(a != null){
+                populateValues = controlOptions1.filter(function(item, i){
+                    return a.includes(item.key);
+                });
+            }
             app.populateSelect($controlOptionsSelect, populateValues, 'key', 'value', '----Select One------');
             hideShowSelect();
         });
@@ -91,7 +92,7 @@
 
         $controlOptionsSelect.change(function () {
             var controlValue = $controlOptionsSelect.val();
-            hideShowSelect("selectOptions"+controlValue);
+            controlValue == -1 ? hideShowSelect() : hideShowSelect("selectOptions"+controlValue);
             //$selectOptions.val(populateValues).trigger('change.select2');
         });
 
