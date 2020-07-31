@@ -23,6 +23,10 @@ $branchManager->setValueOptions($employees);
 $province = $form->get('province');
 $province->setValueOptions($provinces);
 
+$isRemote = $form->get('isRemote');
+$allowanceRebate = $form->get('allowanceRebate');
+
+
 //custom validatin message
 if (key($telephone->getMessages()) == "regexNotMatch") {
     $telephone->setMessages(["regexNotMatch" => "Invalid Phone Number"]);
@@ -131,6 +135,22 @@ $form->prepare();
                             <?php print $this->formLabel($province); ?>
                             <?php print $this->formElement($province); ?>
                             <?php print $this->formElementErrors()->render($province, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($isRemote); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($isRemote); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($isRemote, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($allowanceRebate); ?>
+                            <?php print $this->formElement($allowanceRebate); ?>
+                            <?php print $this->formElementErrors()->render($allowanceRebate, ['class' => 'help-block']); ?>
                         </div>
                     </div>
                 </div>
