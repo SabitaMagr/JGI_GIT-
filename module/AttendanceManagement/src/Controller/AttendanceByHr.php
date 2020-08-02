@@ -496,4 +496,27 @@ class AttendanceByHr extends HrisController {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
+
+    public function rawAttendanceAction(){
+        $shiftRepo = new ShiftRepository($this->adapter);
+        $shiftList = iterator_to_array($shiftRepo->fetchAll(), false);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $data = $request->getPost();
+            $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
+            $fromDate = $data['fromDate'];
+            $toDate = $data['toDate'];
+            $results = $this->repository->filterRecordRaw($employeeId, $fromDate, $toDate);
+            $result = [];
+            $result['success'] = true;
+            $result['data'] = Helper::extractDbData($results);
+            $result['error'] = "";
+            return new CustomViewModel($result);
+        }
+        return Helper::addFlashMessagesToArray($this, [
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'acl' => $this->acl, 
+                'employeeDetail' => $this->storageData['employee_detail']
+        ]);
+    }
 }

@@ -34,106 +34,226 @@ class LeaveReportCardRepository extends HrisRepository {
         }
     
 
-    $sql = "(SELECT LA.ID AS ID, E.EMPLOYEE_CODE AS EMPLOYEE_ID, E.EMPLOYEE_CODE AS 
-    EMPLOYEE_CODE,E.JOIN_DATE AS JOIN_DATE, LA.LEAVE_ID AS LEAVE_ID, 
-    (CASE WHEN  E.ADDR_PERM_STREET_ADDRESS IS NULL THEN '-' ELSE E.ADDR_PERM_STREET_ADDRESS END) AS ADDR_PERM_STREET_ADDRESS,
-    (CASE WHEN  E.ADDR_TEMP_STREET_ADDRESS IS NULL THEN '-' ELSE E.ADDR_TEMP_STREET_ADDRESS END) AS ADDR_TEMP_STREET_ADDRESS,
-    D.DESIGNATION_TITLE AS DESIGNATION_TITLE,HD.DEPARTMENT_NAME AS DEPARTMENT,
-    INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS FROM_DATE_AD, BS_DATE(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) 
-    AS FROM_DATE_BS, INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) AS TO_DATE_AD, BS_DATE(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) 
-    AS TO_DATE_BS, LA.HALF_DAY AS HALF_DAY, (CASE WHEN (LA.HALF_DAY IS NULL OR LA.HALF_DAY = 'N') THEN 'Full Day' WHEN (LA.HALF_DAY = 'F') 
-    THEN 'First Half' ELSE 'Second Half' END) AS HALF_DAY_DETAIL, LA.GRACE_PERIOD AS GRACE_PERIOD, (CASE WHEN LA.GRACE_PERIOD = 'E' 
-    THEN 'Early' WHEN LA.GRACE_PERIOD = 'L' THEN 'Late' ELSE '-' END) AS GRACE_PERIOD_DETAIL, LA.NO_OF_DAYS AS NO_OF_DAYS, 
-    INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS REQUESTED_DT_AD, BS_DATE(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY'))
-    AS REQUESTED_DT_BS, (CASE WHEN LA.REMARKS IS null THEN '-' ELSE LA.REMARKS END) AS REMARKS, to_char(LA.STATUS)                                          AS STATUS,
-  to_char(LEAVE_STATUS_DESC(LA.STATUS))                       AS STATUS_DETAIL,
-  to_char(LA.RECOMMENDED_BY)                                  AS RECOMMENDED_BY,
-  INITCAP(TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY')) AS RECOMMENDED_DT,
-  to_char(LA.RECOMMENDED_REMARKS)                             AS RECOMMENDED_REMARKS,
-  to_char(LA.APPROVED_BY)                                     AS APPROVED_BY,
-  INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY'))    AS APPROVED_DT,
-  to_char(LA.APPROVED_REMARKS)                                AS APPROVED_REMARKS,
-    (CASE WHEN LA.STATUS = 'XX' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT, (CASE WHEN LA.STATUS IN ('RQ','RC','AP') THEN 'Y' ELSE 'N' END) AS 
-    ALLOW_DELETE, L.LEAVE_CODE AS LEAVE_CODE, INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME, INITCAP(E.FULL_NAME) AS FULL_NAME, 
-    INITCAP(E2.FULL_NAME) AS RECOMMENDED_BY_NAME, INITCAP(E3.FULL_NAME) AS APPROVED_BY_NAME, RA.RECOMMEND_BY AS RECOMMENDER_ID, 
-    RA.APPROVED_BY AS APPROVER_ID, INITCAP(RECM.FULL_NAME) AS RECOMMENDER_NAME, INITCAP(APRV.FULL_NAME) AS APPROVER_NAME 
-    FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA INNER JOIN HRIS_LEAVE_MASTER_SETUP  L ON L.LEAVE_ID=LA.LEAVE_ID LEFT JOIN 
-    HRIS_EMPLOYEES  E ON LA.EMPLOYEE_ID=E.EMPLOYEE_ID LEFT JOIN HRIS_EMPLOYEES  E2 ON 
-    E2.EMPLOYEE_ID=LA.RECOMMENDED_BY LEFT JOIN HRIS_EMPLOYEES  E3 ON E3.EMPLOYEE_ID=LA.APPROVED_BY LEFT JOIN 
-    HRIS_RECOMMENDER_APPROVER  RA ON RA.EMPLOYEE_ID=LA.EMPLOYEE_ID LEFT JOIN HRIS_EMPLOYEES  RECM ON 
-    RECM.EMPLOYEE_ID=RA.RECOMMEND_BY LEFT JOIN HRIS_EMPLOYEES APRV ON APRV.EMPLOYEE_ID=RA.APPROVED_BY 
-    LEFT JOIN HRIS_DESIGNATIONS D ON E.DESIGNATION_ID = D.DESIGNATION_ID  
-    LEFT JOIN HRIS_DEPARTMENTS HD ON E.DEPARTMENT_ID = HD.DEPARTMENT_ID
-    WHERE {$leaveYearStatusCondition} and la.status in ( 'AP','CP','CR')  AND E.EMPLOYEE_ID IN (:employees) {$leaveIdFilter}"
-    . " union
-
-
-  SELECT 0     AS ID,
-  E.EMPLOYEE_CODE AS EMPLOYEE_ID,
-  E.EMPLOYEE_CODE AS EMPLOYEE_CODE,
-  E.JOIN_DATE     AS JOIN_DATE,
-  LA.LEAVE_ID     AS LEAVE_ID,
-  (
-  CASE
-    WHEN E.ADDR_PERM_STREET_ADDRESS IS NULL
-    THEN '-'
-    ELSE E.ADDR_PERM_STREET_ADDRESS
-  END) AS ADDR_PERM_STREET_ADDRESS,
-  (
-  CASE
-    WHEN E.ADDR_TEMP_STREET_ADDRESS IS NULL
-    THEN '-'
-    ELSE E.ADDR_TEMP_STREET_ADDRESS
-  END)                                           AS ADDR_TEMP_STREET_ADDRESS,
-  D.DESIGNATION_TITLE                            AS DESIGNATION_TITLE,
-  HD.DEPARTMENT_NAME                             AS DEPARTMENT,
-  INITCAP(TO_CHAR(LA.ATTENDANCE_DT, 'DD-MON-YYYY')) AS FROM_DATE_AD,
-  '' AS FROM_DATE_BS,
-  INITCAP(TO_CHAR(LA.ATTENDANCE_DT, 'DD-MON-YYYY'))   AS TO_DATE_AD,
-  ''   AS TO_DATE_BS,
-  ''                                    AS HALF_DAY,
-  ''            AS HALF_DAY_DETAIL,
-  ''       AS GRACE_PERIOD,
-  ''                                             AS GRACE_PERIOD_DETAIL,
-  LA.NO_OF_DAYS                                    AS NO_OF_DAYS,
-  INITCAP(TO_CHAR(LA.ATTENDANCE_DT, 'DD-MON-YYYY')) AS REQUESTED_DT_AD,
-  '' AS REQUESTED_DT_BS,
-  (
-  CASE
-    WHEN LA.REMARKS IS NULL
-    THEN '-'
-    ELSE LA.REMARKS
-  END)                                               AS REMARKS,
-  ''                                          AS STATUS,
-  ''                       AS STATUS_DETAIL,
-  ''                                  AS RECOMMENDED_BY,
-  '',
-  ''                             AS RECOMMENDED_REMARKS,
-  ''                                    AS APPROVED_BY,
-  ''    AS APPROVED_DT,
-  ''                                AS APPROVED_REMARKS,
-  'N' AS ALLOW_EDIT,
-  'N'                    AS ALLOW_DELETE,
-  L.LEAVE_CODE            AS LEAVE_CODE,
-  INITCAP(L.LEAVE_ENAME)  AS LEAVE_ENAME,
-  INITCAP(E.FULL_NAME)    AS FULL_NAME,
-  'Deduction'   AS RECOMMENDED_BY_NAME,
-  'Deduction'   AS APPROVED_BY_NAME,
-  1         AS RECOMMENDER_ID,
-  1          AS APPROVER_ID,
-  '' AS RECOMMENDER_NAME,
-  '' AS APPROVER_NAME
-FROM HRIS_EMPLOYEE_PENALTY_DAYS LA
-INNER JOIN HRIS_LEAVE_MASTER_SETUP L
-ON L.LEAVE_ID=LA.LEAVE_ID
-LEFT JOIN HRIS_EMPLOYEES E
-ON LA.EMPLOYEE_ID=E.EMPLOYEE_ID
-LEFT JOIN HRIS_DESIGNATIONS D
-ON E.DESIGNATION_ID = D.DESIGNATION_ID
-LEFT JOIN HRIS_DEPARTMENTS HD
-ON E.DEPARTMENT_ID = HD.DEPARTMENT_ID
-where {$leaveYearStatusCondition} and E.EMPLOYEE_ID IN (:employees) {$leaveIdFilter})
-ORDER BY REQUESTED_DT_AD ASC
+    $sql = "( SELECT
+    la.id                 AS id,
+    e.employee_code       AS employee_id,
+    e.employee_code       AS employee_code,
+    e.join_date           AS join_date,
+    la.leave_id           AS leave_id,
+    ( CASE
+        WHEN e.addr_perm_street_address IS NULL THEN '-'
+        ELSE e.addr_perm_street_address
+    END ) AS addr_perm_street_address,
+    ( CASE
+        WHEN e.addr_temp_street_address IS NULL THEN '-'
+        ELSE e.addr_temp_street_address
+    END ) AS addr_temp_street_address,
+    d.designation_title   AS designation_title,
+    hd.department_name    AS department,
+    initcap(TO_CHAR(la.start_date, 'DD-MON-YYYY')) AS from_date_ad,
+    bs_date(TO_CHAR(la.start_date, 'DD-MON-YYYY')) AS from_date_bs,
+    initcap(TO_CHAR(la.end_date, 'DD-MON-YYYY')) AS to_date_ad,
+    bs_date(TO_CHAR(la.end_date, 'DD-MON-YYYY')) AS to_date_bs,
+    la.half_day           AS half_day,
+    ( CASE
+        WHEN ( la.half_day IS NULL
+               OR la.half_day = 'N' ) THEN 'Full Day'
+        WHEN ( la.half_day = 'F' ) THEN 'First Half'
+        ELSE 'Second Half'
+    END ) AS half_day_detail,
+    la.grace_period       AS grace_period,
+    ( CASE
+        WHEN la.grace_period = 'E' THEN 'Early'
+        WHEN la.grace_period = 'L' THEN 'Late'
+        ELSE '-'
+    END ) AS grace_period_detail,
+    la.no_of_days         AS no_of_days,
+    (TO_date(la.requested_dt, 'DD-MON-YYYY')) AS requested_dt_ad,
+    bs_date(TO_CHAR(la.requested_dt, 'DD-MON-YYYY')) AS requested_dt_bs,
+    ( CASE
+        WHEN la.remarks IS NULL THEN '-'
+        ELSE la.remarks
+    END ) AS remarks,
+    TO_CHAR(la.status) AS status,
+    TO_CHAR(leave_status_desc(la.status)) AS status_detail,
+    TO_CHAR(la.recommended_by) AS recommended_by,
+    initcap(TO_CHAR(la.recommended_dt, 'DD-MON-YYYY')) AS recommended_dt,
+    TO_CHAR(la.recommended_remarks) AS recommended_remarks,
+    TO_CHAR(la.approved_by) AS approved_by,
+    initcap(TO_CHAR(la.approved_dt, 'DD-MON-YYYY')) AS approved_dt,
+    TO_CHAR(la.approved_remarks) AS approved_remarks,
+    ( CASE
+        WHEN la.status = 'XX' THEN 'Y'
+        ELSE 'N'
+    END ) AS allow_edit,
+    ( CASE
+        WHEN la.status IN (
+            'RQ',
+            'RC',
+            'AP'
+        ) THEN 'Y'
+        ELSE 'N'
+    END ) AS allow_delete,
+    l.leave_code          AS leave_code,
+    initcap(l.leave_ename) AS leave_ename,
+    initcap(e.full_name) AS full_name,
+    initcap(e2.full_name) AS recommended_by_name,
+    initcap(e3.full_name) AS approved_by_name,
+    ra.recommend_by       AS recommender_id,
+    ra.approved_by        AS approver_id,
+    initcap(recm.full_name) AS recommender_name,
+    initcap(aprv.full_name) AS approver_name
+FROM
+    hris_employee_leave_request la
+    INNER JOIN hris_leave_master_setup l ON l.leave_id = la.leave_id
+    LEFT JOIN hris_employees e ON la.employee_id = e.employee_id
+    LEFT JOIN hris_employees e2 ON e2.employee_id = la.recommended_by
+    LEFT JOIN hris_employees e3 ON e3.employee_id = la.approved_by
+    LEFT JOIN hris_recommender_approver ra ON ra.employee_id = la.employee_id
+    LEFT JOIN hris_employees recm ON recm.employee_id = ra.recommend_by
+    LEFT JOIN hris_employees aprv ON aprv.employee_id = ra.approved_by
+    LEFT JOIN hris_designations d ON e.designation_id = d.designation_id
+    LEFT JOIN hris_departments hd ON e.department_id = hd.department_id
+WHERE
+    ( ( l.status = 'E'
+        OR l.old_leave = 'Y' )
+      AND l.leave_year = :leaveyear )
+    AND la.status IN (
+        'AP',
+        'CP',
+        'CR'
+    )
+    AND e.employee_id IN (
+        :employees
+    )
+UNION
+SELECT
+    0 AS id,
+    e.employee_code       AS employee_id,
+    e.employee_code       AS employee_code,
+    e.join_date           AS join_date,
+    la.leave_id           AS leave_id,
+    ( CASE
+        WHEN e.addr_perm_street_address IS NULL THEN '-'
+        ELSE e.addr_perm_street_address
+    END ) AS addr_perm_street_address,
+    ( CASE
+        WHEN e.addr_temp_street_address IS NULL THEN '-'
+        ELSE e.addr_temp_street_address
+    END ) AS addr_temp_street_address,
+    d.designation_title   AS designation_title,
+    hd.department_name    AS department,
+    initcap(TO_CHAR(la.attendance_dt, 'DD-MON-YYYY')) AS from_date_ad,
+    '' AS from_date_bs,
+    initcap(TO_CHAR(la.attendance_dt, 'DD-MON-YYYY')) AS to_date_ad,
+    '' AS to_date_bs,
+    '' AS half_day,
+    '' AS half_day_detail,
+    '' AS grace_period,
+    '' AS grace_period_detail,
+    la.no_of_days         AS no_of_days,
+    (TO_date(la.attendance_dt, 'DD-MON-YYYY')) AS requested_dt_ad,
+    '' AS requested_dt_bs,
+    ( CASE
+        WHEN la.remarks IS NULL THEN '-'
+        ELSE la.remarks
+    END ) AS remarks,
+    '' AS status,
+    '' AS status_detail,
+    '' AS recommended_by,
+    '',
+    '' AS recommended_remarks,
+    '' AS approved_by,
+    '' AS approved_dt,
+    '' AS approved_remarks,
+    'N' AS allow_edit,
+    'N' AS allow_delete,
+    l.leave_code          AS leave_code,
+    initcap(l.leave_ename) AS leave_ename,
+    initcap(e.full_name) AS full_name,
+    'Deduction' AS recommended_by_name,
+    'Deduction' AS approved_by_name,
+    1 AS recommender_id,
+    1 AS approver_id,
+    '' AS recommender_name,
+    '' AS approver_name
+FROM
+    hris_employee_penalty_days la
+    INNER JOIN hris_leave_master_setup l ON l.leave_id = la.leave_id
+    LEFT JOIN hris_employees e ON la.employee_id = e.employee_id
+    LEFT JOIN hris_designations d ON e.designation_id = d.designation_id
+    LEFT JOIN hris_departments hd ON e.department_id = hd.department_id
+WHERE
+    ( ( l.status = 'E'
+        OR l.old_leave = 'Y' )
+      AND l.leave_year = :leaveyear )
+    AND e.employee_id IN (
+        :employees
+    ) 
+UNION
+SELECT
+    0 AS id,
+    e.employee_code       AS employee_id,
+    e.employee_code       AS employee_code,
+    e.join_date           AS join_date,
+    la.leave_id           AS leave_id,
+    ( CASE
+        WHEN e.addr_perm_street_address IS NULL THEN '-'
+        ELSE e.addr_perm_street_address
+    END ) AS addr_perm_street_address,
+    ( CASE
+        WHEN e.addr_temp_street_address IS NULL THEN '-'
+        ELSE e.addr_temp_street_address
+    END ) AS addr_temp_street_address,
+    d.designation_title   AS designation_title,
+    hd.department_name    AS department,
+    initcap(TO_CHAR(la.CREATED_DATE, 'DD-MON-YYYY')) AS from_date_ad,
+    '' AS from_date_bs,
+    initcap(TO_CHAR(la.CREATED_DATE, 'DD-MON-YYYY')) AS to_date_ad,
+    '' AS to_date_bs,
+    '' AS half_day,
+    '' AS half_day_detail,
+    '' AS grace_period,
+    '' AS grace_period_detail,
+    la.ENCASH_DAYS         AS no_of_days,
+    (TO_date(la.CREATED_DATE, 'DD-MON-YYYY')) AS requested_dt_ad,
+    '' AS requested_dt_bs,
+    'Encashed' AS remarks,
+    '' AS status,
+    '' AS status_detail,
+    '' AS recommended_by,
+    '',
+    '' AS recommended_remarks,
+    '' AS approved_by,
+    '' AS approved_dt,
+    '' AS approved_remarks,
+    'N' AS allow_edit,
+    'N' AS allow_delete,
+    l.leave_code          AS leave_code,
+    initcap(l.leave_ename) AS leave_ename,
+    initcap(e.full_name) AS full_name,
+    'Encashed' AS recommended_by_name,
+    'Encashed' AS approved_by_name,
+    1 AS recommender_id,
+    1 AS approver_id,
+    '' AS recommender_name,
+    '' AS approver_name
+FROM
+    hris_emp_self_leave_closing la
+    INNER JOIN hris_leave_master_setup l ON l.leave_id = la.leave_id
+    LEFT JOIN hris_employees e ON la.employee_id = e.employee_id
+    LEFT JOIN hris_designations d ON e.designation_id = d.designation_id
+    LEFT JOIN hris_departments hd ON e.department_id = hd.department_id
+WHERE
+    ( ( l.status = 'E'
+        OR l.old_leave = 'Y' )
+      AND l.leave_year = :leaveyear )
+    AND e.employee_id IN (
+        :employees
+    ) 
+)
+ORDER BY
+    requested_dt_ad asc
 ";  
 //                            echo $sql; die;
     return $this->rawQuery($sql,$boundedParameter);    

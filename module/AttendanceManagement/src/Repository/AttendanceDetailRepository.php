@@ -1221,4 +1221,32 @@ FROM (SELECT
                 ";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
+
+    public function filterRecordRaw($employeeId, $fromDate = null, $toDate = null){
+        $searchConditon = "";
+        
+        if ($employeeId != null && $employeeId != -1) {
+            $employeeId = implode(',', $employeeId);
+            $searchConditon .= " AND A.EMPLOYEE_ID IN ($employeeId) ";
+        }
+        if ($fromDate != null) {
+            $searchConditon .= " AND A.ATTENDANCE_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
+        }
+        $searchConditon .= $toDate != null ? "AND A.ATTENDANCE_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY')" : "AND A.ATTENDANCE_DT <= trunc(sysdate) " ;
+        $sql = "SELECT
+    e.employee_code,
+    e.full_name,
+    a.attendance_dt,
+    BS_DATE(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT_N,
+    TO_CHAR(A.ATTENDANCE_DT, 'DAY') AS DAY,
+    INITCAP(TO_CHAR(A.attendance_time, 'HH:MI AM'))   attendance_time,
+    (case when adm.purpose is null then 'APP' else adm.purpose end) purpose
+FROM
+    hris_employees e
+    JOIN hris_attendance a ON ( e.employee_id = a.employee_id )
+    left join hris_attd_device_master adm on (a.ip_address = adm.device_ip)
+WHERE
+    1=1 {$searchConditon} order by e.employee_code, a.attendance_time asc";
+    return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
 }
