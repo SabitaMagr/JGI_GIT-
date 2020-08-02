@@ -216,12 +216,13 @@ class SalarySheetDetailRepo extends HrisRepository {
                 FROM
                   (SELECT *
                   FROM
-                    (SELECT SHEET_NO,
-                      EMPLOYEE_ID,
-                      PAY_ID,
-                      VAL
-                    FROM HRIS_SALARY_SHEET_DETAIL
-                    WHERE SHEET_NO in ({$sheetString})
+                    (SELECT SSED.SHEET_NO,
+                      SSED.EMPLOYEE_ID,
+                      SSD.PAY_ID,
+                      SSD.VAL
+                    FROM HRIS_SALARY_SHEET_DETAIL SSD
+                    RIGHT JOIN HRIS_SALARY_SHEET_EMP_DETAIL SSED ON (SSD.SHEET_NO=SSED.SHEET_NO AND SSD.EMPLOYEE_ID=SSED.EMPLOYEE_ID)
+                    WHERE SSED.SHEET_NO in ({$sheetString})
                     ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$in}))
                   ) P
                 JOIN HRIS_EMPLOYEES E
@@ -327,7 +328,11 @@ class SalarySheetDetailRepo extends HrisRepository {
         $boundedParameter['monthId'] = $monthId;
         $boundedParameter['employeeId'] = $employeeId;
         $resultList = $this->rawQuery($sql, $boundedParameter);
+        if(!empty($resultList)){
         return $resultList[0];
+        }else{
+            return $resultList;
+        } 
     }
 
 }

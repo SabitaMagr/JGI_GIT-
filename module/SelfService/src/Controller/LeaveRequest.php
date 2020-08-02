@@ -169,7 +169,7 @@ class LeaveRequest extends HrisController {
         if (isset($this->preference['subLeaveMaxDays'])) {
             $subLeaveMaxDays = $this->preference['subLeaveMaxDays'];
         }
-        
+        $selfBranch="branch_id=(select branch_id from hris_employees where employee_id=".$this->employeeId.")";
 //        echo $subLeaveReference;
 //        die();
         return Helper::addFlashMessagesToArray($this, [

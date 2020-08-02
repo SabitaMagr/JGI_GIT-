@@ -484,4 +484,68 @@ GROUP BY
         return $resultList[0]['SERVICE_TYPE_ID'];
     }
     
+    public function getserviceTypePf($employeeId, $sheetNo){
+        $boundedParameter = [];
+        $boundedParameter['employeeId'] = $employeeId;
+//        $boundedParameter['sheetNo'] = $sheetNo;
+        $sql = "select CASE WHEN 
+E.SERVICE_TYPE_ID IS NOT NULL 
+THEN S.PF_ELIGIBLE
+ELSE 
+'N'
+END AS PF_ELIGIBLE
+FROM hris_employees E
+LEFT JOIN HRIS_SERVICE_TYPES S ON (E.SERVICE_TYPE_ID=S.SERVICE_TYPE_ID)
+WHERE E.EMPLOYEE_ID=:employeeId";
+        $resultList = $this->rawQuery($sql, $boundedParameter);
+        if (!(sizeof($resultList) == 1)) {
+            throw new Exception('No Report Found.');
+        }
+        return $resultList[0]['PF_ELIGIBLE'];
+    }
+    
+    public function getDisablePersonFlag($employeeId){
+        $boundedParameter = [];
+        $boundedParameter['employeeId'] = $employeeId;
+        $sql = "SELECT 
+CASE WHEN
+DISABLED_FLAG ='Y'
+THEN
+1
+ELSE
+0
+END AS DISABLED_FLAG FROM HRIS_EMPLOYEES WHERE  EMPLOYEE_ID=:employeeId";
+        $resultList = $this->rawQuery($sql, $boundedParameter);
+        if (!(sizeof($resultList) == 1)) {
+            throw new Exception('No Report Found.');
+        }
+        return $resultList[0]['DISABLED_FLAG'];
+    }
+    
+    public function getPreviousMonthDays($monthId){
+        $boundedParameter = [];
+        $boundedParameter['monthId'] = $monthId;
+        $sql = "SELECT 
+(TO_DATE-FROM_DATE) +1 as PRE_MONTH_DAYS
+FROM HRIS_MONTH_CODE  where MONTH_ID=(:monthId-1)";
+        $resultList = $this->rawQuery($sql, $boundedParameter);
+        if (!(sizeof($resultList) == 1)) {
+            throw new Exception('No Report Found.');
+        }
+        return $resultList[0]['PRE_MONTH_DAYS'];
+        
+    }
+    
+    public function getBranchAllowanceRebate($employeeId){
+         $boundedParameter = [];
+        $boundedParameter['employeeId'] = $employeeId;
+        $sql = "SELECT NVL(ALLOWANCE_REBATE,0) AS ALLOWANCE_REBATE FROM HRIS_BRANCHES WHERE 
+                BRANCH_ID=(SELECT  BRANCH_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID=:employeeId)";
+        $resultList = $this->rawQuery($sql, $boundedParameter);
+        if (!(sizeof($resultList) == 1)) {
+            throw new Exception('No Report Found.');
+        }
+        return $resultList[0]['ALLOWANCE_REBATE'];
+    }
+    
 }

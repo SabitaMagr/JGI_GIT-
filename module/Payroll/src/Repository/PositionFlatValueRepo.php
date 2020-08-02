@@ -25,7 +25,10 @@ class PositionFlatValueRepo extends HrisRepository {
                   CASE
                     WHEN ASSIGN_TYPE ='E'
                     THEN FLAT_VALUE
-                    ELSE ASSIGNED_VALUE
+                    ELSE CASE WHEN FLAT_VALUE IS NOT NULL
+                    THEN FLAT_VALUE
+                    ELSE
+                    ASSIGNED_VALUE END
                   END) AS ASSIGNED_VALUE
                 FROM
                   (SELECT MVS.ASSIGN_TYPE,
@@ -42,7 +45,7 @@ class PositionFlatValueRepo extends HrisRepository {
                   LEFT JOIN
                     (SELECT *
                     FROM HRIS_POSITION_FLAT_VALUE
-                    WHERE FISCAL_YEAR_ID =(SELECT FISCAL_YEAR_ID FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$keys['MONTH_ID']})
+                    WHERE FISCAL_YEAR_ID =(SELECT FISCAL_YEAR_ID FROM HRIS_MONTH_CODE WHERE MONTH_ID = :MONTH_ID)
                     AND POSITION_ID=
                       (SELECT POSITION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = :EMPLOYEE_ID
                       )

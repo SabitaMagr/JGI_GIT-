@@ -34,6 +34,12 @@ $this->headScript()
     document.sumOfOtherTax =<?php echo json_encode($sumOfOtherTax); ?>;
 </script>
 
+<style>
+.table-condensed>thead>tr>th, .table-condensed>thead>tr>td, .table-condensed>tbody>tr>th, .table-condensed>tbody>tr>td, .table-condensed>tfoot>tr>th, .table-condensed>tfoot>tr>td {
+    padding: 0px;
+}    
+</style>
+
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>

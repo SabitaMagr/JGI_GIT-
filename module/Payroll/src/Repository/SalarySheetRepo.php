@@ -100,13 +100,15 @@ class SalarySheetRepo extends HrisRepository {
         $boundedParameter['salaryTypeId'] = $salaryTypeId;
         $boundedParameter['monthId'] = $monthId;
         $sql = "SELECT 
-            employee_id,employee_code,full_name,'Y' AS CHECKED_FLAG
-            FROM HRIS_EMPLOYEES 
+            E.employee_id,E.employee_code,E.full_name,'Y' AS CHECKED_FLAG
+            FROM HRIS_EMPLOYEES E
+            JOIN (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID=:monthId) MC on (1=1)
             WHERE 
-            STATUS='E' AND 
+            E.STATUS='E' AND 
 employee_id not in (SELECT employee_id FROM HRIS_SALARY_SHEET_EMP_DETAIL SED
 JOIN HRIS_SALARY_SHEET SS ON (SS.SHEET_NO=SED.SHEET_NO) 
-where SS.month_id=:monthId AND SS.SALARY_TYPE_ID=:salaryTypeId)            
+where SS.month_id=:monthId AND SS.SALARY_TYPE_ID=:salaryTypeId)  
+AND  E.JOIN_DATE<MC.TO_DATE 
 AND GROUP_ID IN ({$group})";
         
         $data = $this->rawQuery($sql, $boundedParameter);

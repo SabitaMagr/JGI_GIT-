@@ -31,6 +31,7 @@ class RulesRepository extends HrisRepository {
         $query = "SELECT PAY_ID,
                   PAY_CODE,
                   PAY_EDESC,
+                  REPLACE(PAY_EDESC, ' ', '_') AS PAY_EDESC_WITH_UNDERSCORE,
                   PAY_TYPE_FLAG,
                   (
                   CASE
@@ -140,6 +141,7 @@ class RulesRepository extends HrisRepository {
         $query = "SELECT PS.PAY_ID,
                   PS.PAY_CODE,
                   PS.PAY_EDESC,
+                  REPLACE(UPPER(PAY_EDESC), ' ', '_') AS PAY_EDESC_WITH_UNDERSCORE,
                   PS.PAY_TYPE_FLAG,
                   (
                   CASE
@@ -203,6 +205,36 @@ class RulesRepository extends HrisRepository {
 
         $statement = $this->adapter->query($query);
         return $statement->execute($boundedParameter);
+    }
+    
+    public function fetchPreviousSumVal($employeeId,$monthId) {
+        $boundedParameter = [];
+        $boundedParameter['employeeId'] = $employeeId;
+        $boundedParameter['monthId'] = $monthId;
+        $query="select 
+ '[PS:'||REPLACE(UPPER(ps.PAY_EDESC), ' ', '_')||']' as PAY_EDESC,
+  sd.pay_id,
+ case when 
+ sd.value is not null
+ then sd.value
+ else 0 
+ end
+ as value 
+ from (select 
+        ssd.pay_id,
+        nvl(sum(ssd.val),0) as value
+        from 
+        Hris_Salary_Sheet_Emp_Detail  ssed
+        join Hris_Month_Code mc on (mc.month_id=ssed.month_id AND EMPLOYEE_ID=:employeeId)
+        join Hris_Salary_Sheet_Detail ssd on (ssed.sheet_no=ssd.sheet_no and ssed.employee_id=ssd.employee_id )
+        where 
+        ssed.month_id<:monthId 
+        group by ssd.pay_id
+          ) sd
+          right join HRIS_PAY_SETUP ps on ( sd.PAY_ID=ps.PAY_ID)";
+        $statement = $this->adapter->query($query);
+        return $statement->execute($boundedParameter);
+        
     }
 
 }
