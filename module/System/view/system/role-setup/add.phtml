@@ -1,3 +1,4 @@
+
 <?php
 $this->headScript()->appendFile($this->basePath('js/system/role-setup/add.js'));
 
@@ -11,6 +12,11 @@ $allowUpdate = $form->get('allowUpdate');
 $allowDelete = $form->get('allowDelete');
 $remarks = $form->get('remarks');
 $selectOptions = $form->get('selectOptions');
+$selectOptionsC = $form->get('selectOptionsC');
+$selectOptionsDS = $form->get('selectOptionsDS');
+$selectOptionsDP = $form->get('selectOptionsDP');
+$selectOptionsB = $form->get('selectOptionsB');
+$selectOptionsP = $form->get('selectOptionsP');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 $hrApprove = $form->get('hrApprove');
@@ -30,6 +36,7 @@ $form->prepare();
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.controls = [];
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\rolesetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -59,18 +66,31 @@ $form->prepare();
                         <?php print $this->formElementErrors()->render($roleName, ['class' => 'help-block error']); ?>
                     </div>
                     <div class=" col-sm-4 ">
-                        <div class="form-group padding-0">
                             <?php print $this->formLabel($control); ?>
-                            <div class="md-radio-inline">
-                                <?php $customRenderer($control); ?>
-                            </div>
+                            <div class="form-group">
+                            <?php print $this->formElement($control); ?>
                         </div>
                         <?php print $this->formElementErrors()->render($control, ['class' => 'help-block error']); ?>
                     </div>
                     <div class="col-sm-4">
-                        <label for="selectOptions" id="controlOption"></label>
-                        <div class="form-group">
+                        <select id="controlOptionsSelect"><option value="">----Select One------</option></select>
+                        <div class="form-group selectOptions">
                             <?php print $this->formElement($selectOptions); ?>
+                        </div>
+                        <div class="form-group selectOptionsC">
+                            <?php print $this->formElement($selectOptionsC); ?>
+                        </div>
+                        <div class="form-group selectOptionsDP">
+                            <?php print $this->formElement($selectOptionsDP); ?>
+                        </div>
+                        <div class="form-group selectOptionsDS">
+                            <?php print $this->formElement($selectOptionsDS); ?>
+                        </div>
+                        <div class="form-group selectOptionsB">
+                            <?php print $this->formElement($selectOptionsB); ?>
+                        </div>
+                        <div class="form-group selectOptionsP">
+                            <?php print $this->formElement($selectOptionsP); ?>
                         </div>
                     </div>
                     <div class=" col-sm-4 ">
@@ -133,5 +153,4 @@ $form->prepare();
             </div>
         </div>
     </div>
-
 </div>

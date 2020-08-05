@@ -17,6 +17,7 @@ class ServiceType extends Model {
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
     const TYPE = "TYPE";
+    const PF_ELIGIBLE = "PF_ELIGIBLE";
 
     public $serviceTypeId;
     public $serviceTypeCode;
@@ -28,6 +29,7 @@ class ServiceType extends Model {
     public $createdBy;
     public $modifiedBy;
     public $type;
+    public $pfEligible;
     public $mappings = [
         'serviceTypeId' => self::SERVICE_TYPE_ID,
         'serviceTypeCode' => self::SERVICE_TYPE_CODE,
@@ -39,6 +41,7 @@ class ServiceType extends Model {
         'createdBy' => self::CREATED_BY,
         'modifiedBy' => self::MODIFIED_BY,
         'type' => self::TYPE,
+        'pfEligible' => self::PF_ELIGIBLE
     ];
 
 }

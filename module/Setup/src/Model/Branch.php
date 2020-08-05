@@ -24,6 +24,8 @@ class Branch extends Model {
     const MODIFIED_BY = "MODIFIED_BY";
     const BRANCH_MANAGER_ID = "BRANCH_MANAGER_ID";
     const PROVINCE_ID = "PROVINCE_ID";
+    const IS_REMOTE = "IS_REMOTE";
+    const ALLOWANCE_REBATE = "ALLOWANCE_REBATE";
 
     public $branchId;
     public $branchCode;
@@ -42,6 +44,8 @@ class Branch extends Model {
     public $modifiedBy;
     public $branchManager;
     public $province;
+    public $isRemote;
+    public $allowanceRebate;
     public $mappings = [
         'branchId' => self::BRANCH_ID,
         'branchCode' => self::BRANCH_CODE,
@@ -60,6 +64,8 @@ class Branch extends Model {
         'modifiedBy' => self::MODIFIED_BY,
         'branchManager' => self::BRANCH_MANAGER_ID,
         'province' => self::PROVINCE_ID,
+        'isRemote' => self::IS_REMOTE,
+        'allowanceRebate' => self::ALLOWANCE_REBATE
     ];
 
 }

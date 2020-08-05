@@ -1,3 +1,4 @@
+
 (function ($, app) {
     $(document).ready(function () {
         document.searchManager = {
@@ -163,7 +164,10 @@
             reset: function () {
                 let acl = document.acl;
                 let aclControlVal='F';
-                    
+                $.each(this.ids, function (key, value) {
+                    $('#' + value).val(-1).change();
+                });
+                for(let i = 0; i < acl['CONTROL'].length; i++){
                     $.each(this.ids, function (key, value) {
 //                    console.log(value);
                         let $company = $('#' + 'companyId');
@@ -175,13 +179,12 @@
 //                    let $serviceEventType = $('#' + 'serviceEventTypeId');
 //                    let $employee = $('#' + 'employeeId');
 //                    
-                        let populateValues = [];
+                    let populateValues = [];
                     if (typeof acl !== 'undefined') {
-                        console.log('sdfsd');
                         aclControlVal = acl['CONTROL'];
 
                         $.each(acl['CONTROL_VALUES'], function (k, v) {
-                            if (v.CONTROL == acl['CONTROL']) {
+                            if (v.CONTROL == acl['CONTROL'][i]) {
                                 populateValues.push(v.VAL);
                             }
                         });
@@ -189,16 +192,16 @@
                     }  //end if
                         if (typeof value !== "undefined") {
                             if (value == 'companyId' || value == 'branchId' || value == 'designationId' || value == 'departmentId' || value == 'positionId') {
-                                switch (aclControlVal) {
+                                switch (aclControlVal[i]) {
                                     case 'F':
-                                        $('#' + value).val(-1).change();
+                                       // $('#' + value).val(-1).change();
                                         break;
                                     case 'C':
                                         if (value == 'companyId') {
                                             $company.val(populateValues);
                                             $company.trigger('change');
                                         } else {
-                                            $('#' + value).val(-1).change();
+                                           // $('#' + value).val(-1).change();
                                         }
                                         break;
                                     case 'B':
@@ -206,7 +209,7 @@
                                             $branch.val(populateValues);
                                             $branch.trigger('change');
                                         } else {
-                                            $('#' + value).val(-1).change();
+                                           // $('#' + value).val(-1).change();
                                         }
                                         break;
                                     case 'DS':
@@ -214,7 +217,7 @@
                                             $designation.val(populateValues);
                                             $designation.trigger('change');
                                         } else {
-                                            $('#' + value).val(-1).change();
+                                           // $('#' + value).val(-1).change();
                                         }
                                         break;
                                     case 'DP':
@@ -222,7 +225,7 @@
                                             $department.val(populateValues);
                                             $department.trigger('change');
                                         } else {
-                                            $('#' + value).val(-1).change();
+                                           // $('#' + value).val(-1).change();
                                         }
                                         break;
                                     case 'P':
@@ -230,7 +233,7 @@
                                             $position.val(populateValues);
                                             $position.trigger('change');
                                         } else {
-                                            $('#' + value).val(-1).change();
+                                           // $('#' + value).val(-1).change();
                                         }
                                         break;
                                 }
@@ -238,7 +241,9 @@
                                 $('#' + value).val(-1).change();
                             }
                         }
+                    
                     });
+                }
                 
                 
                 if (this.resetEvent !== null) {
@@ -508,40 +513,42 @@
             var employeeDetail = document.employeeDetail;
             if (typeof acl !== 'undefined' && typeof employeeDetail !== 'undefined') {
 
-                var populateValues = [];
-                $.each(acl['CONTROL_VALUES'], function (k, v) {
-                    if (v.CONTROL == acl['CONTROL']) {
-                        populateValues.push(v.VAL);
-                    }
-                });
-                
+                for(let i = 0; i < acl['CONTROL'].length; i++){
+                    var populateValues = [];
+                    $.each(acl['CONTROL_VALUES'], function (k, v) {
 
-                switch (acl['CONTROL']) {
-                    case 'C':
-                        $company.val((populateValues.length<1)?employeeDetail['COMPANY_ID']:populateValues);
-                        $company.trigger('change');
-                        $company.prop('disabled', true);
-                        break;
-                    case 'B':
-                        $branch.val((populateValues.length<1)?employeeDetail['BRANCH_ID']:populateValues);
-                        $branch.trigger('change');
-                        $branch.prop('disabled', true);
-                        break;
-                    case 'DS':
-                        $designation.val((populateValues.length<1)?employeeDetail['DESIGNATION_ID']:populateValues);
-                        $designation.trigger('change');
-                        $designation.prop('disabled', true);
-                        break;
-                    case 'DP':
-                        $department.val((populateValues.length<1)?employeeDetail['DEPARTMENT_ID']:populateValues);
-                        $department.trigger('change');
-                        $department.prop('disabled', true);
-                        break;
-                    case 'P':
-                        $position.val((populateValues.length<1)?employeeDetail['POSITION_ID']:populateValues);
-                        $position.trigger('change');
-                        $position.prop('disabled', true);
-                        break;
+                        if (v.CONTROL == acl['CONTROL'][i]) {
+                            populateValues.push(v.VAL);
+                        }
+                    });
+                    
+                    switch (acl['CONTROL'][i]) {
+                        case 'C':
+                            $company.val((populateValues.length<1)?employeeDetail['COMPANY_ID']:populateValues);
+                            $company.trigger('change');
+                            $company.prop('disabled', true);
+                            break;
+                        case 'B':
+                            $branch.val((populateValues.length<1)?employeeDetail['BRANCH_ID']:populateValues);
+                            $branch.trigger('change');
+                            $branch.prop('disabled', true);
+                            break;
+                        case 'DS':
+                            $designation.val((populateValues.length<1)?employeeDetail['DESIGNATION_ID']:populateValues);
+                            $designation.trigger('change');
+                            $designation.prop('disabled', true);
+                            break;
+                        case 'DP':
+                            $department.val((populateValues.length<1)?employeeDetail['DEPARTMENT_ID']:populateValues);
+                            $department.trigger('change');
+                            $department.prop('disabled', true);
+                            break;
+                        case 'P':
+                            $position.val((populateValues.length<1)?employeeDetail['POSITION_ID']:populateValues);
+                            $position.trigger('change');
+                            $position.prop('disabled', true);
+                            break;
+                    }
                 }
             }
 
@@ -563,8 +570,5 @@
 
         /* setup change events */
 
-
-
     });
-
 })(window.jQuery, window.app);

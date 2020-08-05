@@ -1,5 +1,4 @@
 <?php
-
 namespace System\Form;
 
 use Zend\Form\Annotation;
@@ -20,11 +19,11 @@ class RoleSetupForm {
     public $roleName;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"F":"Full","C":"Company Specific","B":"Branch Specific","DS":"Designation Specific","DP":"Department Specific","P":"Position Specific","U":"User Specific"},"label":"Control"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Control"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"control","class":"control"})
+     * @Annotation\Attributes({ "id":"control","class":"form-control","multiple":"True"})
      */
     public $control;
 
@@ -69,6 +68,46 @@ class RoleSetupForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true"})
+     * @Annotation\Attributes({ "id":"selectOptionsC","class":"form-control","multiple":"True"})
+     */
+    public $selectOptionsC;
+        /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true"})
+     * @Annotation\Attributes({ "id":"selectOptionsDP","class":"form-control","multiple":"True"})
+     */
+    public $selectOptionsDP;
+        /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true"})
+     * @Annotation\Attributes({ "id":"selectOptionsDS","class":"form-control","multiple":"True"})
+     */
+    public $selectOptionsDS;
+        /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true"})
+     * @Annotation\Attributes({ "id":"selectOptionsP","class":"form-control","multiple":"True"})
+     */
+    public $selectOptionsP;
+        /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true"})
+     * @Annotation\Attributes({ "id":"selectOptionsB","class":"form-control","multiple":"True"})
+     */
+    public $selectOptionsB;
+        /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true"})
      * @Annotation\Attributes({ "id":"selectOptions","class":"form-control","multiple":"True"})
      */
     public $selectOptions;
@@ -98,3 +137,4 @@ class RoleSetupForm {
     public $submit;
 
 }
+

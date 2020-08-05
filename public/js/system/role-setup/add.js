@@ -1,3 +1,4 @@
+
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
@@ -9,59 +10,98 @@
         var checkColumnName = "ROLE_ID";
         var selfId = $("#roleId").val();
         var $controlOption = $("#controlOption");
+        var $controlOptionsSelect = $("#controlOptionsSelect");
 
         var $selectOptions = $("#selectOptions");
+        var $selectOptionsC = $("#selectOptionsC");
+        var $selectOptionsDP = $("#selectOptionsDP");
+        var $selectOptionsDS = $("#selectOptionsDS");
+        var $selectOptionsP = $("#selectOptionsP");
+        var $selectOptionsB = $("#selectOptionsB");
+        var $control = $("#control");
         $selectOptions.select2();
+        $selectOptionsC.select2();
+        $selectOptionsDP.select2();
+        $selectOptionsDS.select2();
+        $selectOptionsP.select2();
+        $selectOptionsB.select2();
+        $control.select2();
 
-        var controlValue = $('input[name=control]:checked').val();
-        $('input[name=control]').change(function () {
-            changeControl();
-        });
+        app.populateSelect($selectOptionsC, document.searchValues['company'], 'COMPANY_ID', 'COMPANY_NAME', '---', '');
+        app.populateSelect($selectOptionsB, document.searchValues['branch'], 'BRANCH_ID', 'BRANCH_NAME', '---', '');
+        app.populateSelect($selectOptionsDP, document.searchValues['department'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', '---', '');
+        app.populateSelect($selectOptionsDS, document.searchValues['designation'], 'DESIGNATION_ID', 'DESIGNATION_TITLE', '---', '');
+        app.populateSelect($selectOptionsP, document.searchValues['position'], 'POSITION_ID', 'POSITION_NAME', '---', '');
 
-        function changeControl() {
-            var controlValue = $('input[name=control]:checked').val();
+        var controlOptions = [
+        {"key": "C", "value": "Company Specific"},
+        {"key": "B", "value": "Branch Specific"},
+        {"key": "DS", "value": "Designation Specific"},
+        {"key": "DP", "value": "Department Specific"},
+        {"key": "P", "value": "Position Specific"}
+        ];
+        var controlOptions1 = [
+        {"key": "C", "value": "Select Company"},
+        {"key": "B", "value": "Select Branch"},
+        {"key": "DS", "value": "Select Designation"},
+        {"key": "DP", "value": "Select Department"},
+        {"key": "P", "value": "Select Position"}
+        ];
+        app.populateSelect($control, controlOptions, 'key', 'value');
 
-            var populateValues = [];
-            $.each(document.selectedControlValues, function (k, v) {
-                if (v.CONTROL == controlValue) {
-                    populateValues.push(v.VAL);
-                }
-            });
+        if(document.controls.indexOf('F') != -1){ document.controls.splice(document.controls.indexOf('F'), 1); }
 
-            if (controlValue === 'C') {
-                $controlOption.text("Select Companies");
-                app.populateSelect($selectOptions, document.searchValues['company'], 'COMPANY_ID', 'COMPANY_NAME', '---', '');
-            } else if (controlValue === 'B') {
-                $controlOption.text("Select Branches");
-                $selectOptions.empty();
-                app.populateSelect($selectOptions, document.searchValues['branch'], 'BRANCH_ID', 'BRANCH_NAME', '---', '');
-            } else if (controlValue === "DP") {
-                $controlOption.text("Select Departments");
-                $selectOptions.empty();
-                app.populateSelect($selectOptions, document.searchValues['department'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', '---', '');
-            } else if (controlValue === "DS") {
-                $controlOption.text("Select Designations");
-                $selectOptions.empty();
-                app.populateSelect($selectOptions, document.searchValues['designation'], 'DESIGNATION_ID', 'DESIGNATION_TITLE', '---', '');
-            } else if (controlValue === "P") {
-                $controlOption.text("Select Positions");
-                $selectOptions.empty();
-                app.populateSelect($selectOptions, document.searchValues['position'], 'POSITION_ID', 'POSITION_NAME', '---', '');
-            } else {
-                $controlOption.empty();
-                $selectOptions.empty();
+        let selectedOptionsC = [], selectedOptionsDS = [], selectedOptionsDP = [], selectedOptionsP = [], selectedOptionsB = [];
+
+        if(document.controls != null){
+            if(document.controls.includes('C')){
+                selectedOptionsC = document.selectedControlValues.filter(i => i.CONTROL == 'C').map(j => j.VAL);
+                $selectOptionsC.val(selectedOptionsC);
             }
-
-            $selectOptions.val(populateValues).trigger('change.select2');
+            if(document.controls.includes('DP')){
+                selectedOptionsDP = document.selectedControlValues.filter(i => i.CONTROL == 'DP').map(j => j.VAL);
+                $selectOptionsDP.val(selectedOptionsDP);
+            }
+            if(document.controls.includes('DS')){
+                selectedOptionsDS = document.selectedControlValues.filter(i => i.CONTROL == 'DS').map(j => j.VAL);
+                $selectOptionsDS.val(selectedOptionsDS);
+            }
+            if(document.controls.includes('P')){
+                selectedOptionsP = document.selectedControlValues.filter(i => i.CONTROL == 'P').map(j => j.VAL);
+                $selectOptionsP.val(selectedOptionsP);
+            }
+            if(document.controls.includes('B')){
+                selectedOptionsB = document.selectedControlValues.filter(i => i.CONTROL == 'B').map(j => j.VAL);
+                $selectOptionsB.val(selectedOptionsB);
+            }
         }
 
+        $control.change(function(){
+            var a = $control.val();
+            var populateValues = [];
+            if(a != null){
+                populateValues = controlOptions1.filter(function(item, i){
+                    return a.includes(item.key);
+                });
+            }
+            app.populateSelect($controlOptionsSelect, populateValues, 'key', 'value', '----Select One------');
+            hideShowSelect();
+        });
 
-        changeControl();
+        if(document.controls.length > 0){ $control.val(document.controls); $control.change(); }
 
+        $controlOptionsSelect.change(function () {
+            var controlValue = $controlOptionsSelect.val();
+            controlValue == -1 ? hideShowSelect() : hideShowSelect("selectOptions"+controlValue);
+            //$selectOptions.val(populateValues).trigger('change.select2');
+        });
 
+        function hideShowSelect(show = null){
+            $(".selectOptions, .selectOptionsP, .selectOptionsDS, .selectOptionsDP, .selectOptionsB, .selectOptionsC").hide();
+            show == null ? $(".selectOptions").show() : $("."+show).show() ;
+        }
 
-
-
+        hideShowSelect();
 
         if (typeof selfId === "undefined") {
             selfId = 0;
@@ -71,3 +111,4 @@
         });
     });
 })(window.jQuery, window.app);
+

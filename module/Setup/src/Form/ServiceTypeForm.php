@@ -39,6 +39,14 @@ class ServiceTypeForm {
     public $type;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"PF Eligible"})
+     * @Annotation\Attributes({ "id":"pfEligible", "value":"N"})
+     */
+    public $pfEligible;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
