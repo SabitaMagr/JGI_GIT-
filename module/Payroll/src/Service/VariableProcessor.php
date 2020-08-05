@@ -203,6 +203,12 @@ class VariableProcessor {
             case PayrollGenerator::VARIABLES[28]:
                 $processedValue = $this->payrollRepo->getBranchAllowanceRebate($this->employeeId);
                 break;
+            /*
+             * IS_REMOTE_BRANCH
+             */
+            case PayrollGenerator::VARIABLES[29]:
+                $processedValue = $this->payrollRepo->getRemoteBranch($this->employeeId);
+                break;
             
             
             default:

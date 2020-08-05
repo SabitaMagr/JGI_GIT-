@@ -56,7 +56,8 @@ class PayrollGenerator {
         "SERVICE_TYPE_PF",
         "IS_DISABLE_PERSON",
         "PREVIOUS_MONTH_DAYS",
-        "BRANCH_ALLOWANCE_REBATE"
+        "BRANCH_ALLOWANCE_REBATE",
+        "IS_REMOTE_BRANCH"
     ];
     const SYSTEM_RULE = [
         "TOTAL_ANNUAL_AMOUNT",

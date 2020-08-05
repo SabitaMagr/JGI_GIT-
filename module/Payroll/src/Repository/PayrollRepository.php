@@ -548,4 +548,16 @@ FROM HRIS_MONTH_CODE  where MONTH_ID=(:monthId-1)";
         return $resultList[0]['ALLOWANCE_REBATE'];
     }
     
+    public function getRemoteBranch($employeeId){
+        $boundedParameter = [];
+        $boundedParameter['employeeId'] = $employeeId;
+        $sql = "SELECT IS_REMOTE FROM HRIS_BRANCHES WHERE 
+                BRANCH_ID=(SELECT  BRANCH_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID=:employeeId)";
+        $resultList = $this->rawQuery($sql, $boundedParameter);
+        if (!(sizeof($resultList) == 1)) {
+            throw new Exception('No Report Found.');
+        }
+        return $resultList[0]['IS_REMOTE'];
+    }
+    
 }
