@@ -200,6 +200,10 @@ class SystemRuleProcessor {
                 }
                 $processedValue = $calculatedValue;
                 break;
+				//       GRATUITY_PER
+            case PayrollGenerator::SYSTEM_RULE[11]:
+                $processedValue=$this->ssdRepo->fetchEmployeeGratuityPercentage($this->monthId, $this->employeeId);
+                break;
         }
         return $processedValue;
     }

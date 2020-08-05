@@ -70,7 +70,8 @@ class PayrollGenerator {
         "PREVIOUS_MONTH_AMOUNT",
         "EMPLOYEE_GRADE",
         "TOTAL_ADD",
-        "TOTAL_DED"
+        "TOTAL_DED",
+        "GRATUITY_PER"
     ];
 
     public function __construct($adapter) {
