@@ -1701,8 +1701,6 @@ view_order number(2,0),
 report_show_default char(1) DEFAULT 'Y'
 );
 
-
-
 alter table hris_roles modify control varchar2(100 byte);
 
 ALTER TABLE HRIS_SERVICE_TYPES
@@ -1717,3 +1715,4 @@ ADD IS_REMOTE CHAR(1 BYTE) DEFAULT 'N' CHECK ( IS_REMOTE IN ('Y','N') ) ;
 ALTER TABLE HRIS_BRANCHES
 ADD ALLOWANCE_REBATE NUMBER(10,2) ;
 
+ALTER TABLE HRIS_EMPLOYEES ADD GRATUITY_DATE DATE;
