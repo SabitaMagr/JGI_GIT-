@@ -65,6 +65,7 @@ protected $adapter;
         $formulaData['variableList'] = PayrollGenerator::VARIABLES;
         $formulaData['systemRuleList'] = PayrollGenerator::SYSTEM_RULE;
         $formulaData['referencingRuleList'] = $this->getReferencingRules();
+        $formulaData['referencingRuleListOthers'] = $this->getReferencingRules();
 
         return [
             'form' => $this->form,
@@ -137,6 +138,7 @@ protected $adapter;
         $formulaData['variableList'] = PayrollGenerator::VARIABLES;
         $formulaData['systemRuleList'] = PayrollGenerator::SYSTEM_RULE;
         $formulaData['referencingRuleList'] = $this->getReferencingRules($id);
+        $formulaData['referencingRuleListOthers'] = $this->getReferencingRules();
         
         $salaryTypes = Helper::extractDbData($specialRuleRepo->fetchSalaryTypes());
         $specialRules = Helper::extractDbData($specialRuleRepo->fetchSpecialRules($id));

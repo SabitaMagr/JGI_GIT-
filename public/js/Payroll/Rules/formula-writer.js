@@ -20,6 +20,7 @@ window.formulaWriter = function (id, data) {
     var variableList = data.variableList;
     var systemRuleList = data.systemRuleList;
     var referencingRuleList = data.referencingRuleList;
+    var referencingRuleListOthers=data.referencingRuleListOthers;
 
     for (var i in monthlyValueList) {
         list.push(`[M:${convertToCodeForm(monthlyValueList[i]['MTH_EDESC'])}]`);
@@ -35,6 +36,11 @@ window.formulaWriter = function (id, data) {
     }
     for (var i in referencingRuleList) {
         list.push(`[R:${convertToCodeForm(referencingRuleList[i]['PAY_EDESC'])}]`);
+    }
+    
+    for (var i in referencingRuleListOthers){
+         list.push(`[PM:${convertToCodeForm(referencingRuleListOthers[i]['PAY_EDESC'])}]`);
+         list.push(`[PS:${convertToCodeForm(referencingRuleListOthers[i]['PAY_EDESC'])}]`);
     }
 
     CodeMirror.registerHelper("hint", "customword", function (editor, options) {
