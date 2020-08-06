@@ -63,7 +63,8 @@ class ServiceTypeController extends HrisController {
             }
         }
         return $this->stickFlashMessagesTo([
-                    'form' => $this->form
+                    'form' => $this->form,
+                'customRenderer' => Helper::renderCustomView()
         ]);
     }
 
@@ -90,7 +91,7 @@ class ServiceTypeController extends HrisController {
                 return $this->redirect()->toRoute("serviceType");
             }
         }
-        return $this->stickFlashMessagesTo(['form' => $this->form, 'id' => $id]);
+        return $this->stickFlashMessagesTo(['form' => $this->form, 'id' => $id, 'customRenderer' => Helper::renderCustomView()]);
     }
 
     public function deleteAction() {

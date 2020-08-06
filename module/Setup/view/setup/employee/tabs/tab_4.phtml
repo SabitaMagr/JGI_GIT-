@@ -62,6 +62,10 @@ $allowance = $formFour->get('allowance');
 
 $taxBase = $formFour->get('taxBase');
 
+$permanentDate = $formFour->get('permanentDate');
+$gratuityDate = $formFour->get('gratuityDate');
+$disabledFlag = $formFour->get('disabledFlag');
+
 $formFour->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 4]));
 $formFour->setAttribute("name", "employeeForm");
 $formFour->prepare();
@@ -238,6 +242,68 @@ $formFour->prepare();
                         </div>
                     </div>
                 </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="row bottomgap">
+                        <div class="form-group   <?= empty($permanentDate->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
+                                <?php print $this->formLabel($permanentDate); ?>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
+                                <div class="row">
+                                    <div class="col-md-6 nopaddinggap">
+                                        <div class="input-group date">
+                                            <?php print $this->formElement($permanentDate); ?>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text"   id="permanentDateNepali" class="form-control " value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <?php print $this->formElementErrors()->render($permanentDate, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="row bottomgap">
+                        <div class="form-group">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                <?php print $this->formLabel($gratuityDate); ?>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                <div class="row">
+                                    <div class="col-md-6 nopaddinggap">
+                                        <div class="input-group date">
+                                            <?php print $this->formElement($gratuityDate); ?>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" id="nepaligratuityDate" class="form-control " value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <?php print $this->formElementErrors()->render($gratuityDate, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="row bottomgap">
+                        <div class="form-group">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
+                                <?= $this->formLabel($disabledFlag) ?>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 cgap-4 ">
+                                <div class="md-radio-inline">
+                                    <?php $customRender($disabledFlag); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-6">

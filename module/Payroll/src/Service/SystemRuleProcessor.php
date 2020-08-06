@@ -34,8 +34,9 @@ class SystemRuleProcessor {
 
         $ssdRepo = new SalarySheetDetailRepo($adapter);
         $this->ssdRepo = $ssdRepo;
-        $prevSummedRaw = $ssdRepo->fetchPrevSumPayValue($employeeId, $this->month->fiscalYearId, $this->month->fiscalYearMonthNo);
-        $this->prevSummedSSD = $this->listValueToKV($prevSummedRaw, "PAY_ID", "PREV_SUM_VAL");
+//        $prevSummedRaw = $ssdRepo->fetchPrevSumPayValue($employeeId, $this->month->fiscalYearId, $this->month->fiscalYearMonthNo);
+//        $this->prevSummedSSD = $this->listValueToKV($prevSummedRaw, "PAY_ID", "PREV_SUM_VAL");
+        $this->prevSummedSSD = [];
         $this->ruleId = $ruleId;
     }
 
@@ -151,27 +152,27 @@ class SystemRuleProcessor {
                 $absentVariable=$this->getFistParamenters($systemRule, $ruleFormula, 9);
                 $gradeDetails=$this->ssdRepo->fetchEmployeeGrade($this->monthId, $this->employeeId);
                 
-                if (!$gradeDetails) {
-                    $gradeDetails[OPENING_GRADE] = 0;
-                    $gradeDetails[ADDITIONAL_GRADE] = 0;
-                    $gradeDetails[GRADE_VALUE] = 0;
-                    $gradeDetails[CUR_GRADE] = 0;
-                    $gradeDetails[NEW_GRADE] = 0;
-                    $gradeDetails[MONTH_DAYS] = 0;
-                    $gradeDetails[CUR_GRADE_DAYS] = 0;
-                    $gradeDetails[NEW_GRADE_DAYS] = 0;
+                if (empty($gradeDetails)) {
+                    $gradeDetails['OPENING_GRADE'] = 0;
+                    $gradeDetails['ADDITIONAL_GRADE'] = 0;
+                    $gradeDetails['GRADE_VALUE'] = 0;
+                    $gradeDetails['CUR_GRADE'] = 0;
+                    $gradeDetails['NEW_GRADE'] = 0;
+                    $gradeDetails['MONTH_DAYS'] = 0;
+                    $gradeDetails['CUR_GRADE_DAYS'] = 0;
+                    $gradeDetails['NEW_GRADE_DAYS'] = 0;
                 }
                 $processedValue=""; 
 //                    $processedValue="eval( 'return "; 
                 if ($gradeDetails['NEW_GRADE'] == 0 || $gradeDetails['CUR_GRADE'] == $gradeDetails['NEW_GRADE']) {
-                    $processedValue .= "( (" . $gradeDetails['CUR_GRADE'] . '/' . $gradeDetails['MONTH_DAYS'] . ' ) *(' . $gradeDetails['CUR_GRADE_DAYS'] . '-' . $absentVariable . ")  )";
+                    $processedValue .= "( (" . $gradeDetails['CUR_GRADE'] . '/' . $gradeDetails['MONTH_DAYS'] . ' ) *(' . $gradeDetails['CUR_GRADE_DAYS'] . '- ' . $absentVariable . " )  )";
                 } else {
 //                    $processedValue .= "( (" . $gradeDetails['CUR_GRADE'] . '/' . $gradeDetails['MONTH_DAYS'] . ' ) *(' . $gradeDetails['CUR_GRADE_DAYS'] . '-' . $absentVariable . ")  )";
 //                    $processedValue .= " + ( (" . $gradeDetails['NEW_GRADE'] . '/' . $gradeDetails['MONTH_DAYS'] . ' ) *(' . $gradeDetails['NEW_GRADE_DAYS'] . '-' . $absentVariable . ")  )";
                     
                    
-                    $processedValue .= "( (" . $gradeDetails['CUR_GRADE'] . '/' . $gradeDetails['MONTH_DAYS'] . ' ) *( ('.$absentVariable.'<='.$gradeDetails['NEW_GRADE_DAYS'] .')?'.$gradeDetails['CUR_GRADE_DAYS'].':(' . $gradeDetails['CUR_GRADE_DAYS'] . '+' . $absentVariable .'-'.$absentVariable.")  )  )";
-                    $processedValue .= " + ( (" . $gradeDetails['NEW_GRADE'] . '/' . $gradeDetails['MONTH_DAYS'] . ' ) *( ('.$absentVariable.'<='.$gradeDetails['NEW_GRADE_DAYS'] .')?('.$gradeDetails['NEW_GRADE_DAYS'].'-'.$absentVariable."):(0) )  )";
+                    $processedValue .= "( (" . $gradeDetails['CUR_GRADE'] . '/' . $gradeDetails['MONTH_DAYS'] . ' ) *( ( '.$absentVariable.' <= '.$gradeDetails['NEW_GRADE_DAYS'] .')?'.$gradeDetails['CUR_GRADE_DAYS'].':(' . $gradeDetails['CUR_GRADE_DAYS'] . '+ ' . $gradeDetails['NEW_GRADE_DAYS'] .' - '.$absentVariable." )  )  )";
+                    $processedValue .= " + ( (" . $gradeDetails['NEW_GRADE'] . '/' . $gradeDetails['MONTH_DAYS'] . ' ) *( ( '.$absentVariable.' <= '.$gradeDetails['NEW_GRADE_DAYS'] .')?( '.$gradeDetails['NEW_GRADE_DAYS'].' - '.$absentVariable." ):(0) )  )";
                 }
 //                    $processedValue.=";')"; 
                 break;
@@ -198,6 +199,10 @@ class SystemRuleProcessor {
                     $calculatedValue = $calculatedValue + $ruleValue;
                 }
                 $processedValue = $calculatedValue;
+                break;
+				//       GRATUITY_PER
+            case PayrollGenerator::SYSTEM_RULE[11]:
+                $processedValue=$this->ssdRepo->fetchEmployeeGratuityPercentage($this->monthId, $this->employeeId);
                 break;
         }
         return $processedValue;

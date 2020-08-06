@@ -52,7 +52,12 @@ class PayrollGenerator {
         "CAFE_MEAL_PREVIOUS",
         "CAFE_MEAL_CURRENT",
         "PAYROLL_EMPLOYEE_TYPE",
-        "EMPLOYEE_SERVICE_ID"
+        "EMPLOYEE_SERVICE_ID",
+        "SERVICE_TYPE_PF",
+        "IS_DISABLE_PERSON",
+        "PREVIOUS_MONTH_DAYS",
+        "BRANCH_ALLOWANCE_REBATE",
+        "IS_REMOTE_BRANCH"
     ];
     const SYSTEM_RULE = [
         "TOTAL_ANNUAL_AMOUNT",
@@ -65,7 +70,8 @@ class PayrollGenerator {
         "PREVIOUS_MONTH_AMOUNT",
         "EMPLOYEE_GRADE",
         "TOTAL_ADD",
-        "TOTAL_DED"
+        "TOTAL_DED",
+        "GRATUITY_PER"
     ];
 
     public function __construct($adapter) {
@@ -79,16 +85,19 @@ class PayrollGenerator {
 
         $this->formattedMonthlyvalueList = [];
         foreach ($monthlyValueList as $monthlyValue) {
-            $this->formattedMonthlyvalueList[$monthlyValue['MTH_ID']] = "[M:{$this->sanitizeString($monthlyValue['MTH_EDESC'])}]";
+            $this->formattedMonthlyvalueList["[M:".$this->sanitizeString($monthlyValue['MTH_EDESC'])."]"] = $monthlyValue['MTH_ID'];
+//            $this->formattedMonthlyvalueList[$monthlyValue['MTH_ID']] = "[M:{$this->sanitizeString($monthlyValue['MTH_EDESC'])}]";
         }
         $this->formattedFlatValueList = [];
         foreach ($flatValuesList as $flatValue) {
-            $this->formattedFlatValueList[$flatValue['FLAT_ID']] = "[F:{$this->sanitizeString($flatValue['FLAT_EDESC'])}]";
+            $this->formattedFlatValueList["[F:".$this->sanitizeString($flatValue['FLAT_EDESC'])."]"] = $flatValue['FLAT_ID'];
+//            $this->formattedFlatValueList[$flatValue['FLAT_ID']] = "[F:{$this->sanitizeString($flatValue['FLAT_EDESC'])}]";
         }
 
         $this->formattedVariableList = [];
         foreach (self::VARIABLES as $variable) {
-            $this->formattedVariableList[$variable] = "[V:{$variable}]";
+            $this->formattedVariableList["[V:".$variable."]"] = $variable;
+//            $this->formattedVariableList[$variable] = "[V:{$variable}]";
         }
 
         $this->formattedSystemRuleList = [];
@@ -102,15 +111,29 @@ class PayrollGenerator {
         $this->monthId = $monthId;
         $this->sheetNo = $sheetNo;
         $payList = $this->ruleRepo->fetchAllTypeWise($sheetNo);
-        $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $employeeId, null, $monthId, null);
+//        $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $employeeId, null, $monthId, null);
         
+        $startTime = microtime(true);
         $file = Helper::UPLOAD_DIR . "/PAYROLL_LOG.txt";
-        file_put_contents($file,"Generate Start for employeeId=".$employeeId." monthId=".$monthId." sheetNo=".$sheetNo);
+        file_put_contents($file,"Generate Start for employeeId=".$employeeId." monthId=".$monthId." sheetNo=".$sheetNo." time-".(round(microtime(true) - $startTime,3)*1000));
 
         $ruleValueMap = [];
         $ruleTaxValueMap = [];
         $counter = 0;
+        
+        $generatedValues=[];
+        
+        // for previous sum data start
+        $previousSumValData=$this->ruleRepo->fetchPreviousSumVal($employeeId, $monthId) ;
+        $previousSumValList=[];
+        foreach($previousSumValData as $prevSumDtl){
+        $previousSumValList[$prevSumDtl['PAY_EDESC']]=$prevSumDtl['VALUE'];
+        }
+        // for previous sum data end
+        
+        
         foreach ($payList as $ruleDetail) {
+            $startTime = microtime(true);
             $ruleId = $ruleDetail[Rules::PAY_ID];
             $formula = $ruleDetail[Rules::FORMULA];
             $ruleCode = $ruleDetail[Rules::PAY_CODE];
@@ -131,41 +154,165 @@ class PayrollGenerator {
             $ruleValue = $this->sspvmRepo->fetch($q);
             if ($ruleValue == null) {
                 $refRules = $this->ruleRepo->fetchReferencingRules($ruleId);
-
-                foreach ($this->formattedMonthlyvalueList as $monthlyKey => $monthlyValue) {
-                    $formula = $this->convertMonthlyToValue($formula, $monthlyKey, $monthlyValue);
+                
+            $monthlyValCheck = strpos($formula, "M:");
+            if ($monthlyValCheck ) {
+                while($monthlyValCheck){
+                $startPos = strpos($formula, '[M:');
+                $endPos= strpos($formula, ' ', $startPos);
+                if(!$endPos){
+                $endPos= strlen($formula);
                 }
+                $length = abs($endPos - $startPos);
+                $monthlyValue = substr($formula, $startPos, $length);
+                $monthlyKey=$this->formattedMonthlyvalueList[$monthlyValue];
+                if($monthlyKey){
+                $formula = $this->convertMonthlyToValue($formula, $monthlyKey, $monthlyValue);
+                    $monthlyValCheck = strpos($formula, "M:");
+                }else{
+                    $monthlyValCheck=false;
+                }
+                }
+                
+                
+//                foreach ($this->formattedMonthlyvalueList as $monthlyKey => $monthlyValue) {
+//                    $formula = $this->convertMonthlyToValue($formula, $monthlyKey, $monthlyValue);
+//                }
+            }
 
-                foreach ($this->formattedFlatValueList as $flatKey => $flatValue) {
+            $flatValCheck = strpos($formula, "F:");
+            if ($flatValCheck ) {
+                
+                while($flatValCheck){
+                $startPos = strpos($formula, '[F:');
+                $endPos= strpos($formula, ' ', $startPos);
+                if(!$endPos){
+                $endPos=strpos($formula, ']', $startPos)+1;
+                }
+                $length = abs($endPos - $startPos);
+                $flatValue = substr($formula, $startPos, $length);
+                $flatKey=$this->formattedFlatValueList[$flatValue];
+                if($flatKey){
                     $formula = $this->convertFlatToValue($formula, $flatKey, $flatValue);
+                    $flatValCheck = strpos($formula, "F:");
+                }else{
+                    $flatValCheck=false;
                 }
+                }
+                
+                
+//                foreach ($this->formattedFlatValueList as $flatKey => $flatValue) {
+//                    $formula = $this->convertFlatToValue($formula, $flatKey, $flatValue);
+//                }
+            }
 
-                foreach ($this->formattedVariableList as $key => $variable) {
+            $variableValCheck = strpos($formula, "V:");
+            if ($variableValCheck ) {
+                
+                while($variableValCheck){
+                $startPos = strpos($formula, '[V:');
+                $endPos= strpos($formula, ' ', $startPos);
+                if(!$endPos){
+                $endPos=strpos($formula, ']', $startPos)+1;
+                }
+                $length = abs($endPos - $startPos);
+                $variable = substr($formula, $startPos, $length);
+                $key=$this->formattedVariableList[$variable];
+                if($key){
                     $formula = $this->convertVariableToValue($formula, $key, $variable);
+                    $variableValCheck = strpos($formula, "V:");
+                }else{
+                    $variableValCheck=false;
                 }
+                }
+                
+                
+//                foreach ($this->formattedVariableList as $key => $variable) {
+//                    $formula = $this->convertVariableToValue($formula, $key, $variable);
+//                }
+            }
+            
+            // for prevous sum val calulation start
+            $previousSumValCheck = strpos($formula, "PS:");
+            if ($previousSumValCheck ) {
+                while ($previousSumValCheck) {
+                        $startPos = strpos($formula, '[PS:');
+                        $endPos = strpos($formula, ' ', $startPos);
+                        if (!$endPos) {
+                            $endPos = strpos($formula, ']', $startPos) + 1;
+                        }
+                        $length = abs($endPos - $startPos);
+                        $variable = substr($formula, $startPos, $length);
+                        $key = $previousSumValList[$variable];
+                        if ($key || $key>=0) {
+                            $formula = str_replace($variable, is_string($key) ? "'{$key}'" : $key, $formula);
+                            $previousSumValCheck = strpos($formula, "PS:");
+                        } else {
+                            $previousSumValCheck = false;
+                        }
+                    }
+                
+            }
+            // for prevous sum val calulation end
+            
+            
 
+            $systemValCheck = strpos($formula, "S:");
+            if ($systemValCheck ) {
                 foreach ($this->formattedSystemRuleList as $key => $systemRule) {
                     $formula = $this->convertSystemRuleToValue($formula, $key, $systemRule, $ruleId);
                 }
+            }
                 //added by prabin to remoeve extra params PARS and PARAe start
                 $formula=$this->deleteAllBetweenString("PARS", "PARE", $formula);
                 //added by prabin to remoeve extra params PARS and PARAe end
 //                    print_r($formula);
-                $processedformula = $this->convertReferencingRuleToValue($formula, $refRules);
                 
+               $referenceValCheck = strpos($formula, "R:");
+             $processedformula=$formula;
+            if ($referenceValCheck) {
+                    while ($referenceValCheck) {
+                        $startPos = strpos($processedformula, '[R:');
+                        $endPos = strpos($processedformula, ' ', $startPos);
+                        if (!$endPos) {
+                            $endPos = strpos($processedformula, ']', $startPos) + 1;
+                        }
+                        $length = abs($endPos - $startPos);
+                        $variable = substr($processedformula, $startPos, $length);
+                        $key = $generatedValues[$variable];
+                        if ($key || $key>=0) {
+                            $processedformula = str_replace($variable, is_string($key) ? "'{$key}'" : $key, $processedformula);
+                            $referenceValCheck = strpos($processedformula, "R:");
+                        } else {
+                            $referenceValCheck = false;
+                        }
+                    }
+                    
+
+//                $processedformula = $this->convertReferencingRuleToValue($formula, $refRules);
+                }
+                
+
                 //print_r($processedformula);
                 
                 $current = file_get_contents($file);
-                file_put_contents($file, $current."\r\nstartRuleId(".$ruleCode.")=".$ruleId."-".$ruleEdesc."\n".$ruleFormula."\n".$processedformula."\n");
-                $ruleValue = eval("return {$processedformula} ;");
+                file_put_contents($file, $current."\r\nstartRuleId(".$ruleCode.")=".$ruleId."-".$ruleEdesc."\n".str_replace('_', ' ', $ruleFormula)."\n".$processedformula." time-".(round(microtime(true) - $startTime,3)*1000)."\n");
+                $ruleValue = @(eval("return {$processedformula} ;"));
+                    if($ruleValue==INF){
+                        $ruleValue=0;
+                    }
                     if(is_nan($ruleValue)){
                         $ruleValue=0;
                     }
+                $finalFileAppend = file_get_contents($file);
+                file_put_contents($file, $finalFileAppend."total ".$ruleValue." time-".(round(microtime(true) - $startTime,3)*1000)."\n");
             }
+            $generatedValues["[R:".$ruleDetail['PAY_EDESC_WITH_UNDERSCORE']."]"]=$ruleValue;
             $rule = ["ruleValue" => $ruleValue, "rule" => $ruleDetail];
             array_push($this->ruleDetailList, $rule);
             $ruleValueMap[$ruleId] = $ruleValue;
-            $ruleTaxValueMap[$ruleId] = $systemRuleProcessor->getTaxValue($rule);
+            $ruleTaxValueMap[$ruleId] = $ruleValue;
+//            $ruleTaxValueMap[$ruleId] = $systemRuleProcessor->getTaxValue($rule);
             $counter++;
         }
 
@@ -266,4 +413,14 @@ class PayrollGenerator {
     }
     // added by prabin end
     
+    function get_string_between($string, $start, $end) {
+        $string = ' ' . $string;
+        $ini = strpos($string, $start);
+        if ($ini == 0)
+            return '';
+        $ini += strlen($start);
+        $len = strpos($string, $end, $ini) - $ini;
+        return substr($string, $ini, $len);
+    }
+            
 }

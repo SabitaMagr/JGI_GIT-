@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("#printAsPDF").click(function (e) {
-            console.log("hellow");
+            // console.log("hellow");
             var divToPrint = document.getElementById('quaConId');
 
             var newWin = window.open('', 'Print-Window');

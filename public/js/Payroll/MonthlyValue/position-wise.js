@@ -16,10 +16,14 @@
         var $header = $('#monthlyValuesDetailHeader');
         var $table = $('#monthlyValueDetailTable');
         var $footer = $('#monthlyValueDetailFooter');
+        var $positionId = $('#positionId');
+        var $monthlyId = $('#monthlyId');
 
 
         app.populateSelect($fiscalYearId, fiscalYears, "FISCAL_YEAR_ID", "FISCAL_YEAR_NAME", "Select Fiscal Year");
         app.populateSelect($monthId, [], "MONTH_ID", "MONTH_EDESC", "Select Month");
+        app.populateSelect($positionId, positions, "POSITION_ID", "POSITION_NAME", "Select Position");
+        app.populateSelect($monthlyId, monthlyValues, "MTH_ID", "MTH_EDESC", "Select Monthly ");
 
         $fiscalYearId.on('change', function () {
             var value = $(this).val();
@@ -39,16 +43,49 @@
 
             });
         };
-
-        $monthId.on('change', function () {
-            var value = $(this).val();
+        
+        var filterTableFunc =function(){
+            var value = $monthId.val();
             if (value == -1) {
                 return;
             }
             pullData(value, function (data) {
-                initTable(monthlyValues, positions, data);
+                let positionsVals = [];
+                let selectedPosition = $positionId.val();
+                let filteredMonthlyVals = [];
+                let selectedMonthly = $monthlyId.val();
+                if (selectedPosition != null && selectedPosition != -1 && selectedPosition != '') {
+                    $.each(positions, function (index, item) {
+                        if (selectedPosition.includes(item['POSITION_ID'])) {
+                            positionsVals.push(item);
+                        }
+                    });
+                } else {
+                    positionsVals = positions;
+                }
+                if (selectedMonthly != null && selectedMonthly != -1 && selectedMonthly != '') {
+                    $.each(monthlyValues, function (index, item) {
+                        if (selectedMonthly.includes(item['MTH_ID'])) {
+                            filteredMonthlyVals.push(item);
+                        }
+                    });
+                } else {
+                    filteredMonthlyVals = monthlyValues;
+                }
+                initTable(filteredMonthlyVals, positionsVals, data);
             });
+        } 
+        
+        $positionId.on('change', function () {
+            filterTableFunc();
+        });
+        
+        $monthlyId.on('change', function () {
+            filterTableFunc();
+        });
 
+        $monthId.on('change', function () {
+            filterTableFunc();
         });
 
         var findMonthlyValue = function (serverData, positionId, mthId) {
@@ -63,11 +100,11 @@
             }
         };
 
-        var initTable = function (monthlyValues, positions, data) {
+        var initTable = function (monthlyVals, positions, data) {
             $header.html('');
             $header.append($('<th>', {text: 'Level'}));
             $header.append($('<th>', {text: 'Name'}));
-            $.each(monthlyValues, function (index, item) {
+            $.each(monthlyVals, function (index, item) {
                 $header.append($('<th>', {id: item['MTH_ID'], text: item['MTH_EDESC']}));
             });
             $header.append($('<th>', {text: ''}));
@@ -79,7 +116,7 @@
                 $tr.append($('<td>', {text: item['LEVEL_NO']}));
                 $tr.append($('<td>', {text: item['POSITION_NAME']}))
 
-                $.each(monthlyValues, function (k, v) {
+                $.each(monthlyVals, function (k, v) {
                     var $td = $('<td>');
                     $td.append($('<input>', {type: 'number', row: item['POSITION_ID'], col: v['MTH_ID'], value: findMonthlyValue(data, item['POSITION_ID'], v['MTH_ID']), class: 'form-control'}));
                     $tr.append($td);
@@ -97,17 +134,17 @@
             $tr.append($('<td>', {text: ''}));
             $tr.append($('<td>', {text: ''}))
 
-            $.each(monthlyValues, function (k, v) {
+            $.each(monthlyVals, function (k, v) {
                 var $td = $('<td>');
-                $td.append($('<input>', {type: 'number', col: v['MTH_ID'], class: 'group form-control'}));
+                $td.append($('<input>', {type: 'number', col: v['MTH_ID'], class: 'group form-control',style:'width: 80px;'}));
                 $tr.append($td);
             });
             var $td = $('<td>');
-            $td.append($('<input>', {type: 'number', class: 'group form-control'}));
+            $td.append($('<input>', {type: 'number', class: 'group form-control',style:'width: 80px;'}));
             $tr.append($td);
 
             $footer.append($tr);
-            $table.bootstrapTable({height: 400});
+//            $table.bootstrapTable({height: 400});
         };
 
         $table.on('change', '.group', function () {
@@ -147,7 +184,7 @@
                 var rowValue = $item.attr('row');
                 var colValue = $item.attr('col');
                 var value = $item.val();
-                if (typeof rowValue !== "undefined" && rowValue != null && rowValue != "" && typeof colValue !== "undefined" && colValue != null && colValue != "" && typeof value !== "undefined" && value != null && value != "") {
+                if (typeof rowValue !== "undefined" && rowValue != null && rowValue != "" && typeof colValue !== "undefined" && colValue != null && colValue != "" && typeof value !== "undefined" && value != null) {
                     promiseList.push(app.pullDataById(document.setPositionMonthlyValueLink, {
                         monthId: monthId,
                         fiscalYearId: fiscalYearId,

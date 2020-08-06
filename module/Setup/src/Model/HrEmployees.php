@@ -2,6 +2,7 @@
 namespace Setup\Model;
 
 use Application\Model\Model;
+use function Complex\sec;
 
 class HrEmployees extends Model {
 
@@ -112,6 +113,9 @@ class HrEmployees extends Model {
     public $overtimeEligible;
     public $allowance;
     public $bankId;
+    public $gratuityDate;
+    public $permanentDate;
+    public $disabledFlag;
 
     
     const TABLE_NAME = "HRIS_EMPLOYEES";
@@ -222,6 +226,9 @@ class HrEmployees extends Model {
     const OVERTIME_ELIGIBLE = "OVERTIME_ELIGIBLE";
     const ALLOWANCE = "ALLOWANCE";
     const BANK_ID = "BANK_ID";
+    const PERMANENT_DATE = "PERMANENT_DATE";
+    const GRATUITY_DATE = "GRATUITY_DATE";
+    const DISABLED_FLAG = "DISABLED_FLAG";
 
     
     public $mappings = [
@@ -332,6 +339,9 @@ class HrEmployees extends Model {
         'overtimeEligible' =>self::OVERTIME_ELIGIBLE,
         'allowance' => self::ALLOWANCE,
         'bankId' => self::BANK_ID,
+        'permanentDate' => self::PERMANENT_DATE,
+        'gratuityDate' => self::GRATUITY_DATE,
+        'disabledFlag' => self::DISABLED_FLAG
     ];
 
 }

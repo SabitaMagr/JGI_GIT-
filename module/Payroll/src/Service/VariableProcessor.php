@@ -178,9 +178,40 @@ class VariableProcessor {
             case PayrollGenerator::VARIABLES[24]:
                 $processedValue = $this->payrollRepo->getEmployeeServiceId($this->employeeId,$this->sheetNo);
                 break;
+            /*
+             * SALARY_PF
+             */
+            case PayrollGenerator::VARIABLES[25]:
+                $processedValue = $this->payrollRepo->getserviceTypePf($this->employeeId,$this->sheetNo);
+                break;
+            /*
+             * IS_DISABLE_PERSON
+             */
+            case PayrollGenerator::VARIABLES[26]:
+                $processedValue = $this->payrollRepo->getDisablePersonFlag($this->employeeId);
+                break;
+            /*
+             * PREVIOUS_MONTH_DAYS
+             */
+            case PayrollGenerator::VARIABLES[27]:
+                $processedValue = $this->payrollRepo->getPreviousMonthDays($this->monthId);
+                break;
+                break;
+            /*
+             * BRANCH_ALLOWANCE_REBATE
+             */
+            case PayrollGenerator::VARIABLES[28]:
+                $processedValue = $this->payrollRepo->getBranchAllowanceRebate($this->employeeId);
+                break;
+            /*
+             * IS_REMOTE_BRANCH
+             */
+            case PayrollGenerator::VARIABLES[29]:
+                $processedValue = $this->payrollRepo->getRemoteBranch($this->employeeId);
+                break;
+            
+            
             default:
-
-
                 break;
         }
 

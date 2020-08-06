@@ -39,12 +39,20 @@ $this->headScript()
                             <select class="form-control" id="monthId" >
                             </select>
                         </div>
-                        <div class="col-sm-8">
+                        <div class="col-sm-2">
+                            <select class="form-control" id="monthlyId" multiple="multiple" >
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <select class="form-control" id="positionId" multiple="multiple" >
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
                             <button id="assignMonthlyValueBtn" class="btn pull-right" >Assign Monthly Value</button>
                         </div>
                     </div>
                     <div class="row margin-top-10">
-                        <div class="col-sm-12">
+                        <div class="col-sm-12" style="overflow-x:auto;" >
                             <table class="table table-bordered table-striped customTable " id="monthlyValueDetailTable" >
                                 <thead>
                                     <tr id="monthlyValuesDetailHeader">

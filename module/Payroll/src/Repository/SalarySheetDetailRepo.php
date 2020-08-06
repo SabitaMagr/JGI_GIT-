@@ -216,12 +216,13 @@ class SalarySheetDetailRepo extends HrisRepository {
                 FROM
                   (SELECT *
                   FROM
-                    (SELECT SHEET_NO,
-                      EMPLOYEE_ID,
-                      PAY_ID,
-                      VAL
-                    FROM HRIS_SALARY_SHEET_DETAIL
-                    WHERE SHEET_NO in ({$sheetString})
+                    (SELECT SSED.SHEET_NO,
+                      SSED.EMPLOYEE_ID,
+                      SSD.PAY_ID,
+                      SSD.VAL
+                    FROM HRIS_SALARY_SHEET_DETAIL SSD
+                    RIGHT JOIN HRIS_SALARY_SHEET_EMP_DETAIL SSED ON (SSD.SHEET_NO=SSED.SHEET_NO AND SSD.EMPLOYEE_ID=SSED.EMPLOYEE_ID)
+                    WHERE SSED.SHEET_NO in ({$sheetString})
                     ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$in}))
                   ) P
                 JOIN HRIS_EMPLOYEES E
@@ -327,7 +328,39 @@ class SalarySheetDetailRepo extends HrisRepository {
         $boundedParameter['monthId'] = $monthId;
         $boundedParameter['employeeId'] = $employeeId;
         $resultList = $this->rawQuery($sql, $boundedParameter);
+        if(!empty($resultList)){
         return $resultList[0];
+        }else{
+            return $resultList;
+        } 
     }
+    
+    
+     public function fetchEmployeeGratuityPercentage($monthId,$employeeId){
+        $sql="SELECT 
+ E.GRATUITY_DATE,MC.TO_DATE 
+, E.GRATUITY_DATE  + interval '10' year as ten_yrs
+, E.GRATUITY_DATE  + interval '15' year as fifteen_yrs
+, E.GRATUITY_DATE  + interval '20' year as twenty_yrs 
+,
+case 
+when MC.TO_DATE  >  ( E.GRATUITY_DATE  + interval '20' year)  then 16.67
+when MC.TO_DATE  > ( E.GRATUITY_DATE  + interval '15' year)  then 14.58
+when MC.TO_DATE  > ( E.GRATUITY_DATE  + interval '10' year)  then 12.50
+when ( MC.TO_DATE  >=  E.GRATUITY_DATE ) then 8.33
+else
+0
+end as GRATUTITY_PERCENT
+ FROM HRIS_EMPLOYEES E
+ LEFT JOIN ( SELECT * FROM  HRIS_MONTH_CODE WHERE MONTH_ID=:monthId) MC ON (1=1)
+ WHERE EMPLOYEE_ID=:employeeId";
+        $boundedParameter = [];
+        $boundedParameter['monthId'] = $monthId;
+        $boundedParameter['employeeId'] = $employeeId;
+        $resultList = $this->rawQuery($sql, $boundedParameter);
+        return $resultList[0]['GRATUTITY_PERCENT'];
+    }
+    
+    
 
 }

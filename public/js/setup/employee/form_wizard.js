@@ -26,6 +26,8 @@
                         app.datePickerWithNepali('eventDate', 'nepalieventDate');
                         app.datePickerWithNepali('startDate', 'nepalistartDate');
                         app.datePickerWithNepali('endDate', 'nepaliendDate');
+                        app.datePickerWithNepali('permanentDate', 'permanentDateNepali');
+                        app.datePickerWithNepali('gratuityDate', 'nepaligratuityDate');
                         break;
                     case 7:
                         break;

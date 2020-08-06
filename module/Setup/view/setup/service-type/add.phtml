@@ -7,6 +7,7 @@ $form->setAttribute('id', 'serviceType-form');
 $serviceTypeName = $form->get('serviceTypeName');
 $remarks = $form->get('remarks');
 $type = $form->get('type');
+$pfEligible = $form->get('pfEligible');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -71,6 +72,19 @@ $form->prepare();
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($pfEligible); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($pfEligible); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($pfEligible, ['class' => 'help-block error']); ?>
+                    </div>
+                </div>
+
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();

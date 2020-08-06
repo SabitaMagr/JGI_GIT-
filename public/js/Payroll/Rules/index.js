@@ -25,7 +25,7 @@
             {field: "PAY_ID", title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
         ]);
 
-        app.searchTable($table, ["PAY_EDESC", "PAY_TYPE"]);
+        app.searchTable($table, ["PAY_EDESC", "PAY_TYPE","PAY_EDESC_WITH_UNDERSCORE"]);
         var map = {
             "PAY_ID": "Pay Id",
             "PAY_CODE": "Pay Code",

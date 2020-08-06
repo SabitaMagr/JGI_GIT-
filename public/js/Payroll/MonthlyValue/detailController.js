@@ -6,6 +6,7 @@
 
         var $monthlyValueId = $("#monthlyValueId");
         var $fiscalYearId = $("#fiscalYearId");
+        var $monthId = $("#monthId");
 
         var $searchEmployeesBtn = $('#searchEmployeesBtn');
         var $assignMonthlyValueBtn = $('#assignMonthlyValueBtn');
@@ -20,6 +21,17 @@
 
         app.populateSelect($monthlyValueId, document.monthlyValues, "MTH_ID", "MTH_EDESC", "Select Monthly Value");
         app.populateSelect($fiscalYearId, document.fiscalYears, "FISCAL_YEAR_ID", "FISCAL_YEAR_NAME", "Select Fiscal Year");
+        
+        $fiscalYearId.on('change', function () {
+            var value = $(this).val();
+            var filteredMonths = [];
+            if (value != -1) {
+                var filteredMonths = months.filter(function (item) {
+                    return item['FISCAL_YEAR_ID'] == value;
+                });
+            }
+            app.populateSelect($monthId, filteredMonths, "MONTH_ID", "MONTH_EDESC", "Select Month");
+        });
 
         $searchEmployeesBtn.on('click', function () {
             if ($fiscalYearId.val() == -1) {
@@ -59,14 +71,26 @@
             var selectedfiscalYearId = $fiscalYearId.val();
             var selecetedMonthlyValueId = $monthlyValueId.val();
             selectedMonthlyValueName = $("#monthlyValueId option:selected").text();
-
-            var filteredMonths = months.filter(function (item) {
-                return item['FISCAL_YEAR_ID'] == fiscalYearId;
-            });
+            let selectedMonthly = $monthId.val();
+            
+             if (selectedMonthly != null && selectedMonthly != -1 && selectedMonthly != '') {
+                var filteredMonths = months.filter(function (item) {
+                    if (item['FISCAL_YEAR_ID'] == fiscalYearId && item['MONTH_ID'] == selectedMonthly) {
+                        return item;
+                    }
+                });
+            } else {
+                var filteredMonths = months.filter(function (item) {
+                    if (item['FISCAL_YEAR_ID'] == fiscalYearId) {
+                        return item;
+                    }
+                });
+            }
 
             exportMonthList = filteredMonths;
 
-            $header.html('<tr>');
+            $header.html('');
+//            $header.html('<tr>');
             $header.append($('<th>', {text: 'Id'}));
             $header.append($('<th>', {text: 'Code'}));
             $header.append($('<th>', {text: 'Name'}));
@@ -74,7 +98,7 @@
                 $header.append($('<th>', {text: item['MONTH_EDESC']}));
             });
             $header.append($('<th>', {text: ''}));
-            $header.append('</tr>');
+//            $header.append('</tr>');
 
             $grid.html('');
             $.each(employeeList, function (index, item) {
@@ -114,11 +138,11 @@
 
                 $.each(filteredMonths, function (k, v) {
                     var $td = $('<td>');
-                    $td.append($('<input>', {type: 'number', row: item['EMPLOYEE_ID'], col: v['MONTH_ID'], value: findMonthValue(serverData, item['EMPLOYEE_ID'], v['MONTH_ID']), class: 'form-control'}));
+                    $td.append($('<input>', {type: 'number', row: item['EMPLOYEE_ID'], col: v['MONTH_ID'], value: findMonthValue(serverData, item['EMPLOYEE_ID'], v['MONTH_ID']), class: 'form-control',style:'width: 100px;'}));
                     $tr.append($td);
                 });
                 var $td = $('<td>');
-                $td.append($('<input>', {type: 'number', row: item['EMPLOYEE_ID'], class: 'group form-control'}));
+                $td.append($('<input>', {type: 'number', row: item['EMPLOYEE_ID'], class: 'group form-control',style:'width: 100px;'}));
                 $tr.append($td);
 
                 $grid.append($tr);
@@ -141,7 +165,7 @@
             $tr.append($td);
 
             $footer.append($tr);
-            $table.bootstrapTable({height: 400});
+//            $table.bootstrapTable({height: 400});
         };
 
         $table.on('change', '.group', function () {
@@ -181,7 +205,7 @@
                 var rowValue = $item.attr('row');
                 var colValue = $item.attr('col');
                 var value = $item.val();
-                if (typeof rowValue !== "undefined" && rowValue != null && rowValue != "" && typeof colValue !== "undefined" && colValue != null && colValue != "" && typeof value !== "undefined" && value != null && value != "") {
+                if (typeof rowValue !== "undefined" && rowValue != null && rowValue != "" && typeof colValue !== "undefined" && colValue != null && colValue != "" && typeof value !== "undefined" && value != null) {
                     promiseList.push(app.pullDataById(document.postMonthlyValueDetailWS, {
                         data: {
                             mthId: mthId,

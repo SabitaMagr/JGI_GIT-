@@ -40,7 +40,7 @@ protected $adapter;
     }
 
     public function fetchSpecialRules($id){
-      $sql = "SELECT PAY_ID, SALARY_TYPE_ID, FORMULA, FLAG FROM HRIS_PAY_SETUP_SPECIAL WHERE PAY_ID = $id";
+      $sql = "SELECT PAY_ID, SALARY_TYPE_ID, FORMULA, FLAG FROM HRIS_PAY_SETUP_SPECIAL WHERE PAY_ID = :id";
         $boundedParameter = [];
         $boundedParameter['id'] = $id;
       return $this->rawQuery($sql, $boundedParameter);
@@ -55,8 +55,8 @@ protected $adapter;
       $sql = "select (case 
             when exists (select 1 
                         from HRIS_PAY_SETUP_SPECIAL 
-                        where SALARY_TYPE_ID = $salaryType
-                        AND PAY_ID = $payId) 
+                        where SALARY_TYPE_ID = :salaryType
+                        AND PAY_ID = :payId) 
                 then 'Y' 
                 else 'N' 
             end) as RECORD_EXISTS

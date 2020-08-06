@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Controller;
 
 use Application\Helper\Helper;
@@ -179,7 +178,7 @@ class AuthController extends AbstractActionController {
 
                     $roleRepo = new RoleSetupRepository($this->adapter);
                     $acl = $roleRepo->fetchById($resultRow->ROLE_ID);
-                    
+                    $acl['CONTROL'] = explode(',', $acl['CONTROL']);
                     $roleControlRepo = new RoleControlRepository($this->adapter);
                     $roleControlDetails = $roleControlRepo->fetchById($acl['ROLE_ID']);
                     $acl['CONTROL_VALUES']=$roleControlDetails;

@@ -75,12 +75,16 @@ class RoleSetupController extends AbstractActionController {
                 $roleControlModel = new RoleControl();
                 $roleControlRepo = new RoleControlRepository($this->adapter);
                 $roleControlModel->roleId = $roleSetup->roleId;
-                $roleControlModel->control = $request->getPost('control');
-                foreach ($request->getPost('selectOptions') as $controlList) {
-                    $roleControlModel->val = $controlList;
-                    $roleControlRepo->add($roleControlModel);
+                foreach ($roleSetup->control as $value) {
+                    $roleControlModel->control = $value;
+                    foreach($request->getPost('selectOptions'.$value) as $val){
+                        $roleControlModel->val = $val;
+                        $roleControlRepo->add($roleControlModel);
+                    }
                 }
                 //to insert data into roleControl end
+                $roleSetup->control = implode(',', $roleSetup->control);
+                if($roleSetup->control == null){ $roleSetup->control = 'F'; }
                 $this->repository->add($roleSetup);
 
                 $this->flashmessenger()->addMessage("Role Successfully Added!!!");
@@ -107,33 +111,39 @@ class RoleSetupController extends AbstractActionController {
         } else {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
+                $roleSetup->exchangeArrayFromForm($this->form->getData());
                 //to insert data into roleControl start
                 $roleControlModel = new RoleControl();
                 $roleControlModel->roleId = $id;
-                $roleControlModel->control = $request->getPost('control');
                 $roleControlRepo->delete($id);
-                foreach ($request->getPost('selectOptions') as $controlList) {
-                    $roleControlModel->val = $controlList;
-                    $roleControlRepo->add($roleControlModel);
+                foreach ($roleSetup->control as $value) {
+                    $roleControlModel->control = $value;
+                    foreach($request->getPost('selectOptions'.$value) as $val){
+                        $roleControlModel->val = $val;
+                        $roleControlRepo->add($roleControlModel);
+                    }
                 }
                 //to insert data into roleControl end
-                $roleSetup->exchangeArrayFromForm($this->form->getData());
                 $roleSetup->modifiedDt = Helper::getcurrentExpressionDate();
                 $roleSetup->modifiedBy = $this->employeeId;
                 unset($roleSetup->createdDt);
                 unset($roleSetup->roleId);
                 unset($roleSetup->status);
+                $roleSetup->control = implode(',', $roleSetup->control);
+                if($roleSetup->control == null){ $roleSetup->control = 'F'; }
                 $this->repository->edit($roleSetup, $id);
                 $this->flashmessenger()->addMessage("Role Successfully Updated!!!");
                 return $this->redirect()->toRoute("rolesetup");
             }
         }
+        $controls = explode(',',$this->repository->fetchById($id)['CONTROL']);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
                     'customRenderer' => Helper::renderCustomView(),
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'selectedValues' => $roleControlRepo->fetchById($id)
+                    'selectedValues' => $roleControlRepo->fetchById($id),
+                    'controls' => $controls
         ]);
     }
 
