@@ -77,6 +77,7 @@
     	});
 
         $searchEmployeesBtn.on('click', function () {
+            changedValues = [];
             var payHeadOptions = $("#payHeadId option");
             var payHeadId = [];
             payHeadId = $payHeadId.val();
@@ -179,6 +180,7 @@
             var monthId = $monthId.val();
             var salaryTypeId = $salaryTypeId.val();
             app.serverRequest(document.postPayValueModifiedLink, {data : changedValues, salaryTypeId: salaryTypeId, monthId : monthId}).then(function(){
+                changedValues = [];
                 app.showMessage('Operation successfull', 'success');
             }, function (error) {
                 console.log(error);

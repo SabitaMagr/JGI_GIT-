@@ -546,7 +546,7 @@ FROM HRIS_ATTENDANCE_DETAIL ad
                     JH.TO_DESIGNATION_ID,
                     (
                     CASE
-                      WHEN TRUNC(SYSDATE) > JH.END_DATE
+                      WHEN TRUNC(SYSDATE) > (select max(jh.end_date) from hris_job_history where employee_id = jh.employee_id)
                       THEN 'EXPIRED'
                       ELSE 'EXPIRING'
                     END ) AS TYPE
@@ -556,6 +556,14 @@ FROM HRIS_ATTENDANCE_DETAIL ad
                     FROM HRIS_JOB_HISTORY
                     WHERE END_DATE IS NOT NULL
                     AND ABS(TRUNC(END_DATE)-TRUNC(SYSDATE))<=15
+                    AND employee_id NOT IN (
+                      SELECT
+                          employee_id
+                      FROM
+                          hris_job_history
+                      WHERE
+                          service_event_type_id = 18 and end_date > trunc(sysdate) 
+                  )
                     GROUP BY EMPLOYEE_ID
                     ) LH
                   WHERE JH.EMPLOYEE_ID =LH.EMPLOYEE_ID

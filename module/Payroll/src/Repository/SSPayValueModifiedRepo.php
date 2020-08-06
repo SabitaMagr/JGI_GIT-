@@ -140,28 +140,25 @@ class SSPayValueModifiedRepo extends HrisRepository {
     }
 
     public function setModifiedPayValue($data, $monthId, $salaryTypeId) {
-        $boundedParameter = [];
-        $boundedParameter['payId'] = $data['payId'];
-        $boundedParameter['employeeId'] = $data['employeeId'];
-        $boundedParameter['monthId'] = $monthId;
-        $boundedParameter['salaryTypeId'] = $salaryTypeId;
-
+        $payId = $data['payId'];
+        $employeeId = $data['employeeId'];
+        $sql = "";
         if($data['value'] == null || $data['value'] == ''){
           $sql = "DELETE FROM HRIS_SS_PAY_VALUE_MODIFIED
-                  WHERE PAY_ID       = {$data['payId']}
-                  AND EMPLOYEE_ID    = {$data['employeeId']}
-                  AND MONTH_ID = {$monthId}
-                  AND SALARY_TYPE_ID = {$salaryTypeId}";
+                  WHERE PAY_ID       = $payId
+                  AND EMPLOYEE_ID    = $employeeId
+                  AND MONTH_ID = $monthId
+                  AND SALARY_TYPE_ID = $salaryTypeId";
         }
         else{
-          $boundedParameter['value'] = $data['value'];
+          $value = $data['value'];
           $sql = "
                 DECLARE
-                  V_PAY_ID HRIS_SS_PAY_VALUE_MODIFIED.PAY_ID%TYPE := :payId;
-                  V_EMPLOYEE_ID HRIS_SS_PAY_VALUE_MODIFIED.EMPLOYEE_ID%TYPE := :employeeId;
-                  V_PAY_VALUE HRIS_SS_PAY_VALUE_MODIFIED.VAL%TYPE := :value;
-                  V_MONTH_ID HRIS_SS_PAY_VALUE_MODIFIED.MONTH_ID%TYPE := :monthId;
-                  V_SALARY_TYPE_ID HRIS_SS_PAY_VALUE_MODIFIED.SALARY_TYPE_ID%TYPE := :salaryTypeId;
+                  V_PAY_ID HRIS_SS_PAY_VALUE_MODIFIED.PAY_ID%TYPE := $payId;
+                  V_EMPLOYEE_ID HRIS_SS_PAY_VALUE_MODIFIED.EMPLOYEE_ID%TYPE := $employeeId;
+                  V_PAY_VALUE HRIS_SS_PAY_VALUE_MODIFIED.VAL%TYPE := $value;
+                  V_MONTH_ID HRIS_SS_PAY_VALUE_MODIFIED.MONTH_ID%TYPE := $monthId;
+                  V_SALARY_TYPE_ID HRIS_SS_PAY_VALUE_MODIFIED.SALARY_TYPE_ID%TYPE := $salaryTypeId;
                   V_OLD_FLAT_VALUE HRIS_SS_PAY_VALUE_MODIFIED.VAL%TYPE;
                 BEGIN
                   SELECT VAL
@@ -201,7 +198,7 @@ class SSPayValueModifiedRepo extends HrisRepository {
                 END;";
         } 
         $statement = $this->adapter->query($sql);
-        return $statement->execute($boundedParameter);
+        return $statement->execute();
     }
 
     public function getColumns($payHeadId){

@@ -311,6 +311,10 @@ var appendData = `
         $('select').prop("disabled", true);
         $('textarea').prop("disabled", true);
         
-
+        $('#pdfExport').on('click', function () {
+            kendo.drawing.drawDOM($("#itnaryview")).then(function (group) {
+                kendo.drawing.pdf.saveAs(group, "ItineraryDetails.pdf");
+            });
+        });
     });
 })(window.jQuery, window.app);
