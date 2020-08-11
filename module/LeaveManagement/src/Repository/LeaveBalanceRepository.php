@@ -460,7 +460,7 @@ LEFT JOIN HRIS_DEPARTMENTS D
 ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
 LEFT JOIN HRIS_BRANCHES B
 ON (E.BRANCH_ID = B.BRANCH_ID)
-where 1=1  {$leaveCondition} {$searchCondition['sql']} 
+where 1=1  {$leaveCondition} {$searchCondition['sql']} and E.STATUS = 'E' 
 ";
 
         return $this->rawQuery($sql, $boundedParameter);
