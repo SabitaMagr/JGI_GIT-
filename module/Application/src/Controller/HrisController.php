@@ -231,7 +231,7 @@ class HrisController extends AbstractActionController {
                     FROM HRIS_EMPLOYEES E
                     WHERE E.STATUS='E' 
                 {$searchConditon}
-                ";
+                 ORDER BY SENIORITY_LEVEL ASC";
         $list = EntityHelper::rawQueryResult($this->adapter, $sql);
         return iterator_to_array($list, false);
     }
