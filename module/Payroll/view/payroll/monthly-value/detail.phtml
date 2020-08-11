@@ -110,7 +110,12 @@ $this->headScript()
                             <select class="form-control reset-field" id="fiscalYearId" >
                             </select>
                         </div>
-                        <div class="col-sm-4 col-sm-offset-4">
+                        <div class="col-sm-2">
+                            <label>Month</label>
+                            <select class="form-control" id="monthId" >
+                            </select>
+                        </div>
+                        <div class="col-sm-2 col-sm-offset-4">
                             <button id="reset" class="btn default btn-sm pull-right hris-reset-btn">
                                 Reset
                                 <i class="fa fa-refresh"></i>
@@ -149,7 +154,7 @@ $this->headScript()
                     
                 </div>
                 <div class="portlet-body">
-                    <div>
+                    <div style="overflow-x:auto;">
                         <table class="table table-bordered table-striped customTable " id="monthlyValueDetailTable" >
                             <thead>
                                 <tr id="monthlyValuesDetailHeader">

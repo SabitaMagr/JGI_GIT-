@@ -132,20 +132,21 @@ class FlatValueDetailRepo extends HrisRepository implements RepositoryInterface 
     public function getBulkFlatValuesDetailById($pivotString, $fiscalYearId, $emp) {
 
         $searchCondition = EntityHelper::getSearchConditonBounded($emp['companyId'], $emp['branchId'], $emp['departmentId'], $emp['positionId'], $emp['designationId'], $emp['serviceTypeId'], $emp['serviceEventTypeId'], $emp['employeeTypeId'], $emp['employeeId'], $emp['genderId'], $emp['locationId']);
-
+        
         $boundedParameter = [];
         $boundedParameter=array_merge($boundedParameter, $searchCondition['parameter']);
 
         $empQuery = "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$searchCondition['sql']}";
         $sql = "
         SELECT * FROM (
-        SELECT  ee.employee_id,
+        SELECT  e.employee_id,
     fvd.flat_value,
     fvd.flat_id,
-    ee.employee_code,
-    ee.full_name FROM HRIS_FLAT_VALUE_DETAIL FVD
-    RIGHT JOIN HRIS_EMPLOYEES EE on (EE.EMPLOYEE_ID=FVD.EMPLOYEE_ID AND FVD.FISCAL_YEAR_ID = :fiscalYearId)  WHERE EE.EMPLOYEE_ID IN ({$empQuery})
-  ) PIVOT(MAX(FLAT_VALUE) FOR FLAT_ID IN ($pivotString))";
+    e.employee_code,
+    e.SENIORITY_LEVEL,
+    e.full_name FROM HRIS_FLAT_VALUE_DETAIL FVD
+    RIGHT JOIN HRIS_EMPLOYEES E on (E.EMPLOYEE_ID=FVD.EMPLOYEE_ID AND FVD.FISCAL_YEAR_ID = :fiscalYearId)  WHERE e.status='E' {$searchCondition['sql']}
+  ) PIVOT(MAX(FLAT_VALUE) FOR FLAT_ID IN ($pivotString)) order by SENIORITY_LEVEL asc";
 
         $boundedParameter['fiscalYearId'] = $fiscalYearId;
         return $this->rawQuery($sql, $boundedParameter);
@@ -239,7 +240,8 @@ class FlatValueDetailRepo extends HrisRepository implements RepositoryInterface 
             pfv.assigned_value,
             pfv.flat_id,
             p.position_id,
-            p.position_name
+            p.position_name,
+            p.level_no
         FROM
             hris_position_flat_value   pfv
             RIGHT JOIN hris_positions           p 
@@ -248,7 +250,7 @@ class FlatValueDetailRepo extends HrisRepository implements RepositoryInterface 
     ) PIVOT (
         MAX ( assigned_value )
         FOR flat_id
-        IN ($pivotString))";
+        IN ($pivotString)) order by level_no asc";
 
         return $this->rawQuery($sql, $boundedParameter);
         // $statement = $this->adapter->query($sql);

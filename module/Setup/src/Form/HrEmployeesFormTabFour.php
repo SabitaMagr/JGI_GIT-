@@ -219,6 +219,33 @@ class HrEmployeesFormTabFour extends Model {
      */
     public $taxBase;
 
+    /**
+     * * @Annotation\Required(false)
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Permanent Date"})
+     * @Annotation\Attributes({"class":"form-control","id":"permanentDate" })
+     */
+    public $permanentDate;
+
+    /**
+     * * @Annotation\Required(false)
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Gratuity Date"})
+     * @Annotation\Attributes({"class":"form-control","id":"gratuityDate" })
+     */
+    public $gratuityDate;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Disabled Person","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"disabledFlag","value":"N"})
+     */
+    public $disabledFlag;
+
     public $mappings = [
         'joinDate' => 'JOIN_DATE',
         'salary' => 'SALARY',
@@ -241,6 +268,9 @@ class HrEmployeesFormTabFour extends Model {
         'groupId' => 'GROUP_ID',
         'allowance' => 'ALLOWANCE',
         'taxBase' => 'TAX_BASE',
+        'permanentDate' => 'PERMANENT_DATE',
+        'gratuityDate' => 'GRATUITY_DATE',
+        'disabledFlag' => 'DISABLED_FLAG'
     ];
 
 }

@@ -51,7 +51,7 @@ LEFT JOIN HRIS_SHIFTS S
   ON (AD.SHIFT_ID        = S.SHIFT_ID)
 WHERE AD.ATTENDANCE_DT = trunc(sysdate)
 AND (AD.in_time is not null OR AD.OVERALL_STATUS = 'AB') 
-AND E.STATUS = 'E' AND E.BRANCH_ID IN (2,19))  BB 
+AND E.STATUS = 'E' )  BB 
 WHERE (BB.IN_MINUTES < 0 OR BB.OVERALL_STATUS='AB')";
 
         $statement = $this->adapter->query($sql);
@@ -84,7 +84,7 @@ ON (B.BRANCH_MANAGER_ID = EE.EMPLOYEE_ID)
 LEFT JOIN HRIS_SHIFTS S
 ON (AD.SHIFT_ID        = S.SHIFT_ID)
 WHERE AD.ATTENDANCE_DT = trunc(sysdate-1)
-AND AD.LATE_STATUS    IN ('E', 'B', 'X', 'Y')  AND E.BRANCH_ID IN (2,19)
+AND AD.LATE_STATUS    IN ('E', 'B', 'X', 'Y')  
 ORDER BY AD.EMPLOYEE_ID";
 
         $statement = $this->adapter->query($sql);

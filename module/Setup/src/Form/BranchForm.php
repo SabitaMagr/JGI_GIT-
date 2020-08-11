@@ -104,4 +104,21 @@ class BranchForm {
      */
     public $province;
 
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Is Remote"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"isRemote","value":"N"})
+     */
+    public $isRemote;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"ALLOWANCE REBATE"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"allowanceRebate", "class":"form-control","step":"1"})
+     */
+    public $allowanceRebate;
 }

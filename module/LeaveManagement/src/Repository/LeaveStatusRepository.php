@@ -283,14 +283,13 @@ class LeaveStatusRepository extends HrisRepository {
         }
 
         $sql = "SELECT 
-             FUNT.FUNCTIONAL_TYPE_EDESC                                        AS FUNCTIONAL_TYPE_EDESC,
-            --INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
-            CASE WHEN SUB_REF_ID IS NULL THEN 
-INITCAP(L.LEAVE_ENAME)
-ELSE
-INITCAP(L.LEAVE_ENAME)||'('||SLR.SUB_NAME||')'
-END
-AS LEAVE_ENAME,
+                FUNT.FUNCTIONAL_TYPE_EDESC                                        AS FUNCTIONAL_TYPE_EDESC,
+                CASE WHEN SUB_REF_ID IS NULL THEN 
+                INITCAP(L.LEAVE_ENAME)
+                ELSE
+                INITCAP(L.LEAVE_ENAME)||'('||SLR.SUB_NAME||')'
+                END
+                AS LEAVE_ENAME,
                   L.LEAVE_CODE,
                   L.SHOW_LEAVE_FORM,
                   L.LEAVE_ID,

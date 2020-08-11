@@ -8,7 +8,7 @@ use Zend\Mail\Transport\SmtpOptions;
 class EmailHelper {
 
     const maxMassMail = 50;
-    const massEmailId = 'mhrpravin@gmail.com';
+    const massEmailId = '';
 
     public static function getSmtpTransport(): Smtp {
         $transport = new Smtp();

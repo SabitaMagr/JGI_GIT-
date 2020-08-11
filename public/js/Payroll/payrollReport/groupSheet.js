@@ -192,7 +192,7 @@
             app.excelExport($table, map, 'GroupSheet.xlsx',exportType);
         });
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, map, 'GroupSheet.pdf');
+            app.exportToPDF($table, map, 'GroupSheet.pdf','A1');
         });
     });
 })(window.jQuery, window.app);

@@ -108,7 +108,7 @@
         var repTemplate = `{{#employees}}
 <div><h4>{{COMPANY_NAME}}<h3>
 <h5>{{BRANCH_NAME}}<h2>
-<table class="table table-bordered table-striped">
+<table class="table table-bordered table-striped table-condensed">
                     <tr>
                         <td><b>Estimate Income Tax</b></td>
                         <td><b>{{YEAR_MONTH_NAME}}</b></td>
