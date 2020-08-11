@@ -606,6 +606,7 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                   WHEN E.GENDER_ID = 2 AND E.MARITAL_STATUS = 'U' THEN 'MS.'
                   WHEN E.GENDER_ID = 2 AND E.MARITAL_STATUS = 'M' THEN 'MRS.' END) AS TITLE,
                   E.EMPLOYEE_CODE                                                   AS EMPLOYEE_CODE,
+                  U.USER_NAME   AS USER_NAME,
                   INITCAP(E.FULL_NAME)                                              AS FULL_NAME,
                   INITCAP(G.GENDER_NAME)                                            AS GENDER_NAME,
                   TO_CHAR(E.BIRTH_DATE, 'DD-MON-YYYY')                              AS BIRTH_DATE_AD,
@@ -729,6 +730,8 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 ON E.FUNCTIONAL_LEVEL_ID=FUNL.FUNCTIONAL_LEVEL_ID
                 LEFT JOIN HRIS_EMPLOYEE_FILE EF 
                 ON (EF.FILE_CODE=E.PROFILE_PICTURE_ID)
+                LEFT JOIN HRIS_USERS U 
+                ON (U.EMPLOYEE_ID=E.EMPLOYEE_ID)
                 {$joinIfSyngery}
                 WHERE 1                 =1 AND E.STATUS='E' 
                 {$condition['sql']}
@@ -1525,6 +1528,7 @@ GROUP BY IARA.EMPLOYEE_ID) AA ON (AA.EMPLOYEE_ID=E.EMPLOYEE_ID)
                 ON E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID
                 LEFT JOIN HRIS_FUNCTIONAL_LEVELS FUNL
                 ON E.FUNCTIONAL_LEVEL_ID=FUNL.FUNCTIONAL_LEVEL_ID
+                
                 {$joinIfSyngery}
                 WHERE 1=1 AND (E.RETIRED_FLAG = 'Y' OR E.RESIGNED_FLAG = 'Y' OR E.STATUS='D')
                 {$condition}
