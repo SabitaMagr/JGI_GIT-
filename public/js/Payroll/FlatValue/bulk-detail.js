@@ -21,6 +21,7 @@
         $("#assignFlatValueBtn").hide();
 
         $searchEmployeesBtn.on('click', function () {
+            changedValues = [];
             var flatIdOptions = $("#flatValueId option");
             var flatId = [];
             flatId = $flatValueId.val();
@@ -121,6 +122,7 @@
             }
             var fiscalYearId = $fiscalYearId.val();
             app.serverRequest(document.getFlatValueUpdateWS, {data : changedValues, fiscalYearId: fiscalYearId}).then(function(){
+                changedValues = [];
                 app.showMessage('Operation successfull', 'success');
             }, function (error) {
                 console.log(error);

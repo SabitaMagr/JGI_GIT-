@@ -141,7 +141,7 @@ SELECT R.EMPLOYEE_ID,
               LEAVE_ID =leave.LEAVE_ID
           ORDER BY FISCAL_YEAR_MONTH_NO
         ) LOOP
-            V_BALANCE := LEAVE_ASSIGN_DTL.BALANCE-leave.TOTAL_NO_OF_DAYS;
+            V_BALANCE := LEAVE_ASSIGN_DTL.TOTAL_DAYS + (case when LEAVE_ASSIGN_DTL.previous_year_bal is null then 0 else LEAVE_ASSIGN_DTL.previous_year_bal end) -leave.TOTAL_NO_OF_DAYS;
           UPDATE HRIS_EMPLOYEE_LEAVE_ASSIGN
             SET
               BALANCE = V_BALANCE

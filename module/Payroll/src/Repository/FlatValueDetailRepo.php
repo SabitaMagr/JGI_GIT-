@@ -169,26 +169,23 @@ class FlatValueDetailRepo extends HrisRepository implements RepositoryInterface 
     }
 
     public function postBulkFlatValuesDetail($data, $fiscalYearId) {
-
-        $boundedParameter = [];
-        $boundedParameter['flatId'] = $data['flatId'];
-        $boundedParameter['employeeId'] = $data['employeeId'];
-        $boundedParameter['fiscalYearId'] = $fiscalYearId;
-
+        $flatId = $data['flatId'];
+        $employeeId = $data['employeeId'];
+        $fiscalYearId = $fiscalYearId;
         if($data['value'] == null || $data['value'] == ''){
           $sql = "DELETE FROM HRIS_FLAT_VALUE_DETAIL
-                  WHERE FLAT_ID       = :flatId
-                  AND EMPLOYEE_ID    = :employeeId
-                  AND FISCAL_YEAR_ID = :fiscalYearId";
+                  WHERE FLAT_ID       = $flatId
+                  AND EMPLOYEE_ID    = $employeeId
+                  AND FISCAL_YEAR_ID = $fiscalYearId";
         }
         else{
-          $boundedParameter['value'] = $data['value'];
+          $value = $data['value'];
           $sql = "
                 DECLARE
-                  V_FLAT_ID HRIS_FLAT_VALUE_DETAIL.FLAT_ID%TYPE := :flatId;
-                  V_EMPLOYEE_ID HRIS_FLAT_VALUE_DETAIL.EMPLOYEE_ID%TYPE := :employeeId;
-                  V_FLAT_VALUE HRIS_FLAT_VALUE_DETAIL.FLAT_VALUE%TYPE := :value;
-                  V_FISCAL_YEAR_ID HRIS_FLAT_VALUE_DETAIL.FISCAL_YEAR_ID%TYPE := :fiscalYearId;
+                  V_FLAT_ID HRIS_FLAT_VALUE_DETAIL.FLAT_ID%TYPE := $flatId;
+                  V_EMPLOYEE_ID HRIS_FLAT_VALUE_DETAIL.EMPLOYEE_ID%TYPE := $employeeId;
+                  V_FLAT_VALUE HRIS_FLAT_VALUE_DETAIL.FLAT_VALUE%TYPE := $value;
+                  V_FISCAL_YEAR_ID HRIS_FLAT_VALUE_DETAIL.FISCAL_YEAR_ID%TYPE := $fiscalYearId;
                   V_OLD_FLAT_VALUE HRIS_FLAT_VALUE_DETAIL.FLAT_VALUE%TYPE;
                 BEGIN
                   SELECT FLAT_VALUE
@@ -224,10 +221,10 @@ class FlatValueDetailRepo extends HrisRepository implements RepositoryInterface 
                       TRUNC(SYSDATE)
                     );
                 END;
-";
+            ";
         }
         $statement = $this->adapter->query($sql);
-        return $statement->execute($boundedParameter);
+        return $statement->execute();
     }
 
     public function getPositionWiseFlatValue($pivotString, $fiscalYearId, $position_id) {
@@ -259,61 +256,58 @@ class FlatValueDetailRepo extends HrisRepository implements RepositoryInterface 
     }
 
     public function setPositionWiseFlatValue($data, $fiscalYearId) {
-
-        $boundedParameter = [];
-        $boundedParameter['flatId'] = $data['flatId'];
-        $boundedParameter['positionId'] = $data['positionId'];
-        $boundedParameter['fiscalYearId'] = $fiscalYearId; 
-
-        if($data['value'] == null || $data['value'] == ''){
-          $sql = "DELETE FROM HRIS_POSITION_FLAT_VALUE
-                  WHERE FLAT_ID       = :flatId
-                  AND POSITION_ID    = :positionId
-                  AND FISCAL_YEAR_ID = :fiscalYearId";
-        }
-        else{
-          $boundedParameter['value'] = $data['value']; 
-          $sql = "
-                DECLARE
-                  V_FLAT_ID HRIS_POSITION_FLAT_VALUE.FLAT_ID%TYPE := :flatId;
-                  V_POSITION_ID HRIS_POSITION_FLAT_VALUE.POSITION_ID%TYPE := :positionId;
-                  V_FLAT_VALUE HRIS_POSITION_FLAT_VALUE.ASSIGNED_VALUE%TYPE := :value;
-                  V_FISCAL_YEAR_ID HRIS_POSITION_FLAT_VALUE.FISCAL_YEAR_ID%TYPE := :fiscalYearId;
-                  V_OLD_FLAT_VALUE HRIS_POSITION_FLAT_VALUE.ASSIGNED_VALUE%TYPE;
-                BEGIN
-                  SELECT ASSIGNED_VALUE
-                  INTO V_OLD_FLAT_VALUE
-                  FROM HRIS_POSITION_FLAT_VALUE
-                  WHERE FLAT_ID       = V_FLAT_ID
-                  AND POSITION_ID    = V_POSITION_ID
-                  AND FISCAL_YEAR_ID = V_FISCAL_YEAR_ID;
-                  
-                  UPDATE HRIS_POSITION_FLAT_VALUE
-                  SET ASSIGNED_VALUE      = V_FLAT_VALUE
-                  WHERE FLAT_ID       = V_FLAT_ID
-                  AND POSITION_ID    = V_POSITION_ID
-                  AND FISCAL_YEAR_ID = V_FISCAL_YEAR_ID;
-                  
-                EXCEPTION
-                WHEN NO_DATA_FOUND THEN
-                  INSERT
-                  INTO HRIS_POSITION_FLAT_VALUE
-                    (
-                      FLAT_ID,
-                      POSITION_ID,
-                      FISCAL_YEAR_ID,
-                      ASSIGNED_VALUE
-                    )
-                    VALUES
-                    (
-                      V_FLAT_ID,
-                      V_POSITION_ID,
-                      V_FISCAL_YEAR_ID,
-                      V_FLAT_VALUE
-                    );
-                END;";
-        } 
+        $flatId = $data['flatId'];
+        $positionId = $data['positionId'];
+        $fiscalYearId = $fiscalYearId; 
+          if($data['value'] == null || $data['value'] == ''){
+            $sql = "DELETE FROM HRIS_POSITION_FLAT_VALUE
+                    WHERE FLAT_ID       = $flatId
+                    AND POSITION_ID    = $positionId
+                    AND FISCAL_YEAR_ID = $fiscalYearId";
+          }
+          else{
+            $value = $data['value']; 
+            $sql = "
+                  DECLARE
+                    V_FLAT_ID HRIS_POSITION_FLAT_VALUE.FLAT_ID%TYPE := $flatId;
+                    V_POSITION_ID HRIS_POSITION_FLAT_VALUE.POSITION_ID%TYPE := $positionId;
+                    V_FLAT_VALUE HRIS_POSITION_FLAT_VALUE.ASSIGNED_VALUE%TYPE := $value;
+                    V_FISCAL_YEAR_ID HRIS_POSITION_FLAT_VALUE.FISCAL_YEAR_ID%TYPE := $fiscalYearId;
+                    V_OLD_FLAT_VALUE HRIS_POSITION_FLAT_VALUE.ASSIGNED_VALUE%TYPE;
+                  BEGIN
+                    SELECT ASSIGNED_VALUE
+                    INTO V_OLD_FLAT_VALUE
+                    FROM HRIS_POSITION_FLAT_VALUE
+                    WHERE FLAT_ID       = V_FLAT_ID
+                    AND POSITION_ID    = V_POSITION_ID
+                    AND FISCAL_YEAR_ID = V_FISCAL_YEAR_ID;
+                    
+                    UPDATE HRIS_POSITION_FLAT_VALUE
+                    SET ASSIGNED_VALUE      = V_FLAT_VALUE
+                    WHERE FLAT_ID       = V_FLAT_ID
+                    AND POSITION_ID    = V_POSITION_ID
+                    AND FISCAL_YEAR_ID = V_FISCAL_YEAR_ID;
+                    
+                  EXCEPTION
+                  WHEN NO_DATA_FOUND THEN
+                    INSERT
+                    INTO HRIS_POSITION_FLAT_VALUE
+                      (
+                        FLAT_ID,
+                        POSITION_ID,
+                        FISCAL_YEAR_ID,
+                        ASSIGNED_VALUE
+                      )
+                      VALUES
+                      (
+                        V_FLAT_ID,
+                        V_POSITION_ID,
+                        V_FISCAL_YEAR_ID,
+                        V_FLAT_VALUE
+                      );
+                  END;";
+          } 
         $statement = $this->adapter->query($sql);
-        return $statement->execute($boundedParameter);
+        return $statement->execute();
     }
 }

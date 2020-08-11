@@ -164,6 +164,10 @@
             reset: function () {
                 let acl = document.acl;
                 let aclControlVal='F';
+                $.each(this.ids, function (key, value) {
+                    $('#' + value).val(-1).change();
+                });
+                for(let i = 0; i < acl['CONTROL'].length; i++){
                     $.each(this.ids, function (key, value) {
 //                    console.log(value);
                         let $company = $('#' + 'companyId');
@@ -175,12 +179,12 @@
 //                    let $serviceEventType = $('#' + 'serviceEventTypeId');
 //                    let $employee = $('#' + 'employeeId');
 //                    
-                        let populateValues = [];
+                    let populateValues = [];
                     if (typeof acl !== 'undefined') {
                         aclControlVal = acl['CONTROL'];
 
                         $.each(acl['CONTROL_VALUES'], function (k, v) {
-                            if (v.CONTROL == acl['CONTROL']) {
+                            if (v.CONTROL == acl['CONTROL'][i]) {
                                 populateValues.push(v.VAL);
                             }
                         });
@@ -188,16 +192,16 @@
                     }  //end if
                         if (typeof value !== "undefined") {
                             if (value == 'companyId' || value == 'branchId' || value == 'designationId' || value == 'departmentId' || value == 'positionId') {
-                                switch (aclControlVal) {
+                                switch (aclControlVal[i]) {
                                     case 'F':
-                                        $('#' + value).val(-1).change();
+                                       // $('#' + value).val(-1).change();
                                         break;
                                     case 'C':
                                         if (value == 'companyId') {
                                             $company.val(populateValues);
                                             $company.trigger('change');
                                         } else {
-                                            $('#' + value).val(-1).change();
+                                           // $('#' + value).val(-1).change();
                                         }
                                         break;
                                     case 'B':
@@ -205,7 +209,7 @@
                                             $branch.val(populateValues);
                                             $branch.trigger('change');
                                         } else {
-                                            $('#' + value).val(-1).change();
+                                           // $('#' + value).val(-1).change();
                                         }
                                         break;
                                     case 'DS':
@@ -213,7 +217,7 @@
                                             $designation.val(populateValues);
                                             $designation.trigger('change');
                                         } else {
-                                            $('#' + value).val(-1).change();
+                                           // $('#' + value).val(-1).change();
                                         }
                                         break;
                                     case 'DP':
@@ -221,7 +225,7 @@
                                             $department.val(populateValues);
                                             $department.trigger('change');
                                         } else {
-                                            $('#' + value).val(-1).change();
+                                           // $('#' + value).val(-1).change();
                                         }
                                         break;
                                     case 'P':
@@ -229,7 +233,7 @@
                                             $position.val(populateValues);
                                             $position.trigger('change');
                                         } else {
-                                            $('#' + value).val(-1).change();
+                                           // $('#' + value).val(-1).change();
                                         }
                                         break;
                                 }
@@ -237,7 +241,9 @@
                                 $('#' + value).val(-1).change();
                             }
                         }
+                    
                     });
+                }
                 
                 
                 if (this.resetEvent !== null) {

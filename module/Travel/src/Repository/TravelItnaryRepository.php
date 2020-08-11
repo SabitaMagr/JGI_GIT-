@@ -279,7 +279,7 @@ ITNARY_ID,
 ITNARY_CODE,
 EMPLOYEE_ID,
 INITCAP(TO_CHAR(FROM_DT, 'DD-MON-YYYY')) AS FROM_DT,
-INITCAP(TO_CHAR(FROM_DT, 'DD-MON-YYYY')) AS TO_DT,
+INITCAP(TO_CHAR(TO_DT, 'DD-MON-YYYY')) AS TO_DT,
 NO_OF_DAYS,
 PURPOSE,
 (select requested_amount from hris_employee_travel_request where itnary_id = :id
