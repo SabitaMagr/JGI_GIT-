@@ -738,7 +738,7 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 WHERE 1                 =1 AND E.STATUS='E' 
                 {$condition['sql']}
                 {$orderByString}";
-                
+        // echo '<pre>';print_r($sql);die;  
         return $this->rawQuery($sql, $boundedParameter);
     }
 
