@@ -578,7 +578,13 @@ class TrainingApproveRepository extends HrisRepository {
                   RAA.EMPLOYEE_ID                                      AS APPROVER_ID,
                   RAA.FULL_NAME                                        AS APPROVER_NAME,
                   TR.STATUS                                            AS STATUS ,
-                  LEAVE_STATUS_DESC(TR.STATUS)                         AS STATUS_DETAIL
+                  LEAVE_STATUS_DESC(TR.STATUS)                         AS STATUS_DETAIL,
+                  C.COMPANY_NAME                                       AS COMPANY_NAME,
+                  T.INSTRUCTOR_NAME                                    AS INSTRUCTOR,
+                  G.GENDER_NAME                                        AS GENDER,
+                  D.DESIGNATION_TITLE                                  AS DESIGNATION,
+                  DE.DEPARTMENT_NAME                                   AS DEPARTMENT,
+                  T.DAILY_TRAINING_HOUR                                AS TRAINING_HOUR
                 FROM HRIS_EMPLOYEE_TRAINING_REQUEST TR
                 LEFT JOIN HRIS_TRAINING_MASTER_SETUP T
                 ON T.TRAINING_ID=TR.TRAINING_ID
@@ -586,6 +592,14 @@ class TrainingApproveRepository extends HrisRepository {
                 ON E.EMPLOYEE_ID=TR.EMPLOYEE_ID
                 LEFT JOIN HRIS_EMPLOYEES RE
                 ON(RE.EMPLOYEE_ID =TR.RECOMMENDED_BY)
+                LEFT JOIN HRIS_COMPANY C
+                ON C.COMPANY_ID=T.COMPANY_ID
+                LEFT JOIN HRIS_GENDERS G
+                ON G.GENDER_ID=E.GENDER_ID
+                 LEFT JOIN HRIS_DESIGNATIONS D
+                ON D.DESIGNATION_ID=E.DESIGNATION_ID
+                 LEFT JOIN HRIS_DEPARTMENTS DE
+                ON DE.DEPARTMENT_ID=E.DEPARTMENT_ID
                 LEFT JOIN HRIS_EMPLOYEES AE
                 ON (AE.EMPLOYEE_ID =TR.APPROVED_BY)
                 LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
@@ -595,7 +609,7 @@ class TrainingApproveRepository extends HrisRepository {
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
                 WHERE 1          =1 {$searchCondition['sql']} {$condition}";
-                
+          // echo '<pre>';print_r($sql);die;     
         $finalSql = $this->getPrefReportQuery($sql);
         return $this->rawQuery($finalSql, $boundedParameter);
     }

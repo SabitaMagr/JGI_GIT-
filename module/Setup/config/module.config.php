@@ -610,6 +610,16 @@ return [
                         'route' => 'jobHistory',
                         'action' => 'edit',
                     ],
+                    [
+                        'label' => 'New Employees',
+                        'route' => 'jobHistory',
+                        'action' => 'newEmployee',
+                    ],
+                    [
+                        'label' => 'Resigned and Retired Employees',
+                        'route' => 'jobHistory',
+                        'action' => 'resignedRetired',
+                    ],
                 ]
             ]
         ],
