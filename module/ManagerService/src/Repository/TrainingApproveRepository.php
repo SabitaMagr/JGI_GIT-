@@ -608,7 +608,7 @@ class TrainingApproveRepository extends HrisRepository {
                 ON (RA.RECOMMEND_BY=RAR.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
-                WHERE 1          =1 {$searchCondition['sql']} {$condition}";
+                WHERE 1          =1 {$searchCondition['sql']} {$condition} order by TR.REQUEST_ID desc ";
           // echo '<pre>';print_r($sql);die;     
         $finalSql = $this->getPrefReportQuery($sql);
         return $this->rawQuery($finalSql, $boundedParameter);

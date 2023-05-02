@@ -338,6 +338,7 @@ class PayrollGenerator {
                         $ruleValue=0;
                     }
                 $finalFileAppend = file_get_contents($file);
+                // echo '<pre>';print_r($finalFileAppend);die;
                 file_put_contents($file, $finalFileAppend."total ".$ruleValue." time-".(round(microtime(true) - $startTime,3)*1000)."\n");
             }
             $generatedValues["[R:".$ruleDetail['PAY_EDESC_WITH_UNDERSCORE']."]"]=$ruleValue;
