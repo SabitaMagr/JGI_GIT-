@@ -123,6 +123,7 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                     ]), false);
             $select->where(['EMPLOYEE_ID' => $id]);
         });
+        // echo '<pre>';print_r($rowset);die;
         return $rowset->current();
     }
 
@@ -613,6 +614,7 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                   INITCAP(G.GENDER_NAME)                                            AS GENDER_NAME,
                   TO_CHAR(E.BIRTH_DATE, 'DD-MON-YYYY')                              AS BIRTH_DATE_AD,
                   BS_DATE(E.BIRTH_DATE)                                             AS BIRTH_DATE_BS,
+                  TRUNC(MONTHS_BETWEEN(SYSDATE, BIRTH_DATE) / 12)                   AS age,
                   TO_CHAR(E.JOIN_DATE, 'DD-MON-YYYY')                               AS JOIN_DATE_AD,
                   BS_DATE(E.JOIN_DATE)                                              AS JOIN_DATE_BS,
                   INITCAP(CN.COUNTRY_NAME)                                          AS COUNTRY_NAME,
@@ -686,6 +688,19 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                   E.SALARY_PF                                                       AS SALARY_PF,
                   E.REMARKS                                                         AS REMARKS,
                   E.Allowance                                                       AS ALLOWANACE,
+                  E.NATIONALITY                                                     AS NATIONALITY,
+                  E.CIT_NOMINEE_NAME                                                AS CIT_NOMINEE_NAME,
+                  E.SSF_NOMINEE_NAME                                                AS SSF_NOMINEE_NAME,
+                  E.SPOUSE_MBL_NO                                                   AS SPOUSE_MBL_NO,
+                  INITCAP(TO_CHAR(E.CIT_START_DT, 'DD-MON-YYYY'))                   AS CIT_START_DT,
+                  HER1.PERSON_NAME                                                  AS FATHER_NAME,
+                  TRUNC(MONTHS_BETWEEN(SYSDATE, HER1.DOB) / 12)                     AS FATHER_AGE,
+                  HER2.PERSON_NAME                                                  AS MOTHER_NAME,
+                  TRUNC(MONTHS_BETWEEN(SYSDATE, HER2.DOB) / 12)                     AS MOTHER_AGE,
+                  HER3.PERSON_NAME                                                  AS DAUGHTER_NAME,
+                  TRUNC(MONTHS_BETWEEN(SYSDATE, HER3.DOB) / 12)                     AS DAUGHTER_AGE,
+                  HER4.PERSON_NAME                                                  AS SON_NAME,
+                  TRUNC(MONTHS_BETWEEN(SYSDATE, HER4.DOB) / 12)                     AS SON_AGE,
                   EF.FILE_PATH
                 FROM HRIS_EMPLOYEES E
                 LEFT JOIN HRIS_COMPANY C
@@ -734,6 +749,14 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 ON (EF.FILE_CODE=E.PROFILE_PICTURE_ID)
                 LEFT JOIN HRIS_USERS U 
                 ON (U.EMPLOYEE_ID=E.EMPLOYEE_ID)
+                LEFT JOIN HRIS_EMPLOYEE_RELATION HER1
+                ON (E.EMPLOYEE_ID=HER1.EMPLOYEE_ID AND HER1.RELATION_ID=2)
+                LEFT JOIN HRIS_EMPLOYEE_RELATION HER2
+                ON (E.EMPLOYEE_ID=HER2.EMPLOYEE_ID AND HER2.RELATION_ID=3)
+                LEFT JOIN HRIS_EMPLOYEE_RELATION HER3
+                ON (E.EMPLOYEE_ID=HER3.EMPLOYEE_ID AND HER3.RELATION_ID=4)
+                LEFT JOIN HRIS_EMPLOYEE_RELATION HER4
+                ON (E.EMPLOYEE_ID=HER4.EMPLOYEE_ID AND HER4.RELATION_ID=5)
                 {$joinIfSyngery}
                 WHERE 1                 =1 AND E.STATUS='E' 
                 {$condition['sql']}

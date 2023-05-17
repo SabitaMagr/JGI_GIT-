@@ -87,51 +87,37 @@
             'DURATION','STATUS_DETAIL',
             'REMARKS'
         ]);
-        // var exportMap = {
-        //     'EMPLOYEE_CODE': 'Code',
-        //     'FULL_NAME': 'Employee Name',
-        //     'TITLE': 'Training Name',
-        //     'TRAINING_TYPE': 'Training Type',
-        //     'REQUESTED_DATE': 'Requested Date(AD)',
-        //     'REQUESTED_DATE_BS': 'Requested Date(BS)',
-        //     'START_DATE': 'Start Date(AD)',
-        //     'START_DATE_BS': 'Start Date(BS)',
-        //     'END_DATE': 'End Date(AD)',
-        //     'END_DATE_BS': 'End Date(BS)',
-        //     'DURATION': 'Duration',
-        //     'STATUS_DETAIL': 'Status',
-        //     'REMARKS': 'Remarks',
-        //     'RECOMMENDER_NAME': 'Recommender',
-        //     'RECOMMENDED_DT': 'Recommended Date',
-        //     'RECOMMENDED_REMARKS': 'Recommender Remarks',
-        //     'APPROVER_NAME': 'Approver',
-        //     'APPROVED_DT': 'Aprroved Date',
-        //     'APPROVED_REMARKS': 'Approver Remarks'
-        // };
         var exportMap = {
             'COMPANY_NAME': 'Service Provider',
             'INSTRUCTOR': 'Trainer',
             'TITLE': 'Training Name',
-            'FULL_NAME': 'Name',
+            'FULL_NAME': 'Employee Name',
+            'ATTD_STATUS': 'Remarks',
             'GENDER': 'Gender',
             'DESIGNATION': 'Designation',
             'DEPARTMENT': 'Department',
             'TRAINING_TYPE': 'Training Type',
+            'TRAINING_TYPE': 'Training Type',
+            'lDProgram': 'Type of L&D Program',
             'START_DATE': 'Start Date(AD)',
             'START_DATE_BS': 'Start Date(BS)',
             'END_DATE': 'End Date(AD)',
             'END_DATE_BS': 'End Date(BS)',
-            'DURATION': 'Duration',
+            'DURATION': 'No of Days',
             'TRAINING_HOUR': 'Hours Per Day',
-            'STATUS_DETAIL': 'Status',
-            'REMARKS': 'Remarks',
-            'RECOMMENDER_NAME': 'Recommender',
-            'RECOMMENDED_DT': 'Recommended Date',
-            'RECOMMENDED_REMARKS': 'Recommender Remarks',
-            'APPROVER_NAME': 'Approver',
-            'APPROVED_DT': 'Aprroved Date',
-            'APPROVED_REMARKS': 'Approver Remarks'
+            // 'EMPLOYEE_CODE': 'Code',
+            // 'REQUESTED_DATE': 'Requested Date(AD)',
+            // 'REQUESTED_DATE_BS': 'Requested Date(BS)',
+            // 'STATUS_DETAIL': 'Status',
+            // 'REMARKS': 'Remarks',
+            // 'RECOMMENDER_NAME': 'Recommender',
+            // 'RECOMMENDED_DT': 'Recommended Date',
+            // 'RECOMMENDED_REMARKS': 'Recommender Remarks',
+            // 'APPROVER_NAME': 'Approver',
+            // 'APPROVED_DT': 'Aprroved Date',
+            // 'APPROVED_REMARKS': 'Approver Remarks'
         };
+       
         exportMap=app.prependPrefExportMap(exportMap);
         $('#excelExport').on('click', function () {
             app.excelExport($table, exportMap, 'Training Request List.xlsx');

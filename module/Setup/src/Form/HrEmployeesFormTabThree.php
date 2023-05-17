@@ -69,10 +69,10 @@ class HrEmployeesFormTabThree extends Model {
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Driving License Expiry"})
-     * @Annotation\Attributes({"class":"form-control","id":"idDrivingLicenseExpiry" })
+     * @Annotation\Options({"label":"CIT Start Date"})
+     * @Annotation\Attributes({"class":"form-control","id":"citStartDate" })
      */
-    public $idDrivingLicenseExpiry;
+    public $citStartDate;
 
     /**
      * @Annotation\Required(false)
@@ -131,6 +131,35 @@ class HrEmployeesFormTabThree extends Model {
      * @Annotation\Attributes({ "id":"idRetirementNo", "class":"form-control" })
      */
     public $idRetirementNo;
+
+     /**
+     * @Annotation\Required(false)
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"CIT Nominee Name"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
+     * @Annotation\Attributes({ "id":"citNomineename", "class":"form-control" })
+     */
+    public $citNomineename;
+
+ /**
+     * @Annotation\Required(false)
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"SSF Nominee Name"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
+     * @Annotation\Attributes({ "id":"ssfNomineeName", "class":"form-control" })
+     */
+    public $ssfNomineeName;
+
+    /**
+     * @Annotation\Required(false)
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Driving License Expiry"})
+     * @Annotation\Attributes({"class":"form-control","id":"idDrivingLicenseExpiry" })
+     */
+    public $idDrivingLicenseExpiry;
 
     /**
      * @Annotation\Required(true)
@@ -230,6 +259,9 @@ class HrEmployeesFormTabThree extends Model {
         'empowerCompanyCode' => 'EMPOWER_COMPANY_CODE',
         'empowerBranchCode' => 'EMPOWER_BRANCH_CODE',
         'bankId' => 'BANK_ID',
+        'citNomineename' => 'CIT_NOMINEE_NAME',
+        'ssfNomineeName' => 'SSF_NOMINEE_NAME',
+        'citStartDate' => 'CIT_START_DT',
     ];
 
 }

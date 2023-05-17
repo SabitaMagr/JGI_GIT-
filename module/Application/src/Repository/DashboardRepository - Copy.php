@@ -524,7 +524,6 @@ FROM HRIS_ATTENDANCE_DETAIL ad
                              'ABSENT'
                 )
                 ORDER BY UPPER(DEPARTMENT_NAME)";
-
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
 
@@ -578,7 +577,6 @@ FROM HRIS_ATTENDANCE_DETAIL ad
                 ON (S.TO_DESIGNATION_ID=D.DESIGNATION_ID )
                 ORDER BY S.END_DATE ASC
                 ";
-
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

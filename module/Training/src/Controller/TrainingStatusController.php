@@ -32,6 +32,9 @@ class TrainingStatusController extends HrisController
             try {
                 $searchQuery = $request->getPost();
                 $list = $this->repository->getListAdmin((array)$searchQuery);
+                foreach ($list as &$item) { // loop through each element and add the key-value pair
+                    $item["lDProgram"] = 'Training';
+                }
                 // echo '<pre>';print_r($list);die;
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {

@@ -118,6 +118,11 @@ class HrEmployees extends Model {
     public $disabledFlag;
 	public $taxBase;
     public $ssfNo;
+    public $nationality;
+    public $spouseMobileNo;
+    public $citNomineename;
+    public $ssfNomineeName;
+    public $citStartDate;
 
     
     const TABLE_NAME = "HRIS_EMPLOYEES";
@@ -233,8 +238,12 @@ class HrEmployees extends Model {
     const DISABLED_FLAG = "DISABLED_FLAG";
 	const TAX_BASE = "TAX_BASE";
     const SSF_NO="SSF_NO";
+    const NATIONALITY="NATIONALITY";
+    const SPOUSE_MBL_NO="SPOUSE_MBL_NO";
+    const CIT_NOMINEE_NAME="CIT_NOMINEE_NAME";
+    const SSF_NOMINEE_NAME="SSF_NOMINEE_NAME";
+    const CIT_START_DT="CIT_START_DT";
 
-    
     public $mappings = [
         'employeeId' => self::EMPLOYEE_ID,
         'companyId' => self::COMPANY_ID,
@@ -348,6 +357,11 @@ class HrEmployees extends Model {
         'disabledFlag' => self::DISABLED_FLAG,
 		'taxBase' => self::TAX_BASE,
         'ssfNo'=>self::SSF_NO,
+        'nationality'=>self::NATIONALITY,
+        'spouseMobileNo'=>self::SPOUSE_MBL_NO,
+        'citNomineename'=>self::CIT_NOMINEE_NAME,
+        'ssfNomineeName'=>self::SSF_NOMINEE_NAME,
+        'citStartDate'=>self::CIT_START_DT,
     ];
 
 }

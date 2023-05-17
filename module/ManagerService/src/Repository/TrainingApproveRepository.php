@@ -584,7 +584,8 @@ class TrainingApproveRepository extends HrisRepository {
                   G.GENDER_NAME                                        AS GENDER,
                   D.DESIGNATION_TITLE                                  AS DESIGNATION,
                   DE.DEPARTMENT_NAME                                   AS DEPARTMENT,
-                  T.DAILY_TRAINING_HOUR                                AS TRAINING_HOUR
+                  T.DAILY_TRAINING_HOUR                                AS TRAINING_HOUR,
+                  TD.ATTENDANCE_STATUS                                 AS ATTD_STATUS
                 FROM HRIS_EMPLOYEE_TRAINING_REQUEST TR
                 LEFT JOIN HRIS_TRAINING_MASTER_SETUP T
                 ON T.TRAINING_ID=TR.TRAINING_ID
@@ -608,9 +609,11 @@ class TrainingApproveRepository extends HrisRepository {
                 ON (RA.RECOMMEND_BY=RAR.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
+                LEFT JOIN hris_emp_training_attendance TD
+                ON (TD.TRAINING_ID=TR.TRAINING_ID  AND TD.EMPLOYEE_ID=TR.EMPLOYEE_ID AND TD.TRAINING_DT=TR.START_DATE)
                 WHERE 1          =1 {$searchCondition['sql']} {$condition} order by TR.REQUEST_ID desc ";
-          // echo '<pre>';print_r($sql);die;     
         $finalSql = $this->getPrefReportQuery($sql);
+        // echo '<pre>';print_r($finalSql);die;
         return $this->rawQuery($finalSql, $boundedParameter);
     }
 }

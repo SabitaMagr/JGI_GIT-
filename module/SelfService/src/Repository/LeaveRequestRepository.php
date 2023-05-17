@@ -502,7 +502,7 @@ AND LEAVE_ID=:leaveId
 AND STATUS IN ('AP','RQ','RC','CP','CR')
 and Sub_Ref_Id is not null
  group by Sub_Ref_Id) lt on (lt.Sub_Ref_Id=sl.id) order by sub_end_date desc";
-            // echo '<pre>'; print_r($maxSubDays);die;
+            // echo '<pre>'; print_r($sql);die;
         $statement = $this->adapter->query($sql);
         $result=$statement->execute($boundedParameter);
         return Helper::extractDbData($result);
