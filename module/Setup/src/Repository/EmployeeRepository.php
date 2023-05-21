@@ -701,6 +701,17 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                   TRUNC(MONTHS_BETWEEN(SYSDATE, HER3.DOB) / 12)                     AS DAUGHTER_AGE,
                   HER4.PERSON_NAME                                                  AS SON_NAME,
                   TRUNC(MONTHS_BETWEEN(SYSDATE, HER4.DOB) / 12)                     AS SON_AGE,
+                  edu.degree_1                                                     AS degree_1,
+                  edu.degree_2                                                      AS degree_2,
+                  exper.org1                                                  AS org1,
+                  exper.pos1                                                  AS pos1,
+                  exper.ten1                                                  AS ten1,
+                  exper.org2                                                  AS org2,
+                  exper.pos2                                                  AS pos2,
+                  exper.ten2                                                 AS ten2,
+                  exper.org3                                                  AS org3,
+                  exper.pos3                                                  AS pos3,
+                  exper.ten3                                                  AS ten3,
                   EF.FILE_PATH
                 FROM HRIS_EMPLOYEES E
                 LEFT JOIN HRIS_COMPANY C
@@ -753,10 +764,23 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 ON (E.EMPLOYEE_ID=HER1.EMPLOYEE_ID AND HER1.RELATION_ID=2)
                 LEFT JOIN HRIS_EMPLOYEE_RELATION HER2
                 ON (E.EMPLOYEE_ID=HER2.EMPLOYEE_ID AND HER2.RELATION_ID=3)
-                LEFT JOIN HRIS_EMPLOYEE_RELATION HER3
-                ON (E.EMPLOYEE_ID=HER3.EMPLOYEE_ID AND HER3.RELATION_ID=4)
-                LEFT JOIN HRIS_EMPLOYEE_RELATION HER4
-                ON (E.EMPLOYEE_ID=HER4.EMPLOYEE_ID AND HER4.RELATION_ID=5)
+                LEFT JOIN ( SELECT employee_id,e_r_id AS max_e_r_id, dob,person_name FROM (SELECT
+                employee_id, e_r_id,dob,person_name,ROW_NUMBER()OVER(PARTITION BY employee_id ORDER BY e_r_id DESC
+                ) AS rank FROM hris_employee_relation WHERE  relation_id = 4  ) sub WHERE rank = 1)  her3 ON e.employee_id = her3.employee_id
+                LEFT JOIN (SELECT employee_id,e_r_id AS max_e_r_id, dob,person_name FROM ( SELECT employee_id,e_r_id, dob,
+                person_name,ROW_NUMBER()OVER(PARTITION BY employee_id ORDER BY e_r_id DESC) AS rank FROM hris_employee_relation
+                WHERE relation_id = 5 ) sub WHERE rank = 1)her4 ON e.employee_id = her4.employee_id LEFT JOIN (
+                SELECT employee_id,MAX( CASE WHEN rn = 1 THEN academic_degree_name END ) AS degree_1, MAX(CASE WHEN rn = 2 THEN academic_degree_name END
+                ) AS degree_2 FROM (SELECT  eq.employee_id,ac.academic_degree_name, ROW_NUMBER() OVER(PARTITION BY eq.employee_id  ORDER BY ac.academic_degree_id ) AS rn
+                FROM hris_employee_qualifications eq JOIN hris_academic_degrees ac ON eq.academic_degree_id = ac.academic_degree_id ) sub GROUP BY sub.employee_id )edu ON ( edu.employee_id = e.employee_id )
+                left join (SELECT employee_id, MAX( CASE WHEN rn = 1 THEN  organization_name END) AS org1,
+ MAX( CASE WHEN rn = 1 THEN  tenure END) AS ten1,
+ MAX( CASE WHEN rn = 3 THEN  tenure  END  ) AS ten3, MAX( CASE WHEN rn = 2 THEN  tenure END  ) AS ten2,
+ MAX( CASE WHEN rn = 3 THEN  organization_name  END  ) AS org3, MAX( CASE WHEN rn = 2 THEN  organization_name END  ) AS org2,
+MAX(  CASE  WHEN rn = 1 THEN  position END ) AS pos1, MAX( CASE  WHEN rn = 3 THEN  position END) AS pos3,
+MAX( CASE  WHEN rn = 2 THEN  position END ) AS pos2 from ( SELECT employee_id,
+organization_name, position, trunc(months_between(to_date, from_date) / 12)  AS tenure, ROW_NUMBER()  OVER(PARTITION BY employee_id ORDER BY  organization_name  ) AS rn 
+FROM hris_employee_experiences) exp group by exp.employee_id) exper  on (exper.employee_id=e.employee_id)
                 {$joinIfSyngery}
                 WHERE 1                 =1 AND E.STATUS='E' 
                 {$condition['sql']}
